@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ชาบ้านน้องขิม</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Noto Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "Arial", "sans-serif"] },
+          colors: {
+            brand: {
+              50: '#f3faf7', 100: '#d8f5ea', 200: '#b2ebd6', 300: '#87e0c0', 400: '#5ad6aa', 500: '#32cc97', 600: '#23a97c', 700: '#1b8563', 800: '#15684f', 900: '#114f3d'
+            },
+            tea: {
+              50: '#faf7f2', 100: '#f5ecdf', 200: '#ead6b6', 300: '#deb989', 400: '#d29b5f', 500: '#c67e38', 600: '#a4632b', 700: '#834b21', 800: '#65381a', 900: '#4b2a13'
+            }
+          },
+          boxShadow: {
+            glow: '0 10px 30px -12px rgba(17, 79, 61, .45)',
+            'glow-lg': '0 15px 40px -10px rgba(17, 79, 61, .6)'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'scale-up': 'scaleUp 0.2s ease-out',
+            'slide-up': 'slideUp 0.3s ease-out'
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            scaleUp: { '0%': { transform: 'scale(0.95)' }, '100%': { transform: 'scale(1)' } },
+            slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(50,204,151,.12), transparent),
+                  radial-gradient(1000px 500px at 110% 10%, rgba(198,126,56,.12), transparent),
+                  linear-gradient(180deg, #0b1220 0%, #0b1220 30%, #0e1828 100%);
+      scroll-behavior: smooth;
+      overscroll-behavior: none;
+    }
+    body.light-theme {
+      background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+    }
+    .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); }
+    .glass-light { backdrop-filter: blur(10px); background: rgba(255,255,255,.7); }
+    .light-theme .glass { background: rgba(255,255,255,.8); border: 1px solid rgba(0,0,0,.1); }
+    .light-theme .glass-light { background: rgba(255,255,255,.9); }
+    .light-theme .text-slate-100 { color: #1f2937; }
+    .light-theme .text-slate-200 { color: #4b5563; }
+    .light-theme .text-slate-300 { color: #6b7280; }
+    .light-theme .text-white { color: #111827; }
+    .light-theme #cartBottomSheet { background: rgba(255,255,255,.95); }
+    .light-theme #cartBottomSheet .text-slate-300 { color: #6b7280; }
+    .light-theme #cartBottomSheet .border-b, .light-theme #cartBottomSheet .border-t { border-color: rgba(0,0,0,.1); }
+    .light-theme #cartBottomSheet .divide-y > * + * { border-color: rgba(0,0,0,.1); }
+    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .menu-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px -10px rgba(17, 79, 61, .6); }
+    .menu-card img { transition: transform 0.3s ease; }
+    .menu-card:hover img { transform: scale(1.1); }
+    .premium-select { animation: scale-up 0.2s ease-out; }
+    .premium-select-selected { background: rgba(50,204,151,.2); }
+    .filter-input::placeholder { color: rgba(15,23,42,.5); }
+    .light-theme .filter-input::placeholder { color: rgba(75,85,99,.5); }
+    input[name="sweet"]:checked + span { background: #dc2626; color: white; }
+    input[name="fulfill"]:checked + span { background: #dc2626; color: white; }
+    .qtyInc, .qtyDec, .rmItem { pointer-events: auto; z-index: 10; }
+    #confirmOrderBtn, #cancelConfirmBtn, #addToCartBtn, #floatingOrderBtn {
+      min-height: 48px;
+      touch-action: manipulation;
+      pointer-events: auto;
+      z-index: 10;
+    }
+    #hamburgerMenu, #orderModal {
+      transition: transform 0.3s ease-in-out;
+    }
+    #cartBottomSheet {
+      transition: transform 0.3s ease-in-out;
+    }
+    @media (max-width: 640px) {
+      #confirmOrderModal > div, #orderModal > div {
+        max-width: 100%;
+        margin: 0 8px;
+        padding: 16px;
+        animation: slide-up 0.3s ease-out;
+      }
+      #cartBottomSheet {
+        width: 100%;
+        max-height: 80vh;
+        transform: translateY(100%);
+      }
+      #cartBottomSheet.open {
+        transform: translateY(0);
+      }
+      .text-sm {
+        font-size: 0.9rem;
+      }
+      .px-4 {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .py-2 {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      #hamburgerMenu {
+        width: 75%;
+        max-width: 300px;
+      }
+      #orderModal .sticky-cta {
+        position: sticky;
+        bottom: 0;
+        background: inherit;
+        padding: 12px;
+        margin: -16px -16px 0;
+        border-top: 1px solid rgba(255,255,255,.1);
+      }
+      .light-theme #orderModal .sticky-cta {
+        border-top: 1px solid rgba(0,0,0,.1);
+      }
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-100 min-h-screen">
+  <!-- App Config -->
+  <script>
+    const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
+    const TELEGRAM_CHAT_ID = "-1002728257218";
+    const TELEGRAM_PROXY_URL = "";
+  </script>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 shadow-glow">
+    <div class="glass backdrop-blur supports-[backdrop-filter]:glass border-b border-white/10">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-tea-500/90 flex items-center justify-center shadow-glow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white"><path d="M3 3h14a1 1 0 011 1v5a5 5 0 005 5h-1a6 6 0 01-6 6H9a6 6 0 01-6-6V4a1 1 0 011-1zm15 6V5H5v7a4 4 0 004 4h6a4 4 0 004-4V9zm2 0a3 3 0 002-2.236V11a3 3 0 01-2-2z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-lg md:text-xl font-semibold tracking-tight">ชาบ้านน้องขิม</h1>
+          <p class="text-xs text-slate-300/80 -mt-0.5">สั่งง่าย จ่ายปลายทาง</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="openCartBtn" class="relative px-3 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[.99] transition shadow-glow min-w-[48px] min-h-[48px]">
+            <span class="text-sm font-semibold md:inline hidden">ตะกร้า</span>
+            <svg class="md:hidden w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            <span id="cartCountBadge" class="absolute -top-1 -right-1 text-[10px] bg-tea-500 text-white rounded-full w-5 h-5 grid place-content-center shadow">0</span>
+          </button>
+          <button id="openHamburgerBtn" class="md:hidden px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition min-w-[48px] min-h-[48px]">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+          <div class="hidden md:flex items-center gap-3">
+            <button id="themeToggleBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">สลับโหมด</button>
+            <button id="loginBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">เข้าสู่ระบบ</button>
+            <button id="historyBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">ประวัติการสั่งซื้อ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hamburger Menu Drawer -->
+  <div id="hamburgerMenu" class="fixed inset-y-0 right-0 w-full max-w-xs bg-slate-900/95 backdrop-blur border-l border-white/10 translate-x-full transition-transform z-50 flex flex-col md:hidden">
+    <div class="p-4 flex items-center justify-between border-b border-white/10">
+      <h3 class="text-lg font-semibold">เมนู</h3>
+      <button id="closeHamburgerBtn" class="text-slate-300 hover:text-white">✕</button>
+    </div>
+    <div class="p-4 flex flex-col gap-3">
+      <button id="hamburgerThemeToggleBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">สลับโหมด</button>
+      <button id="hamburgerLoginBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">เข้าสู่ระบบ</button>
+      <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">ประวัติการสั่งซื้อ</button>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
+    <!-- Menu & Admin panel column -->
+    <section class="lg:col-span-2 space-y-6">
+      <!-- Admin Controls -->
+      <div id="adminControls" class="glass rounded-2xl p-4 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-base md:text-lg font-semibold">จัดการเมนู</h2>
+          <div class="flex items-center gap-2">
+            <button id="addMenuBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">+ เพิ่มเมนู</button>
+            <button id="importJsonBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">นำเข้า JSON</button>
+            <button id="exportJsonBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">ส่งออก JSON</button>
+          </div>
+        </div>
+        <p class="text-xs text-slate-300 mt-1">เพิ่ม/ลบ/แก้ไขเมนูได้ — จัดเก็บในเบราว์เซอร์ (LocalStorage)</p>
+      </div>
+
+      <!-- Menu Filters -->
+      <div class="glass rounded-2xl p-4 shadow-glow animate-fade-in">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="relative flex-1 min-w-[200px]">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-900/50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-2 glass-light text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 filter-input" />
+          </div>
+          <select id="categoryFilter" class="glass-light text-slate-900 rounded-xl px-3 py-2 hover:bg-slate-200/30 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="">ทุกหมวดหมู่</option>
+          </select>
+          <select id="sortFilter" class="glass-light text-slate-900 rounded-xl px-3 py-2 hover:bg-slate-200/30 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="">เรียงตามปกติ</option>
+            <option value="price-asc">ราคา: น้อย → มาก</option>
+            <option value="price-desc">ราคา: มาก → น้อย</option>
+            <option value="name-asc">ชื่อ: A → Z</option>
+            <option value="name-desc">ชื่อ: Z → A</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Menu Grid -->
+      <div id="menuGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- Cart Panel (Desktop Only) -->
+    <aside class="lg:col-span-1 space-y-6 hidden lg:block">
+      <div class="glass rounded-2xl p-4 animate-fade-in">
+        <h3 class="text-base md:text-lg font-semibold">ตะกร้าของฉัน</h3>
+        <div id="cartList" class="divide-y divide-white/5 my-3"></div>
+        <div class="flex items-center justify-between text-sm">
+          <span>รวมทั้งสิ้น</span>
+          <span id="cartGrandTotal" class="font-semibold text-white">฿0.00</span>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button id="clearCartBtn" class="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold shadow-glow-lg">ล้างตะกร้า</button>
+          <button id="placeOrderBtn" class="flex-1 px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg">กดสั่งออร์เดอร์</button>
+        </div>
+        <p class="text-[11px] text-slate-300 mt-2">*ไม่มีค่าจัดส่ง</p>
+      </div>
+    </aside>
+
+    <!-- Order Button (Mobile Only) -->
+    <button id="openOrderModalBtn" class="md:hidden fixed bottom-16 right-4 px-4 py-3 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-glow-lg z-30 min-w-[48px] min-h-[48px]">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+    </button>
+
+    <!-- Floating Order Button (Mobile Only) -->
+    <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 px-4 py-3 rounded-full bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg z-30 min-w-[48px] min-h-[48px]">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+    </button>
+  </main>
+
+  <!-- Order Modal -->
+  <div id="orderModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
+    <div class="w-full max-w-lg glass rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">สั่งเครื่องดื่ม</h3>
+        <button id="closeOrderModal" class="text-slate-300 hover:text-white">✕</button>
+      </div>
+      <form id="orderForm" class="mt-3 grid gap-3">
+        <!-- Quick Order Presets -->
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" class="quickPreset px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white text-sm" data-menu="ชานม" data-price="35" data-sweet="50%" data-fulfill="รับเองที่ร้าน">ชานม หวาน 50%</button>
+          <button type="button" class="quickPreset px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white text-sm" data-menu="ชาเขียว" data-price="35" data-sweet="25%" data-fulfill="รับเองที่ร้าน">ชาเขียว หวาน 25%</button>
+        </div>
+        <div>
+          <label class="text-sm">เลือกเมนู</label>
+          <select id="selectedMenu" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 premium-select"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-sm">ราคา / แก้ว (฿)</label>
+            <input id="price" type="number" min="0" step="0.5" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select" placeholder="เช่น 35.00" />
+          </div>
+          <div>
+            <label class="text-sm">จำนวน</label>
+            <div class="mt-1 flex items-center rounded-xl overflow-hidden glass-light premium-select">
+              <button type="button" id="qtyMinus" class="w-10 h-10 grid place-content-center hover:bg-slate-200/30 transition">−</button>
+              <input id="qty" type="number" value="1" min="1" class="w-full text-center bg-transparent text-slate-900" placeholder="1" />
+              <button type="button" id="qtyPlus" class="w-10 h-10 grid place-content-center hover:bg-slate-200/30 transition">+</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm">ความหวาน</label>
+          <div class="mt-1 grid grid-cols-5 gap-2 text-slate-900">
+            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="0%" class="sr-only" checked/><span>0%</span></label>
+            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="25%" class="sr-only"/><span>25%</span></label>
+            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="50%" class="sr-only"/><span>50%</span></label>
+            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="75%" class="sr-only"/><span>75%</span></label>
+            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="100%" class="sr-only"/><span>100%</span></label>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm">วิธีรับสินค้า</label>
+          <div class="mt-1 grid grid-cols-2 gap-2 text-slate-900">
+            <label class="glass-light rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="fulfill" value="รับเองที่ร้าน" class="accent-tea-600" checked/><span class="text-sm">รับเอง</span></label>
+            <label class="glass-light rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-tea-600"/><span class="text-sm">จัดส่ง (ฟรี)</span></label>
+          </div>
+        </div>
+        <div id="deliveryAddressSection" class="hidden">
+          <label class="text-sm">ที่อยู่จัดส่ง</label>
+          <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select"></textarea>
+          <div class="flex items-center gap-2 mt-1">
+            <input id="saveAddress" type="checkbox" class="accent-brand-600" />
+            <label for="saveAddress" class="text-sm">บันทึกที่อยู่</label>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm">โน้ตถึงร้าน</label>
+          <textarea id="note" rows="3" placeholder="เช่น ไม่ใส่น้ำแข็ง, เพิ่มไข่มุก" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select"></textarea>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="cod" type="checkbox" class="accent-brand-600" checked />
+          <label for="cod" class="text-sm">เก็บเงินปลายทาง</label>
+        </div>
+        <div class="flex items-center justify-between pt-2 sticky-cta">
+          <div class="text-sm text-slate-300">ยอดรวม: <span id="total" class="font-semibold text-white">฿0.00</span></div>
+          <button id="addToCartBtn" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[.99] transition shadow-glow-lg">เพิ่มลงตะกร้า</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Other Modals -->
+  <div id="menuModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
+    <div class="w-full max-w-lg glass rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <h3 id="menuModalTitle" class="text-lg font-semibold">เพิ่มเมนู</h3>
+        <button id="closeMenuModal" class="text-slate-300 hover:text-white">✕</button>
+      </div>
+      <form id="menuForm" class="mt-3 grid gap-3">
+        <input type="hidden" id="menuId" />
+        <div>
+          <label class="text-sm">ชื่อเมนู</label>
+          <input id="menuName" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น ชานม, ชาเขียว, โกโก้"/>
+        </div>
+        <div>
+          <label class="text-sm">ราคา (฿)</label>
+          <input id="menuPrice" type="number" step="0.5" min="0" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2"/>
+        </div>
+        <div>
+          <label class="text-sm">หมวดหมู่</label>
+          <input id="menuCategory" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น ชา, กาแฟ, โกโก้"/>
+        </div>
+        <div>
+          <label class="text-sm">รูปภาพ (ลิงก์)</label>
+          <input id="menuImage" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="https://...jpg"/>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" id="deleteMenuBtn" class="hidden px-3 py-2 rounded-xl bg-red-600/90 hover:bg-red-600">ลบ</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500">บันทึก</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="loginModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
+    <div class="w-full max-w-sm glass rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">เข้าสู่ระบบ (ผู้ดูแล)</h3>
+        <button id="closeLoginModal" class="text-slate-300 hover:text-white">✕</button>
+      </div>
+      <form id="loginForm" class="mt-3 grid gap-3">
+        <div>
+          <label class="text-sm">ชื่อผู้ใช้</label>
+          <input id="username" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น admin321"/>
+        </div>
+        <div>
+          <label class="text-sm">รหัสผ่าน</label>
+          <input id="password" type="password" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="รหัสผ่าน"/>
+        </div>
+        <div class="flex items-center justify-end pt-1">
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500">เข้าสู่ระบบ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmOrderModal" class="hidden fixed inset-0 z-60 bg-black/50 grid place-items-center p-4">
+    <div class="w-full max-w-md glass rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">ยืนยันการสั่งซื้อ</h3>
+        <button id="closeConfirmModal" class="text-slate-300 hover:text-white">✕</button>
+      </div>
+      <div class="mt-3">
+        <p class="text-sm text-slate-200">ยืนยันการส่งออร์เดอร์นี้หรือไม่?</p>
+        <div id="confirmOrderSummary" class="mt-2 text-sm"></div>
+        <div class="flex items-center justify-end gap-2 mt-4">
+          <button id="cancelConfirmBtn" class="px-3 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 min-h-[48px]">ยกเลิก</button>
+          <button id="confirmOrderBtn" class="px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 min-h-[48px]">ยืนยัน</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
+    <div class="w-full max-w-4xl glass rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">ประวัติการสั่งซื้อ</h3>
+        <button id="closeHistoryModal" class="text-slate-300 hover:text-white">✕</button>
+      </div>
+      <div class="mt-3 overflow-x-auto">
+        <table id="orderHistoryTable" class="w-full text-sm text-left text-slate-200">
+          <thead>
+            <tr class="border-b border-slate-600/50">
+              <th class="py-2 px-3">ออร์เดอร์</th>
+              <th class="py-2 px-3">วันที่</th>
+              <th class="py-2 px-3">รายการ</th>
+              <th class="py-2 px-3">ยอดรวม</th>
+              <th class="py-2 px-3">ที่อยู่</th>
+            </tr>
+          </thead>
+          <tbody id="orderHistoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Bottom Sheet (Mobile Only) -->
+  <div id="cartBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 w-full bg-slate-900/95 backdrop-blur rounded-t-2xl shadow-glow-lg translate-y-full transition-transform z-50 flex flex-col">
+    <div class="p-4 flex items-center justify-between border-b border-white/10">
+      <h3 class="text-lg font-semibold">ตะกร้า</h3>
+      <button id="closeCartBtn" class="text-slate-300 hover:text-white">✕</button>
+    </div>
+    <div id="cartBottomSheetList" class="flex-1 overflow-y-auto p-4 divide-y divide-white/5"></div>
+    <div class="p-4 border-t border-white/10 space-y-2">
+      <div class="flex items-center justify-between text-sm"><span>รวม</span><span id="bottomSheetTotal" class="font-semibold">฿0.00</span></div>
+      <div class="flex gap-2">
+        <button id="bottomSheetClearCartBtn" class="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold shadow-glow-lg">ล้างตะกร้า</button>
+        <button id="bottomSheetPlaceOrderBtn" class="flex-1 px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg">สั่งออร์เดอร์</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden"></div>
+
+  <script>
+    // ---------- Utilities ----------
+    const qs = (s, el=document) => el.querySelector(s);
+    const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+    const money = n => `฿${(Number(n)||0).toFixed(2)}`;
+    const uid = () => Math.random().toString(36).slice(2,9);
+
+    function showToast(msg, type="info"){
+      const t = qs('#toast');
+      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl shadow-glow text-sm ${type==='error' ? 'bg-red-600' : 'bg-brand-600'}`;
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 2200);
+    }
+
+    // ---------- State ----------
+    const store = {
+      get menu(){ return JSON.parse(localStorage.getItem('menuItems')||'[]'); },
+      set menu(v){ localStorage.setItem('menuItems', JSON.stringify(v)); },
+      get cart(){ return JSON.parse(localStorage.getItem('cart')||'[]'); },
+      set cart(v){ localStorage.setItem('cart', JSON.stringify(Array.isArray(v) ? v : [])); },
+      get isAdmin(){ return localStorage.getItem('isAdmin') === 'true'; },
+      set isAdmin(v){ localStorage.setItem('isAdmin', v); },
+      get orders(){ return JSON.parse(localStorage.getItem('orders')||'[]'); },
+      set orders(v){ localStorage.setItem('orders', JSON.stringify(v)); },
+      get savedAddress(){ return localStorage.getItem('savedAddress')||''; },
+      set savedAddress(v){ localStorage.setItem('savedAddress', v); },
+      get theme(){ return localStorage.getItem('theme')||'dark'; },
+      set theme(v){ localStorage.setItem('theme', v); }
+    };
+
+    // Admin credentials
+    const ADMIN_USERNAME = 'admin321';
+    const ADMIN_PASSWORD = 'Aphisit321';
+
+    // Seed demo data if empty
+    function seedMenu(){
+      if(store.menu.length) return;
+      store.menu = [
+        {id:uid(), name:'ชานม', price:35, category:'ชา', image:'https://images.unsplash.com/photo-1541599188778-cdc73298e8f8?q=80&w=1200&auto=format&fit=crop'},
+        {id:uid(), name:'ชาเขียว', price:35, category:'ชา', image:'https://images.unsplash.com/photo-1556679343-c7306c2b2677?q=80&w=1200&auto=format&fit=crop'},
+        {id:uid(), name:'โกโก้', price:40, category:'โกโก้', image:'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop'},
+      ];
+    }
+
+    // ---------- Theme Toggle ----------
+    function toggleTheme(){
+      const body = document.body;
+      const isLight = store.theme === 'light';
+      store.theme = isLight ? 'dark' : 'light';
+      body.classList.toggle('light-theme', store.theme === 'light');
+      qs('#themeToggleBtn').textContent = isLight ? 'สลับโหมด' : 'โหมดมืด';
+      qs('#hamburgerThemeToggleBtn').textContent = isLight ? 'สลับโหมด' : 'โหมดมืด';
+    }
+
+    // ---------- Menu rendering ----------
+    function renderMenuOptions(){
+      const sel = qs('#selectedMenu');
+      sel.innerHTML = '<option value="">— เลือกเมนู —</option>' + store.menu.map(m=>`<option data-price="${m.price}" value="${m.id}">${m.name}</option>`).join('');
+    }
+
+    function renderCategories(){
+      const categories = [...new Set(store.menu.map(m => m.category).filter(c => c))].sort();
+      const select = qs('#categoryFilter');
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">ทุกหมวดหมู่</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      select.value = currentValue;
+    }
+
+    function renderMenuGrid(){
+      renderCategories();
+      const wrap = qs('#menuGrid');
+      const search = qs('#searchInput').value.toLowerCase();
+      const category = qs('#categoryFilter').value;
+      let filtered = store.menu.filter(m => 
+        m.name.toLowerCase().includes(search) &&
+        (category === '' || m.category === category)
+      );
+      const sort = qs('#sortFilter').value;
+      if(sort){
+        filtered.sort((a,b) => {
+          if(sort === 'price-asc') return a.price - b.price;
+          if(sort === 'price-desc') return b.price - b.price;
+          if(sort === 'name-asc') return a.name.localeCompare(b.name);
+          if(sort === 'name-desc') return b.name.localeCompare(a.name);
+          return 0;
+        });
+      }
+      if(!filtered.length){ wrap.innerHTML = `<div class="col-span-full text-center text-slate-300">ไม่มีเมนูที่ตรงกัน</div>`; return; }
+      wrap.innerHTML = filtered.map(m=>`
+        <div class="glass rounded-2xl overflow-hidden menu-card transition-all duration-300">
+          <div class="h-48 bg-slate-800 overflow-hidden relative">
+            <img src="${m.image||'https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1200&auto=format&fit=crop'}" alt="${m.name}" class="w-full h-full object-cover"/>
+            <div class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div class="text-center text-white text-sm p-2">
+                <div class="font-semibold">${m.name}</div>
+                <div>${m.category||'-'}</div>
+                <div>${money(m.price)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="p-3 flex items-start justify-between gap-2">
+            <div>
+              <div class="font-semibold">${m.name}</div>
+              <div class="text-sm text-slate-300">${m.category||'-'}</div>
+              <div class="text-sm mt-1">${money(m.price)}</div>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-lg bg-slate-200/90 text-slate-900 hover:bg-white text-sm">แก้ไข</button>` : ''}
+              <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-sm">เลือก</button>
+              <button data-id="${m.id}" class="quickAdd md:hidden px-3 py-1.5 rounded-lg bg-tea-500 hover:bg-tea-400 text-sm">เพิ่มทันที</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ---------- Order History ----------
+    function renderOrderHistory(){
+      const tbody = qs('#orderHistoryBody');
+      const orders = store.orders;
+      if(!orders.length){
+        tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-300">ยังไม่มีประวัติการสั่งซื้อ</td></tr>';
+        return;
+      }
+      tbody.innerHTML = orders.map((order, idx) => `
+        <tr class="border-b border-slate-600/50">
+          <td class="py-2 px-3">ออร์เดอร์ #${idx+1}</td>
+          <td class="py-2 px-3">${new Date(order.timestamp).toLocaleString('th-TH')}</td>
+          <td class="py-2 px-3">${order.items.map(item => `${item.name} x${item.qty} (${item.sweet}) ${item.fulfill}${item.cod ? ' (COD)' : ''}${item.note ? `, โน้ต: ${item.note}` : ''}`).join('<br>')}</td>
+          <td class="py-2 px-3">${money(order.total)}</td>
+          <td class="py-2 px-3">${order.items.some(item => item.address) ? order.items.map(item => item.address || '-').join('<br>') : '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ---------- Cart ----------
+    function cartTotal(){ return store.cart.reduce((s,i)=>s + (i.price||0)*(i.qty||0), 0); }
+
+    function renderCart(){
+      const list = qs('#cartList');
+      const bottomSheet = qs('#cartBottomSheetList');
+      const badge = qs('#cartCountBadge');
+      if (!Array.isArray(store.cart)) {
+        console.error('Invalid cart state:', store.cart);
+        store.cart = [];
+      }
+      const total = money(cartTotal());
+      qs('#cartGrandTotal').textContent = total;
+      qs('#bottomSheetTotal').textContent = total;
+      badge.textContent = store.cart.reduce((s,i)=>s+(i.qty||0),0);
+
+      const itemHTML = (item, idx) => `
+        <div class="py-3 flex items-start gap-3 hover:bg-white/5 rounded-lg transition">
+          <div class="flex-1">
+            <div class="flex items-center justify-between gap-2">
+              <div class="font-semibold">${item.name || 'ไม่ทราบ'} <span class="text-xs text-slate-300 font-normal">(${item.sweet || 'ไม่ระบุ'})</span></div>
+              <div class="text-sm">${money(item.price || 0)}</div>
+            </div>
+            <div class="text-xs text-slate-300">${item.fulfill || 'ไม่ระบุ'}${item.note? ' • โน้ต: '+item.note:''}${item.cod? ' • COD':''}${item.address? ' • ที่อยู่: '+item.address:''}</div>
+            <div class="mt-2 flex items-center gap-2">
+              <button class="qtyDec px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 min-h-[40px]" data-idx="${idx}">−</button>
+              <span class="min-w-[2ch] text-center">${item.qty || 1}</span>
+              <button class="qtyInc px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 min-h-[40px]" data-idx="${idx}">+</button>
+              <button class="rmItem ml-auto px-2 py-1 rounded bg-red-600/90 hover:bg-red-600 text-xs min-h-[40px]" data-idx="${idx}">ลบ</button>
+            </div>
+          </div>
+        </div>`;
+
+      const html = store.cart.map(itemHTML).join('') || '<div class="py-6 text-center text-slate-300">ยังไม่มีสินค้าในตะกร้า</div>';
+      list.innerHTML = html;
+      bottomSheet.innerHTML = html;
+    }
+
+    function saveCart(){
+      if (!Array.isArray(store.cart)) {
+        console.error('Invalid cart state on save:', store.cart);
+        store.cart = [];
+      }
+      store.cart = store.cart; // Trigger setter to save to localStorage
+      renderCart();
+    }
+
+    // ---------- Form interactions ----------
+    function updatePriceFromSelect(){
+      const sel = qs('#selectedMenu');
+      const opt = sel.selectedOptions[0];
+      if(!opt || !opt.dataset.price){
+        sel.classList.remove('premium-select-selected');
+        return;
+      }
+      sel.classList.add('premium-select-selected');
+      qs('#price').value = Number(opt.dataset.price).toFixed(2);
+      calcTotal();
+    }
+
+    function calcTotal(){
+      const price = Number(qs('#price').value||0);
+      const qty = Math.max(1, Number(qs('#qty').value||1));
+      qs('#total').textContent = money(price*qty);
+    }
+
+    function quickAddToCart(menuId){
+      const menu = store.menu.find(m => m.id === menuId);
+      if(!menu){ showToast('เมนูไม่พบ', 'error'); return; }
+      const newItem = {
+        id: uid(),
+        menuId: menu.id,
+        name: menu.name,
+        price: menu.price,
+        qty: 1,
+        sweet: '50%',
+        fulfill: 'รับเองที่ร้าน',
+        note: '',
+        cod: true,
+        address: ''
+      };
+      const existingItem = store.cart.find(item =>
+        item.menuId === newItem.menuId &&
+        item.sweet === newItem.sweet &&
+        item.fulfill === newItem.fulfill &&
+        item.note === newItem.note &&
+        item.cod === newItem.cod &&
+        item.address === newItem.address
+      );
+      if(existingItem){
+        existingItem.qty += newItem.qty;
+      } else {
+        store.cart = [...store.cart, newItem];
+      }
+      renderCart();
+      showToast(`เพิ่ม ${menu.name} ลงตะกร้าแล้ว`);
+    }
+
+    function quickPresetAdd(e){
+      const btn = e.target;
+      const menuName = btn.dataset.menu;
+      const menu = store.menu.find(m => m.name === menuName);
+      if(!menu){ showToast('เมนูไม่พบ', 'error'); return; }
+      const newItem = {
+        id: uid(),
+        menuId: menu.id,
+        name: menu.name,
+        price: Number(btn.dataset.price),
+        qty: 1,
+        sweet: btn.dataset.sweet,
+        fulfill: btn.dataset.fulfill,
+        note: '',
+        cod: true,
+        address: ''
+      };
+      const existingItem = store.cart.find(item =>
+        item.menuId === newItem.menuId &&
+        item.sweet === newItem.sweet &&
+        item.fulfill === newItem.fulfill &&
+        item.note === newItem.note &&
+        item.cod === newItem.cod &&
+        item.address === newItem.address
+      );
+      if(existingItem){
+        existingItem.qty += newItem.qty;
+      } else {
+        store.cart = [...store.cart, newItem];
+      }
+      renderCart();
+      qs('#orderModal').classList.add('hidden');
+      showToast(`เพิ่ม ${menu.name} ลงตะกร้าแล้ว`);
+    }
+
+    function addToCart(){
+      const selId = qs('#selectedMenu').value; if(!selId){ showToast('กรุณาเลือกเมนู', 'error'); return; }
+      const menu = store.menu.find(m=>m.id===selId);
+      const price = Number(qs('#price').value||0);
+      const qty = Math.max(1, Number(qs('#qty').value||1));
+      const sweet = (qs('input[name="sweet"]:checked')||{}).value || '50%';
+      const fulfill = (qs('input[name="fulfill"]:checked')||{}).value || 'รับเองที่ร้าน';
+      const note = qs('#note').value.trim();
+      const cod = qs('#cod').checked;
+      const address = fulfill.includes('จัดส่ง') && qs('#deliveryAddress').value.trim() ? qs('#deliveryAddress').value.trim() : '';
+      if(fulfill.includes('จัดส่ง') && !address){ showToast('กรุณากรอกที่อยู่จัดส่ง', 'error'); return; }
+      if(qs('#saveAddress').checked && address) store.savedAddress = address;
+      const newItem = { id: uid(), menuId: selId, name: menu?.name || 'ไม่ทราบ', price, qty, sweet, fulfill, note, cod, address };
+      const existingItem = store.cart.find(item =>
+        item.menuId === newItem.menuId &&
+        item.sweet === newItem.sweet &&
+        item.fulfill === newItem.fulfill &&
+        item.note === newItem.note &&
+        item.cod === newItem.cod &&
+        item.address === newItem.address
+      );
+      if(existingItem){
+        existingItem.qty += newItem.qty;
+      } else {
+        store.cart = [...store.cart, newItem];
+      }
+      renderCart();
+      qs('#orderModal').classList.add('hidden');
+      showToast('เพิ่มลงตะกร้าแล้ว');
+    }
+
+    function clearCart(){
+      store.cart = [];
+      renderCart();
+      showToast('ล้างตะกร้าแล้ว');
+    }
+
+    // ---------- Place order & Telegram ----------
+    function buildOrderText(){
+      const lines = [];
+      lines.push('🧋 *ชาบ้านน้องชิม* – คำสั่งซื้อใหม่');
+      const ts = new Date();
+      lines.push(`🕒 ${ts.toLocaleString('th-TH')}`);
+      lines.push('');
+      if(!store.cart.length){ return null; }
+      store.cart.forEach((it,i)=>{
+        lines.push(`${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}`);
+        lines.push(`   • หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}`);
+        if(it.note) lines.push(`   • โน้ต: ${it.note}`);
+        if(it.address) lines.push(`   • ที่อยู่: ${it.address}`);
+      });
+      lines.push('');
+      lines.push(`รวมทั้งสิ้น: *${money(cartTotal())}*`);
+      return lines.join('\n');
+    }
+
+    async function sendOrderToTelegram(text){
+      if(TELEGRAM_PROXY_URL){
+        const res = await fetch(TELEGRAM_PROXY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) });
+        if(!res.ok) throw new Error('Proxy error');
+        return true;
+      }
+      if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) throw new Error('ยังไม่ได้ตั้งค่า Telegram');
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }) });
+      if(!res.ok) throw new Error('ส่ง Telegram ไม่สำเร็จ (อาจติด CORS)');
+      return true;
+    }
+
+    function openConfirmOrderModal(){
+      if(!store.cart.length){ showToast('ตะกร้าว่าง', 'error'); return; }
+      closeCart();
+      const summary = qs('#confirmOrderSummary');
+      summary.innerHTML = store.cart.map((it, i) => `
+        <div>${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}</div>
+        <div class="text-xs text-slate-300 pl-4">หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}${it.note?' • โน้ต: '+it.note:''}${it.address?' • ที่อยู่: '+it.address:''}</div>
+      `).join('');
+      qs('#confirmOrderModal').classList.remove('hidden');
+    }
+
+    async function placeOrder(){
+      const text = buildOrderText();
+      const btns = [qs('#placeOrderBtn'), qs('#bottomSheetPlaceOrderBtn'), qs('#floatingOrderBtn'), qs('#confirmOrderBtn')];
+      btns.forEach(b => b.disabled = true);
+      try {
+        await sendOrderToTelegram(text);
+        store.orders = [...store.orders, { timestamp: Date.now(), items: store.cart, total: cartTotal() }];
+        showToast('สั่งออร์เดอร์สำเร็จ ✅');
+        store.cart = [];
+        renderCart();
+        renderOrderHistory();
+        qs('#confirmOrderModal').classList.add('hidden');
+        closeCart();
+      } catch(err){
+        console.error('Place order error:', err);
+        showToast(err.message || 'เกิดข้อผิดพลาด', 'error');
+      } finally {
+        btns.forEach(b => b.disabled = false);
+      }
+    }
+
+    // ---------- Menu modal logic ----------
+    function openMenuModal(editId=null){
+      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
+      qs('#menuModal').classList.remove('hidden');
+      qs('#menuForm').reset();
+      qs('#menuId').value = '';
+      qs('#deleteMenuBtn').classList.add('hidden');
+      qs('#menuModalTitle').textContent = editId? 'แก้ไขเมนู' : 'เพิ่มเมนู';
+      if(editId){
+        const m = store.menu.find(x=>x.id===editId);
+        if(!m) return;
+        qs('#menuId').value = m.id;
+        qs('#menuName').value = m.name;
+        qs('#menuPrice').value = m.price;
+        qs('#menuCategory').value = m.category||'';
+        qs('#menuImage').value = m.image||'';
+        qs('#deleteMenuBtn').classList.remove('hidden');
+      }
+    }
+    function closeMenuModal(){ qs('#menuModal').classList.add('hidden'); }
+
+    function upsertMenu(e){
+      e.preventDefault();
+      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
+      const id = qs('#menuId').value || uid();
+      const item = { id, name: qs('#menuName').value.trim(), price: Number(qs('#menuPrice').value||0), category: qs('#menuCategory').value.trim(), image: qs('#menuImage').value.trim() };
+      if(!item.name){ showToast('กรอกชื่อเมนู', 'error'); return; }
+      let arr = store.menu.slice();
+      const idx = arr.findIndex(x=>x.id===id);
+      if(idx>-1) arr[idx]=item; else arr.push(item);
+      store.menu = arr;
+      renderMenuGrid(); renderMenuOptions();
+      closeMenuModal();
+      showToast('บันทึกเมนูแล้ว');
+    }
+
+    function deleteMenu(){
+      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
+      const id = qs('#menuId').value; if(!id) return;
+      store.menu = store.menu.filter(x=>x.id!==id);
+      renderMenuGrid(); renderMenuOptions();
+      closeMenuModal();
+      showToast('ลบเมนูแล้ว');
+    }
+
+    function exportJSON(){
+      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อส่งออก JSON', 'error'); return; }
+      const data = JSON.stringify(store.menu, null, 2);
+      const blob = new Blob([data], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'menu-items.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importJSON(){
+      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อนำเข้า JSON', 'error'); return; }
+      const inp = document.createElement('input');
+      inp.type='file'; inp.accept='application/json';
+      inp.onchange = () => {
+        const f = inp.files[0]; if(!f) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try { const arr = JSON.parse(reader.result); if(Array.isArray(arr)) { store.menu = arr; renderMenuGrid(); renderMenuOptions(); showToast('นำเข้าเมนูสำเร็จ'); } else throw new Error(); }
+          catch { showToast('ไฟล์ไม่ถูกต้อง', 'error'); }
+        };
+        reader.readAsText(f);
+      };
+      inp.click();
+    }
+
+    // ---------- Login logic ----------
+    function openLoginModal(){
+      qs('#loginModal').classList.remove('hidden');
+      qs('#loginForm').reset();
+    }
+
+    function closeLoginModal(){
+      qs('#loginModal').classList.add('hidden');
+    }
+
+    function handleLogin(e){
+      e.preventDefault();
+      const username = qs('#username').value.trim();
+      const password = qs('#password').value.trim();
+      if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
+        store.isAdmin = true;
+        qs('#adminControls').classList.remove('hidden');
+        qs('#loginBtn').textContent = 'ออกจากระบบ';
+        qs('#hamburgerLoginBtn').textContent = 'ออกจากระบบ';
+        qs('#loginBtn').onclick = handleLogout;
+        qs('#hamburgerLoginBtn').onclick = handleLogout;
+        renderMenuGrid();
+        closeLoginModal();
+        closeHamburgerMenu();
+        showToast('เข้าสู่ระบบสำเร็จ');
+      } else {
+        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+      }
+    }
+
+    function handleLogout(){
+      store.isAdmin = false;
+      qs('#adminControls').classList.add('hidden');
+      qs('#loginBtn').textContent = 'เข้าสู่ระบบ';
+      qs('#hamburgerLoginBtn').textContent = 'เข้าสู่ระบบ';
+      qs('#loginBtn').onclick = openLoginModal;
+      qs('#hamburgerLoginBtn').onclick = openLoginModal;
+      renderMenuGrid();
+      closeHamburgerMenu();
+      showToast('ออกจากระบบแล้ว');
+    }
+
+    // ---------- Cart Bottom Sheet ----------
+    function openCart(){
+      qs('#cartBottomSheet').classList.add('open');
+    }
+    function closeCart(){
+      qs('#cartBottomSheet').classList.remove('open');
+    }
+
+    // ---------- Hamburger Menu ----------
+    function openHamburgerMenu(){
+      qs('#hamburgerMenu').classList.remove('translate-x-full');
+    }
+    function closeHamburgerMenu(){
+      qs('#hamburgerMenu').classList.add('translate-x-full');
+    }
+
+    // ---------- Order Modal ----------
+    function openOrderModal(){
+      qs('#orderModal').classList.remove('hidden');
+      qs('#orderForm').reset();
+      qs('#selectedMenu').value = '';
+      qs('#price').value = '';
+      qs('#qty').value = '1';
+      qs('input[name="sweet"][value="50%"]').checked = true;
+      qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
+      qs('#deliveryAddress').value = store.savedAddress;
+      qs('#note').value = '';
+      qs('#cod').checked = true;
+      handleFulfillChange();
+      calcTotal();
+    }
+    function closeOrderModal(){
+      qs('#orderModal').classList.add('hidden');
+    }
+
+    // ---------- History Modal ----------
+    function openHistoryModal(){
+      renderOrderHistory();
+      qs('#historyModal').classList.remove('hidden');
+      closeHamburgerMenu();
+    }
+    function closeHistoryModal(){
+      qs('#historyModal').classList.add('hidden');
+    }
+
+    // ---------- Delivery Address Handling ----------
+    function handleFulfillChange(){
+      const fulfill = (qs('input[name="fulfill"]:checked')||{}).value || 'รับเองที่ร้าน';
+      const addressSection = qs('#deliveryAddressSection');
+      if(fulfill.includes('จัดส่ง')){
+        addressSection.classList.remove('hidden');
+        qs('#deliveryAddress').value = store.savedAddress;
+      } else {
+        addressSection.classList.add('hidden');
+      }
+    }
+
+    // ---------- Pull-to-Refresh ----------
+    function setupPullToRefresh(){
+      let startY = 0;
+      let isPulling = false;
+      const menuGrid = qs('#menuGrid');
+      menuGrid.addEventListener('touchstart', (e) => {
+        if(window.scrollY === 0) {
+          startY = e.touches[0].clientY;
+          isPulling = true;
+        }
+      });
+      menuGrid.addEventListener('touchmove', (e) => {
+        if(isPulling && e.touches[0].clientY - startY > 100) {
+          renderMenuGrid();
+          showToast('รีเฟรชเมนูแล้ว');
+          isPulling = false;
+        }
+      });
+      menuGrid.addEventListener('touchend', () => {
+        isPulling = false;
+      });
+    }
+
+    // ---------- Init ----------
+    function init(){
+      seedMenu();
+      renderMenuGrid();
+      renderMenuOptions();
+      renderCart();
+      if(store.isAdmin){
+        qs('#adminControls').classList.remove('hidden');
+        qs('#loginBtn').textContent = 'ออกจากระบบ';
+        qs('#hamburgerLoginBtn').textContent = 'ออกจากระบบ';
+        qs('#loginBtn').onclick = handleLogout;
+        qs('#hamburgerLoginBtn').onclick = handleLogout;
+      } else {
+        qs('#loginBtn').onclick = openLoginModal;
+        qs('#hamburgerLoginBtn').onclick = openLoginModal;
+      }
+      if(store.theme === 'light'){
+        document.body.classList.add('light-theme');
+        qs('#themeToggleBtn').textContent = 'โหมดมืด';
+        qs('#hamburgerThemeToggleBtn').textContent = 'โหมดมืด';
+      }
+
+      qs('#themeToggleBtn').onclick = toggleTheme;
+      qs('#hamburgerThemeToggleBtn').onclick = toggleTheme;
+      qs('#addMenuBtn').onclick = () => openMenuModal();
+      qs('#exportJsonBtn').onclick = exportJSON;
+      qs('#importJsonBtn').onclick = importJSON;
+      qs('#historyBtn').onclick = openHistoryModal;
+      qs('#hamburgerHistoryBtn').onclick = openHistoryModal;
+      qs('#closeHistoryModal').onclick = closeHistoryModal;
+      qs('#historyModal').addEventListener('click', (e) => { if(e.target === qs('#historyModal')) closeHistoryModal(); });
+
+      document.addEventListener('click', (e) => {
+        if (e.target.matches('.editMenu')){ openMenuModal(e.target.dataset.id); }
+        if (e.target.matches('.quickSelect')){ const id=e.target.dataset.id; openOrderModal(); qs('#selectedMenu').value=id; updatePriceFromSelect(); }
+        if (e.target.matches('.quickAdd')){ quickAddToCart(e.target.dataset.id); }
+        if (e.target.matches('.quickPreset')){ quickPresetAdd(e); }
+        if (e.target.matches('.qtyInc')) {
+          console.log('Increase button clicked', e.target.dataset.idx);
+          const idx = +e.target.dataset.idx;
+          if (store.cart[idx]) {
+            store.cart[idx].qty++;
+            saveCart();
+          } else {
+            console.error('Invalid cart index:', idx);
+          }
+        }
+        if (e.target.matches('.qtyDec')) {
+          console.log('Decrease button clicked', e.target.dataset.idx);
+          const idx = +e.target.dataset.idx;
+          if (store.cart[idx] && store.cart[idx].qty > 1) {
+            store.cart[idx].qty--;
+            saveCart();
+          } else {
+            console.error('Invalid cart index or qty:', idx, store.cart[idx]);
+          }
+        }
+        if (e.target.matches('.rmItem')) {
+          console.log('Remove button clicked', e.target.dataset.idx);
+          const idx = +e.target.dataset.idx;
+          if (store.cart[idx]) {
+            store.cart.splice(idx, 1);
+            saveCart();
+          } else {
+            console.error('Invalid cart index:', idx);
+          }
+        }
+      });
+
+      qs('#menuForm').onsubmit = upsertMenu;
+      qs('#deleteMenuBtn').onclick = deleteMenu;
+      qs('#closeMenuModal').onclick = closeMenuModal;
+      qs('#menuModal').addEventListener('click', (e) => { if(e.target === qs('#menuModal')) closeMenuModal(); });
+      qs('#loginForm').onsubmit = handleLogin;
+      qs('#closeLoginModal').onclick = closeLoginModal;
+      qs('#loginModal').addEventListener('click', (e) => { if(e.target === qs('#loginModal')) closeLoginModal(); });
+      qs('#orderForm').onsubmit = (e) => { e.preventDefault(); addToCart(); };
+      qs('#selectedMenu').onchange = updatePriceFromSelect;
+      qs('#qtyPlus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)+1); calcTotal(); };
+      qs('#qtyMinus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)-1); calcTotal(); };
+      qs('#qty').oninput = calcTotal; qs('#price').oninput = calcTotal; calcTotal();
+      qs('#addToCartBtn').onclick = addToCart;
+      qs('#placeOrderBtn').onclick = openConfirmOrderModal;
+      qs('#bottomSheetPlaceOrderBtn').onclick = openConfirmOrderModal;
+      qs('#floatingOrderBtn').onclick = openConfirmOrderModal;
+      qs('#confirmOrderBtn').onclick = () => {
+        console.log('Confirm button clicked');
+        placeOrder();
+      };
+      qs('#cancelConfirmBtn').onclick = () => {
+        console.log('Cancel button clicked');
+        qs('#confirmOrderModal').classList.add('hidden');
+      };
+      qs('#confirmOrderModal').addEventListener('click', (e) => { if(e.target === qs('#confirmOrderModal')) qs('#confirmOrderModal').classList.add('hidden'); });
+      qs('#searchInput').oninput = renderMenuGrid;
+      qs('#categoryFilter').onchange = renderMenuGrid;
+      qs('#sortFilter').onchange = renderMenuGrid;
+      qsa('input[name="fulfill"]').forEach(el => el.addEventListener('change', handleFulfillChange));
+      qs('#openOrderModalBtn').onclick = openOrderModal;
+      qs('#closeOrderModal').onclick = closeOrderModal;
+      qs('#orderModal').addEventListener('click', (e) => { if(e.target === qs('#orderModal')) closeOrderModal(); });
+      handleFulfillChange();
+      qs('#openCartBtn').onclick = openCart;
+      qs('#closeCartBtn').onclick = closeCart;
+      qs('#clearCartBtn').onclick = clearCart;
+      qs('#bottomSheetClearCartBtn').onclick = clearCart;
+      qs('#openHamburgerBtn').onclick = openHamburgerMenu;
+      qs('#closeHamburgerBtn').onclick = closeHamburgerMenu;
+      qs('#hamburgerMenu').addEventListener('click', (e) => { if(e.target === qs('#hamburgerMenu')) closeHamburgerMenu(); });
+
+      setupPullToRefresh();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
