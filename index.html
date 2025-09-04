@@ -476,69 +476,69 @@
     function seedMenu(){
       if(store.menu.length) return;
       store.menu = [
-					{
-					"id": uid(),
-					"name": "ชานมเย็น",
-					"price": 25,
-					"category": "ชา",
-					"image": ""
-					},
-				  {
-					"id": uid(),
-					"name": "ชาเขียวเย็น",
-					"price": 25,
-					"category": "ชา",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "โกโก้เย็น",
-					"price": 25,
-					"category": "โกโก้",
-					"image": "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop"
-				  },
-				  {
-					"id": uid(),
-					"name": "ชามะนาวเย็น",
-					"price": 25,
-					"category": "ชา",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "เนสกาแฟเย็น",
-					"price": 25,
-					"category": "กาแฟ",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "โอเลี้ยง",
-					"price": 25,
-					"category": "กาแฟ",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "นมชมพู",
-					"price": 25,
-					"category": "นม",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "ชานมเผือกเย็น",
-					"price": 25,
-					"category": "ชา",
-					"image": ""
-				  },
-				  {
-					"id": uid(),
-					"name": "พั้นช์",
-					"price": 25,
-					"category": "เครื่องดื่มเย็น",
-					"image": ""
-				  }
+            {
+            "id": uid(),
+            "name": "ชานมเย็น",
+            "price": 25,
+            "category": "ชา",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "ชาเขียวเย็น",
+            "price": 25,
+            "category": "ชา",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "โกโก้เย็น",
+            "price": 25,
+            "category": "โกโก้",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "ชามะนาวเย็น",
+            "price": 25,
+            "category": "ชา",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "เนสกาแฟเย็น",
+            "price": 25,
+            "category": "กาแฟ",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "โอเลี้ยง",
+            "price": 25,
+            "category": "กาแฟ",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "นมชมพู",
+            "price": 25,
+            "category": "นม",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "ชานมเผือกเย็น",
+            "price": 25,
+            "category": "ชา",
+            "image": ""
+            },
+            {
+            "id": uid(),
+            "name": "พั้นช์",
+            "price": 25,
+            "category": "เครื่องดื่มเย็น",
+            "image": ""
+            }
       ];
     }
 	
@@ -590,7 +590,7 @@
       wrap.innerHTML = filtered.map(m=>`
         <div class="glass rounded-2xl overflow-hidden menu-card transition-all duration-300">
           <div class="h-48 bg-slate-800 overflow-hidden relative">
-            <img src="${m.image||'https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1200&auto=format&fit=crop'}" alt="${m.name}" class="w-full h-full object-cover"/>
+            <img src="${m.image||'https://www.placeholderimage.online/placeholder/420/310/f3f4f6/1f2937?font=Lato.svg'}" alt="${m.name}" class="w-full h-full object-cover"/>
             <div class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
               <div class="text-center text-white text-sm p-2">
                 <div class="font-semibold">${m.name}</div>
