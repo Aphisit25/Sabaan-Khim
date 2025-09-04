@@ -10,127 +10,143 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Noto Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "Arial", "sans-serif"] },
+          fontFamily: {
+            sans: ["Prompt", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Noto Sans", "Ubuntu", "Cantarell", "Helvetica Neue", "Arial", "sans-serif"],
+          },
           colors: {
             brand: {
-              50: '#f3faf7', 100: '#d8f5ea', 200: '#b2ebd6', 300: '#87e0c0', 400: '#5ad6aa', 500: '#32cc97', 600: '#23a97c', 700: '#1b8563', 800: '#15684f', 900: '#114f3d'
+              50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a'
             },
             tea: {
-              50: '#faf7f2', 100: '#f5ecdf', 200: '#ead6b6', 300: '#deb989', 400: '#d29b5f', 500: '#c67e38', 600: '#a4632b', 700: '#834b21', 800: '#65381a', 900: '#4b2a13'
+              50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12'
             }
           },
           boxShadow: {
-            glow: '0 10px 30px -12px rgba(17, 79, 61, .45)',
-            'glow-lg': '0 15px 40px -10px rgba(17, 79, 61, .6)'
+            'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+            'elevated': '0 8px 32px rgba(0, 0, 0, 0.1)',
+            'glow': '0 0 15px rgba(20, 184, 166, 0.3)',
           },
           animation: {
-            'fade-in': 'fadeIn 0.3s ease-out',
-            'scale-up': 'scaleUp 0.2s ease-out',
-            'slide-up': 'slideUp 0.3s ease-out'
+            'fade-in': 'fadeIn 0.4s ease-out',
+            'slide-in': 'slideIn 0.3s ease-out',
+            'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'slide-up': 'slideUp 0.3s ease-out',
           },
           keyframes: {
             fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-            scaleUp: { '0%': { transform: 'scale(0.95)' }, '100%': { transform: 'scale(1)' } },
-            slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } }
+            slideIn: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } },
+            pulse: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0.5' } },
           }
         }
       }
     }
   </script>
-  <!-- Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Prompt font for Thai typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: radial-gradient(1200px 600px at 10% -10%, rgba(50,204,151,.12), transparent),
-                  radial-gradient(1000px 500px at 110% 10%, rgba(198,126,56,.12), transparent),
-                  linear-gradient(180deg, #0b1220 0%, #0b1220 30%, #0e1828 100%);
+      background: linear-gradient(135deg, #f0fdfa 0%, #e5e7eb 100%);
       scroll-behavior: smooth;
       overscroll-behavior: none;
+      font-size: 16px;
     }
-    body.light-theme {
-      background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+    .glass {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1rem;
     }
-    .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09); }
-    .glass-light { backdrop-filter: blur(10px); background: rgba(255,255,255,.7); }
-    .light-theme .glass { background: rgba(255,255,255,.8); border: 1px solid rgba(0,0,0,.1); }
-    .light-theme .glass-light { background: rgba(255,255,255,.9); }
-    .light-theme .text-slate-100 { color: #1f2937; }
-    .light-theme .text-slate-200 { color: #4b5563; }
-    .light-theme .text-slate-300 { color: #6b7280; }
-    .light-theme .text-white { color: #111827; }
-    .light-theme #cartBottomSheet { background: rgba(255,255,255,.95); }
-    .light-theme #cartBottomSheet .text-slate-300 { color: #6b7280; }
-    .light-theme #cartBottomSheet .border-b, .light-theme #cartBottomSheet .border-t { border-color: rgba(0,0,0,.1); }
-    .light-theme #cartBottomSheet .divide-y > * + * { border-color: rgba(0,0,0,.1); }
-    input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
-    .menu-card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px -10px rgba(17, 79, 61, .6); }
-    .menu-card img { transition: transform 0.3s ease; }
-    .menu-card:hover img { transform: scale(1.1); }
-    .premium-select { animation: scale-up 0.2s ease-out; }
-    .premium-select-selected { background: rgba(50,204,151,.2); }
-    .filter-input::placeholder { color: rgba(15,23,42,.5); }
-    .light-theme .filter-input::placeholder { color: rgba(75,85,99,.5); }
-    input[name="sweet"]:checked + span { background: #dc2626; color: white; }
-    input[name="fulfill"]:checked + span { background: #dc2626; color: white; }
-    .qtyInc, .qtyDec, .rmItem { pointer-events: auto; z-index: 10; }
-    #confirmOrderBtn, #cancelConfirmBtn, #addToCartBtn, #floatingOrderBtn {
-      min-height: 48px;
-      touch-action: manipulation;
-      pointer-events: auto;
-      z-index: 10;
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    #hamburgerMenu, #orderModal {
-      transition: transform 0.3s ease-in-out;
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
-    #cartBottomSheet {
-      transition: transform 0.3s ease-in-out;
+    .btn-primary {
+      background: linear-gradient(90deg, #14b8a6, #0d9488);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #0d9488, #14b8a6);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: linear-gradient(90deg, #eab308, #ca8a04);
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background: linear-gradient(90deg, #ca8a04, #eab308);
+      transform: translateY(-2px);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      ring: 2px solid #14b8a6;
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+    }
+    .menu-card img {
+      transition: transform 0.4s ease;
+    }
+    .menu-card:hover img {
+      transform: scale(1.05);
     }
     @media (max-width: 640px) {
-      #confirmOrderModal > div, #orderModal > div {
-        max-width: 100%;
-        margin: 0 8px;
-        padding: 16px;
+      .modal {
         animation: slide-up 0.3s ease-out;
+        margin: 0;
+        border-radius: 1rem 1rem 0 0;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      #orderModal {
+        align-items: flex-end;
       }
       #cartBottomSheet {
         width: 100%;
-        max-height: 80vh;
+        max-height: 85vh;
         transform: translateY(100%);
+        transition: transform 0.4s ease-in-out;
       }
       #cartBottomSheet.open {
         transform: translateY(0);
       }
       .text-sm {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
       }
       .px-4 {
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-left: 20px;
+        padding-right: 20px;
       }
       .py-2 {
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-top: 16px;
+        padding-bottom: 16px;
       }
-      #hamburgerMenu {
-        width: 75%;
-        max-width: 300px;
+      .btn-primary, .btn-secondary, .quickPreset {
+        padding: 16px;
+        font-size: 1rem;
       }
-      #orderModal .sticky-cta {
-        position: sticky;
-        bottom: 0;
-        background: inherit;
-        padding: 12px;
-        margin: -16px -16px 0;
-        border-top: 1px solid rgba(255,255,255,.1);
+      select, input, textarea {
+        font-size: 1rem;
+        padding: 14px;
       }
-      .light-theme #orderModal .sticky-cta {
-        border-top: 1px solid rgba(0,0,0,.1);
+      .quantity-control button {
+        width: 56px;
+        height: 56px;
       }
+    }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
     }
   </style>
 </head>
-<body class="font-sans text-slate-100 min-h-screen">
+<body class="font-sans text-gray-900 min-h-screen">
   <!-- App Config -->
   <script>
     const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
@@ -139,29 +155,34 @@
   </script>
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 shadow-glow">
-    <div class="glass backdrop-blur supports-[backdrop-filter]:glass border-b border-white/10">
-      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-tea-500/90 flex items-center justify-center shadow-glow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white"><path d="M3 3h14a1 1 0 011 1v5a5 5 0 005 5h-1a6 6 0 01-6 6H9a6 6 0 01-6-6V4a1 1 0 011-1zm15 6V5H5v7a4 4 0 004 4h6a4 4 0 004-4V9zm2 0a3 3 0 002-2.236V11a3 3 0 01-2-2z"/></svg>
+  <header class="sticky top-0 z-40 shadow-soft">
+    <div class="glass backdrop-blur border-b border-gray-200/50">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-tea-500 flex items-center justify-center shadow-glow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
+            <path d="M3 3h14a1 1 0 011 1v5a5 5 0 005 5h-1a6 6 0 01-6 6H9a6 6 0 01-6-6V4a1 1 0 011-1zm15 6V5H5v7a4 4 0 004 4h6a4 4 0 004-4V9zm2 0a3 3 0 002-2.236V11a3 3 0 01-2-2z"/>
+          </svg>
         </div>
         <div class="flex-1">
-          <h1 class="text-lg md:text-xl font-semibold tracking-tight">ชาบ้านน้องขิม</h1>
-          <p class="text-xs text-slate-300/80 -mt-0.5">สั่งง่าย จ่ายปลายทาง</p>
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-gray-900">ชาบ้านน้องขิม</h1>
+          <p class="text-sm text-gray-500">สั่งง่าย ส่งไว อร่อยทุกแก้ว</p>
         </div>
         <div class="flex items-center gap-3">
-          <button id="openCartBtn" class="relative px-3 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[.99] transition shadow-glow min-w-[48px] min-h-[48px]">
-            <span class="text-sm font-semibold md:inline hidden">ตะกร้า</span>
-            <svg class="md:hidden w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            <span id="cartCountBadge" class="absolute -top-1 -right-1 text-[10px] bg-tea-500 text-white rounded-full w-5 h-5 grid place-content-center shadow">0</span>
+          <button id="openCartBtn" class="relative p-3 rounded-full bg-brand-600 hover:bg-brand-500 transition shadow-glow">
+            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span id="cartCountBadge" class="absolute -top-1 -right-1 text-xs bg-tea-500 text-white rounded-full w-5 h-5 grid place-content-center shadow">0</span>
           </button>
-          <button id="openHamburgerBtn" class="md:hidden px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition min-w-[48px] min-h-[48px]">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <button id="openHamburgerBtn" class="md:hidden p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+            <svg class="w-6 h-6 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
           <div class="hidden md:flex items-center gap-3">
-            <button id="themeToggleBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">สลับโหมด</button>
-            <button id="loginBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">เข้าสู่ระบบ</button>
-            <button id="historyBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm">ประวัติการสั่งซื้อ</button>
+            <button id="themeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">สลับโหมด</button>
+            <button id="loginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">เข้าสู่ระบบ</button>
+            <button id="historyBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ประวัติการสั่งซื้อ</button>
           </div>
         </div>
       </div>
@@ -169,47 +190,47 @@
   </header>
 
   <!-- Hamburger Menu Drawer -->
-  <div id="hamburgerMenu" class="fixed inset-y-0 right-0 w-full max-w-xs bg-slate-900/95 backdrop-blur border-l border-white/10 translate-x-full transition-transform z-50 flex flex-col md:hidden">
-    <div class="p-4 flex items-center justify-between border-b border-white/10">
-      <h3 class="text-lg font-semibold">เมนู</h3>
-      <button id="closeHamburgerBtn" class="text-slate-300 hover:text-white">✕</button>
+  <div id="hamburgerMenu" class="fixed inset-y-0 right-0 w-3/4 max-w-sm bg-white/95 backdrop-blur border-l border-gray-200 translate-x-full transition-transform z-50 flex flex-col md:hidden">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">เมนู</h3>
+      <button id="closeHamburgerBtn" class="text-gray-500 hover:text-gray-900">✕</button>
     </div>
     <div class="p-4 flex flex-col gap-3">
-      <button id="hamburgerThemeToggleBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">สลับโหมด</button>
-      <button id="hamburgerLoginBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">เข้าสู่ระบบ</button>
-      <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition text-sm text-left">ประวัติการสั่งซื้อ</button>
+      <button id="hamburgerThemeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">สลับโหมด</button>
+      <button id="hamburgerLoginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">เข้าสู่ระบบ</button>
+      <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">ประวัติการสั่งซื้อ</button>
     </div>
   </div>
 
-  <main class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Menu & Admin panel column -->
     <section class="lg:col-span-2 space-y-6">
       <!-- Admin Controls -->
-      <div id="adminControls" class="glass rounded-2xl p-4 hidden">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 class="text-base md:text-lg font-semibold">จัดการเมนู</h2>
-          <div class="flex items-center gap-2">
-            <button id="addMenuBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">+ เพิ่มเมนู</button>
-            <button id="importJsonBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">นำเข้า JSON</button>
-            <button id="exportJsonBtn" class="px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white transition">ส่งออก JSON</button>
+      <div id="adminControls" class="glass rounded-xl p-6 hidden shadow-soft">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-lg font-semibold text-gray-900">จัดการเมนู</h2>
+          <div class="flex items-center gap-3">
+            <button id="addMenuBtn" class="px-4 py-2 rounded-full bg-brand-600 hover:bg-brand-500 text-white transition text-sm font-medium">+ เพิ่มเมนู</button>
+            <button id="importJsonBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">นำเข้า JSON</button>
+            <button id="exportJsonBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ส่งออก JSON</button>
           </div>
         </div>
-        <p class="text-xs text-slate-300 mt-1">เพิ่ม/ลบ/แก้ไขเมนูได้ — จัดเก็บในเบราว์เซอร์ (LocalStorage)</p>
+        <p class="text-sm text-gray-500 mt-2">จัดการเมนูของคุณได้อย่างง่ายดาย เก็บข้อมูลใน LocalStorage</p>
       </div>
 
       <!-- Menu Filters -->
-      <div class="glass rounded-2xl p-4 shadow-glow animate-fade-in">
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="relative flex-1 min-w-[200px]">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-900/50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="glass rounded-xl p-6 shadow-soft animate-fade-in">
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="relative flex-1 min-w-[240px]">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-2 glass-light text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 filter-input" />
+            <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-3 bg-white/80 text-gray-900 rounded-xl focus:ring-2 focus:ring-brand-500 transition" />
           </div>
-          <select id="categoryFilter" class="glass-light text-slate-900 rounded-xl px-3 py-2 hover:bg-slate-200/30 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <select id="categoryFilter" class="bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition">
             <option value="">ทุกหมวดหมู่</option>
           </select>
-          <select id="sortFilter" class="glass-light text-slate-900 rounded-xl px-3 py-2 hover:bg-slate-200/30 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <select id="sortFilter" class="bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition">
             <option value="">เรียงตามปกติ</option>
             <option value="price-asc">ราคา: น้อย → มาก</option>
             <option value="price-desc">ราคา: มาก → น้อย</option>
@@ -220,196 +241,223 @@
       </div>
 
       <!-- Menu Grid -->
-      <div id="menuGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      <div id="menuGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
     </section>
 
     <!-- Cart Panel (Desktop Only) -->
     <aside class="lg:col-span-1 space-y-6 hidden lg:block">
-      <div class="glass rounded-2xl p-4 animate-fade-in">
-        <h3 class="text-base md:text-lg font-semibold">ตะกร้าของฉัน</h3>
-        <div id="cartList" class="divide-y divide-white/5 my-3"></div>
-        <div class="flex items-center justify-between text-sm">
+      <div class="glass rounded-xl p-6 shadow-soft animate-fade-in">
+        <h3 class="text-lg font-semibold text-gray-900">ตะกร้าของฉัน</h3>
+        <div id="cartList" class="divide-y divide-gray-200 my-4"></div>
+        <div class="flex items-center justify-between text-sm font-medium">
           <span>รวมทั้งสิ้น</span>
-          <span id="cartGrandTotal" class="font-semibold text-white">฿0.00</span>
+          <span id="cartGrandTotal" class="font-bold text-gray-900">฿0.00</span>
         </div>
-        <div class="flex gap-2 mt-3">
-          <button id="clearCartBtn" class="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold shadow-glow-lg">ล้างตะกร้า</button>
-          <button id="placeOrderBtn" class="flex-1 px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg">กดสั่งออร์เดอร์</button>
+        <div class="flex gap-3 mt-4">
+          <button id="clearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
+          <button id="placeOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
         </div>
-        <p class="text-[11px] text-slate-300 mt-2">*ไม่มีค่าจัดส่ง</p>
+        <p class="text-xs text-gray-500 mt-2">*ไม่มีค่าจัดส่ง</p>
       </div>
     </aside>
 
     <!-- Order Button (Mobile Only) -->
-    <button id="openOrderModalBtn" class="md:hidden fixed bottom-16 right-4 px-4 py-3 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-glow-lg z-30 min-w-[48px] min-h-[48px]">
-      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+    <button id="openOrderModalBtn" class="md:hidden fixed bottom-20 right-4 p-4 rounded-full bg-brand-600 hover:bg-brand-500 text-white shadow-glow z-30">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
     </button>
 
     <!-- Floating Order Button (Mobile Only) -->
-    <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 px-4 py-3 rounded-full bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg z-30 min-w-[48px] min-h-[48px]">
-      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+    <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 p-4 rounded-full btn-secondary text-white shadow-glow z-30">
+      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
     </button>
   </main>
 
   <!-- Order Modal -->
-  <div id="orderModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
-    <div class="w-full max-w-lg glass rounded-2xl p-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">สั่งเครื่องดื่ม</h3>
-        <button id="closeOrderModal" class="text-slate-300 hover:text-white">✕</button>
+  <div id="orderModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-end p-0 md:p-4 md:place-items-center">
+    <div class="w-full max-w-md glass rounded-xl p-6 md:p-8 modal max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">สั่งเครื่องดื่ม</h3>
+        <button id="closeOrderModal" class="text-gray-500 hover:text-gray-900 text-2xl p-3">✕</button>
       </div>
-      <form id="orderForm" class="mt-3 grid gap-3">
+      <form id="orderForm" class="grid gap-6">
         <!-- Quick Order Presets -->
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" class="quickPreset px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white text-sm" data-menu="ชานม" data-price="35" data-sweet="50%" data-fulfill="รับเองที่ร้าน">ชานม หวาน 50%</button>
-          <button type="button" class="quickPreset px-3 py-2 rounded-xl bg-slate-200/90 text-slate-900 hover:bg-white text-sm" data-menu="ชาเขียว" data-price="35" data-sweet="25%" data-fulfill="รับเองที่ร้าน">ชาเขียว หวาน 25%</button>
+        <div class="grid grid-cols-2 gap-4">
+          <button type="button" class="quickPreset px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-base font-medium transition-transform transform active:scale-95" data-menu="ชานม" data-price="35" data-sweet="50%" data-fulfill="รับเองที่ร้าน">ชานม หวาน 50%</button>
+          <button type="button" class="quickPreset px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-base font-medium transition-transform transform active:scale-95" data-menu="ชาเขียว" data-price="35" data-sweet="25%" data-fulfill="รับเองที่ร้าน">ชาเขียว หวาน 25%</button>
         </div>
         <div>
-          <label class="text-sm">เลือกเมนู</label>
-          <select id="selectedMenu" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 premium-select"></select>
+          <label class="text-base font-medium text-gray-700">เลือกเมนู</label>
+          <select id="selectedMenu" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base">
+            <option value="">— เลือกเมนู —</option>
+          </select>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm">ราคา / แก้ว (฿)</label>
-            <input id="price" type="number" min="0" step="0.5" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select" placeholder="เช่น 35.00" />
+            <label class="text-base font-medium text-gray-700">ราคา / แก้ว (฿)</label>
+            <input id="price" type="number" min="0" step="0.5" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base" placeholder="เช่น 35.00" />
           </div>
           <div>
-            <label class="text-sm">จำนวน</label>
-            <div class="mt-1 flex items-center rounded-xl overflow-hidden glass-light premium-select">
-              <button type="button" id="qtyMinus" class="w-10 h-10 grid place-content-center hover:bg-slate-200/30 transition">−</button>
-              <input id="qty" type="number" value="1" min="1" class="w-full text-center bg-transparent text-slate-900" placeholder="1" />
-              <button type="button" id="qtyPlus" class="w-10 h-10 grid place-content-center hover:bg-slate-200/30 transition">+</button>
+            <label class="text-base font-medium text-gray-700">จำนวน</label>
+            <div class="mt-2 flex items-center rounded-xl overflow-hidden bg-white/80">
+              <button type="button" id="qtyMinus" class="quantity-control w-16 h-16 grid place-content-center hover:bg-gray-200 transition text-xl">−</button>
+              <input id="qty" type="number" value="1" min="1" class="w-full text-center bg-transparent text-gray-900 text-base py-4" placeholder="1" />
+              <button type="button" id="qtyPlus" class="quantity-control w-16 h-16 grid place-content-center hover:bg-gray-200 transition text-xl">+</button>
             </div>
           </div>
         </div>
         <div>
-          <label class="text-sm">ความหวาน</label>
-          <div class="mt-1 grid grid-cols-5 gap-2 text-slate-900">
-            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="0%" class="sr-only" checked/><span>0%</span></label>
-            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="25%" class="sr-only"/><span>25%</span></label>
-            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="50%" class="sr-only"/><span>50%</span></label>
-            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="75%" class="sr-only"/><span>75%</span></label>
-            <label class="glass-light rounded-xl px-2 py-2 text-center text-sm cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="sweet" value="100%" class="sr-only"/><span>100%</span></label>
+          <label class="text-base font-medium text-gray-700">ความหวาน</label>
+          <div class="mt-2 grid grid-cols-5 gap-3">
+            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="0%" class="sr-only" checked/>
+              <span>0%</span>
+            </label>
+            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="25%" class="sr-only"/>
+              <span>25%</span>
+            </label>
+            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="50%" class="sr-only"/>
+              <span>50%</span>
+            </label>
+            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="75%" class="sr-only"/>
+              <span>75%</span>
+            </label>
+            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="100%" class="sr-only"/>
+              <span>100%</span>
+            </label>
           </div>
         </div>
         <div>
-          <label class="text-sm">วิธีรับสินค้า</label>
-          <div class="mt-1 grid grid-cols-2 gap-2 text-slate-900">
-            <label class="glass-light rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="fulfill" value="รับเองที่ร้าน" class="accent-tea-600" checked/><span class="text-sm">รับเอง</span></label>
-            <label class="glass-light rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-200/30 transition"><input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-tea-600"/><span class="text-sm">จัดส่ง (ฟรี)</span></label>
+          <label class="text-base font-medium text-gray-700">วิธีรับสินค้า</label>
+          <div class="mt-2 grid grid-cols-2 gap-4">
+            <label class="bg-white/80 rounded-xl px-6 py-4 flex items-center gap-3 cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="fulfill" value="รับเองที่ร้าน" class="accent-brand-600 w-5 h-5" checked/>
+              <span class="text-base">รับเอง</span>
+            </label>
+            <label class="bg-white/80 rounded-xl px-6 py-4 flex items-center gap-3 cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-brand-600 w-5 h-5"/>
+              <span class="text-base">จัดส่ง (ฟรี)</span>
+            </label>
           </div>
         </div>
         <div id="deliveryAddressSection" class="hidden">
-          <label class="text-sm">ที่อยู่จัดส่ง</label>
-          <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select"></textarea>
-          <div class="flex items-center gap-2 mt-1">
-            <input id="saveAddress" type="checkbox" class="accent-brand-600" />
-            <label for="saveAddress" class="text-sm">บันทึกที่อยู่</label>
+          <label class="text-base font-medium text-gray-700">ที่อยู่จัดส่ง</label>
+          <textarea id="deliveryAddress" rows="4" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
+          <div class="flex items-center gap-3 mt-3">
+            <input id="saveAddress" type="checkbox" class="accent-brand-600 w-5 h-5" />
+            <label for="saveAddress" class="text-base text-gray-700">บันทึกที่อยู่</label>
           </div>
         </div>
         <div>
-          <label class="text-sm">โน้ตถึงร้าน</label>
-          <textarea id="note" rows="3" placeholder="เช่น ไม่ใส่น้ำแข็ง, เพิ่มไข่มุก" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2 premium-select"></textarea>
+          <label class="text-base font-medium text-gray-700">โน้ตถึงร้าน</label>
+          <textarea id="note" rows="4" placeholder="เช่น ไม่ใส่น้ำแข็ง, เพิ่มไข่มุก" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
         </div>
-        <div class="flex items-center gap-2">
-          <input id="cod" type="checkbox" class="accent-brand-600" checked />
-          <label for="cod" class="text-sm">เก็บเงินปลายทาง</label>
+        <div class="flex items-center gap-3">
+          <input id="cod" type="checkbox" class="accent-brand-600 w-5 h-5" checked />
+          <label for="cod" class="text-base text-gray-700">เก็บเงินปลายทาง</label>
         </div>
-        <div class="flex items-center justify-between pt-2 sticky-cta">
-          <div class="text-sm text-slate-300">ยอดรวม: <span id="total" class="font-semibold text-white">฿0.00</span></div>
-          <button id="addToCartBtn" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[.99] transition shadow-glow-lg">เพิ่มลงตะกร้า</button>
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+          <div class="text-base text-gray-500">ยอดรวม: <span id="total" class="font-semibold text-gray-900">฿0.00</span></div>
+          <button id="addToCartBtn" class="px-6 py-4 rounded-xl btn-primary text-white text-base font-medium shadow-glow transition-transform transform active:scale-95">เพิ่มลงตะกร้า</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Other Modals -->
-  <div id="menuModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
-    <div class="w-full max-w-lg glass rounded-2xl p-4">
+  <div id="menuModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
+    <div class="w-full max-w-md glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
-        <h3 id="menuModalTitle" class="text-lg font-semibold">เพิ่มเมนู</h3>
-        <button id="closeMenuModal" class="text-slate-300 hover:text-white">✕</button>
+        <h3 id="menuModalTitle" class="text-lg font-semibold text-gray-900">เพิ่มเมนู</h3>
+        <button id="closeMenuModal" class="text-gray-500 hover:text-gray-900">✕</button>
       </div>
-      <form id="menuForm" class="mt-3 grid gap-3">
+      <form id="menuForm" class="mt-4 grid gap-4">
         <input type="hidden" id="menuId" />
         <div>
-          <label class="text-sm">ชื่อเมนู</label>
-          <input id="menuName" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น ชานม, ชาเขียว, โกโก้"/>
+          <label class="text-sm font-medium text-gray-700">ชื่อเมนู</label>
+          <input id="menuName" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชานม, ชาเขียว, โกโก้"/>
         </div>
         <div>
-          <label class="text-sm">ราคา (฿)</label>
-          <input id="menuPrice" type="number" step="0.5" min="0" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2"/>
+          <label class="text-sm font-medium text-gray-700">ราคา (฿)</label>
+          <input id="menuPrice" type="number" step="0.5" min="0" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition"/>
         </div>
         <div>
-          <label class="text-sm">หมวดหมู่</label>
-          <input id="menuCategory" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น ชา, กาแฟ, โกโก้"/>
+          <label class="text-sm font-medium text-gray-700">หมวดหมู่</label>
+          <input id="menuCategory" class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชา, กาแฟ, โกโก้"/>
         </div>
         <div>
-          <label class="text-sm">รูปภาพ (ลิงก์)</label>
-          <input id="menuImage" class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="https://...jpg"/>
+          <label class="text-sm font-medium text-gray-700">รูปภาพ (ลิงก์)</label>
+          <input id="menuImage" class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="https://...jpg"/>
         </div>
-        <div class="flex items-center justify-end gap-2 pt-1">
-          <button type="button" id="deleteMenuBtn" class="hidden px-3 py-2 rounded-xl bg-red-600/90 hover:bg-red-600">ลบ</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500">บันทึก</button>
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button type="button" id="deleteMenuBtn" class="hidden px-4 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium">ลบ</button>
+          <button type="submit" class="px-4 py-2 rounded-full btn-primary text-white font-medium">บันทึก</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="loginModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
-    <div class="w-full max-w-sm glass rounded-2xl p-4">
+  <div id="loginModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
+    <div class="w-full max-w-sm glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">เข้าสู่ระบบ (ผู้ดูแล)</h3>
-        <button id="closeLoginModal" class="text-slate-300 hover:text-white">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900">เข้าสู่ระบบ (ผู้ดูแล)</h3>
+        <button id="closeLoginModal" class="text-gray-500 hover:text-gray-900">✕</button>
       </div>
-      <form id="loginForm" class="mt-3 grid gap-3">
+      <form id="loginForm" class="mt-4 grid gap-4">
         <div>
-          <label class="text-sm">ชื่อผู้ใช้</label>
-          <input id="username" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="เช่น admin321"/>
+          <label class="text-sm font-medium text-gray-700">ชื่อผู้ใช้</label>
+          <input id="username" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น admin321"/>
         </div>
         <div>
-          <label class="text-sm">รหัสผ่าน</label>
-          <input id="password" type="password" required class="mt-1 w-full glass-light text-slate-900 rounded-xl px-3 py-2" placeholder="รหัสผ่าน"/>
+          <label class="text-sm font-medium text-gray-700">รหัสผ่าน</label>
+          <input id="password" type="password" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="รหัสผ่าน"/>
         </div>
-        <div class="flex items-center justify-end pt-1">
-          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500">เข้าสู่ระบบ</button>
+        <div class="flex items-center justify-end pt-2">
+          <button type="submit" class="px-4 py-2 rounded-full btn-primary text-white font-medium">เข้าสู่ระบบ</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="confirmOrderModal" class="hidden fixed inset-0 z-60 bg-black/50 grid place-items-center p-4">
-    <div class="w-full max-w-md glass rounded-2xl p-4">
+  <div id="confirmOrderModal" class="hidden fixed inset-0 z-60 bg-black/60 grid place-items-center p-4">
+    <div class="w-full max-w-md glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">ยืนยันการสั่งซื้อ</h3>
-        <button id="closeConfirmModal" class="text-slate-300 hover:text-white">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900">ยืนยันการสั่งซื้อ</h3>
+        <button id="closeConfirmModal" class="text-gray-500 hover:text-gray-900">✕</button>
       </div>
-      <div class="mt-3">
-        <p class="text-sm text-slate-200">ยืนยันการส่งออร์เดอร์นี้หรือไม่?</p>
-        <div id="confirmOrderSummary" class="mt-2 text-sm"></div>
-        <div class="flex items-center justify-end gap-2 mt-4">
-          <button id="cancelConfirmBtn" class="px-3 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 min-h-[48px]">ยกเลิก</button>
-          <button id="confirmOrderBtn" class="px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 min-h-[48px]">ยืนยัน</button>
+      <div class="mt-4">
+        <p class="text-sm text-gray-500">ยืนยันการส่งออร์เดอร์นี้หรือไม่?</p>
+        <div id="confirmOrderSummary" class="mt-3 text-sm text-gray-900"></div>
+        <div class="flex items-center justify-end gap-3 mt-4">
+          <button id="cancelConfirmBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium">ยกเลิก</button>
+          <button id="confirmOrderBtn" class="px-4 py-2 rounded-full btn-secondary text-white font-medium">ยืนยัน</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-black/50 grid place-items-center p-4">
-    <div class="w-full max-w-4xl glass rounded-2xl p-4">
+  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
+    <div class="w-full max-w-4xl glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">ประวัติการสั่งซื้อ</h3>
-        <button id="closeHistoryModal" class="text-slate-300 hover:text-white">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900">ประวัติการสั่งซื้อ</h3>
+        <button id="closeHistoryModal" class="text-gray-500 hover:text-gray-900">✕</button>
       </div>
-      <div class="mt-3 overflow-x-auto">
-        <table id="orderHistoryTable" class="w-full text-sm text-left text-slate-200">
+      <div class="mt-4 overflow-x-auto">
+        <table id="orderHistoryTable" class="w-full text-sm text-left text-gray-900">
           <thead>
-            <tr class="border-b border-slate-600/50">
-              <th class="py-2 px-3">ออร์เดอร์</th>
-              <th class="py-2 px-3">วันที่</th>
-              <th class="py-2 px-3">รายการ</th>
-              <th class="py-2 px-3">ยอดรวม</th>
-              <th class="py-2 px-3">ที่อยู่</th>
+            <tr class="border-b border-gray-200">
+              <th class="py-3 px-4">ออร์เดอร์</th>
+              <th class="py-3 px-4">วันที่</th>
+              <th class="py-3 px-4">รายการ</th>
+              <th class="py-3 px-4">ยอดรวม</th>
+              <th class="py-3 px-4">ที่อยู่</th>
             </tr>
           </thead>
           <tbody id="orderHistoryBody"></tbody>
@@ -419,17 +467,20 @@
   </div>
 
   <!-- Cart Bottom Sheet (Mobile Only) -->
-  <div id="cartBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 w-full bg-slate-900/95 backdrop-blur rounded-t-2xl shadow-glow-lg translate-y-full transition-transform z-50 flex flex-col">
-    <div class="p-4 flex items-center justify-between border-b border-white/10">
-      <h3 class="text-lg font-semibold">ตะกร้า</h3>
-      <button id="closeCartBtn" class="text-slate-300 hover:text-white">✕</button>
+  <div id="cartBottomSheet" class="md:hidden fixed inset-x-0 bottom-0 w-full bg-white/95 backdrop-blur rounded-t-xl shadow-glow translate-y-full transition-transform z-50 flex flex-col">
+    <div class="p-4 flex items-center justify-between border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">ตะกร้า</h3>
+      <button id="closeCartBtn" class="text-gray-500 hover:text-gray-900">✕</button>
     </div>
-    <div id="cartBottomSheetList" class="flex-1 overflow-y-auto p-4 divide-y divide-white/5"></div>
-    <div class="p-4 border-t border-white/10 space-y-2">
-      <div class="flex items-center justify-between text-sm"><span>รวม</span><span id="bottomSheetTotal" class="font-semibold">฿0.00</span></div>
-      <div class="flex gap-2">
-        <button id="bottomSheetClearCartBtn" class="flex-1 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold shadow-glow-lg">ล้างตะกร้า</button>
-        <button id="bottomSheetPlaceOrderBtn" class="flex-1 px-4 py-2 rounded-xl bg-tea-500 hover:bg-tea-400 text-white font-semibold shadow-glow-lg">สั่งออร์เดอร์</button>
+    <div id="cartBottomSheetList" class="flex-1 overflow-y-auto p-4 divide-y divide-gray-200"></div>
+    <div class="p-4 border-t border-gray-200 space-y-3">
+      <div class="flex items-center justify-between text-sm font-medium">
+        <span>รวม</span>
+        <span id="bottomSheetTotal" class="font-bold text-gray-900">฿0.00</span>
+      </div>
+      <div class="flex gap-3">
+        <button id="bottomSheetClearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
+        <button id="bottomSheetPlaceOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
       </div>
     </div>
   </div>
@@ -446,10 +497,11 @@
 
     function showToast(msg, type="info"){
       const t = qs('#toast');
-      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl shadow-glow text-sm ${type==='error' ? 'bg-red-600' : 'bg-brand-600'}`;
+      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-full shadow-glow text-sm font-medium ${type==='error' ? 'bg-red-600 text-white' : 'bg-brand-600 text-white'}`;
       t.textContent = msg;
       t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 2200);
+      setTimeout(() => t.classList.add('hidden'), 3000);
+      if ('vibrate' in navigator) navigator.vibrate(50); // Haptic feedback
     }
 
     // ---------- State ----------
@@ -464,7 +516,7 @@
       set orders(v){ localStorage.setItem('orders', JSON.stringify(v)); },
       get savedAddress(){ return localStorage.getItem('savedAddress')||''; },
       set savedAddress(v){ localStorage.setItem('savedAddress', v); },
-      get theme(){ return localStorage.getItem('theme')||'dark'; },
+      get theme(){ return localStorage.getItem('theme')||'light'; },
       set theme(v){ localStorage.setItem('theme', v); }
     };
 
@@ -476,72 +528,17 @@
     function seedMenu(){
       if(store.menu.length) return;
       store.menu = [
-            {
-            "id": uid(),
-            "name": "ชานมเย็น",
-            "price": 25,
-            "category": "ชา",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "ชาเขียวเย็น",
-            "price": 25,
-            "category": "ชา",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "โกโก้เย็น",
-            "price": 25,
-            "category": "โกโก้",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "ชามะนาวเย็น",
-            "price": 25,
-            "category": "ชา",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "เนสกาแฟเย็น",
-            "price": 25,
-            "category": "กาแฟ",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "โอเลี้ยง",
-            "price": 25,
-            "category": "กาแฟ",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "นมชมพู",
-            "price": 25,
-            "category": "นม",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "ชานมเผือกเย็น",
-            "price": 25,
-            "category": "ชา",
-            "image": ""
-            },
-            {
-            "id": uid(),
-            "name": "พั้นช์",
-            "price": 25,
-            "category": "เครื่องดื่มเย็น",
-            "image": ""
-            }
+        { id: uid(), name: "ชานมเย็น", price: 25, category: "ชา", image: "" },
+        { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "" },
+        { id: uid(), name: "โกโก้เย็น", price: 25, category: "โกโก้", image: "" },
+        { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "" },
+        { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "" },
+        { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "" },
+        { id: uid(), name: "นมชมพู", price: 25, category: "นม", image: "" },
+        { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "" },
+        { id: uid(), name: "พั้นช์", price: 25, category: "เครื่องดื่มเย็น", image: "" }
       ];
     }
-	
 
     // ---------- Theme Toggle ----------
     function toggleTheme(){
@@ -549,8 +546,9 @@
       const isLight = store.theme === 'light';
       store.theme = isLight ? 'dark' : 'light';
       body.classList.toggle('light-theme', store.theme === 'light');
-      qs('#themeToggleBtn').textContent = isLight ? 'สลับโหมด' : 'โหมดมืด';
-      qs('#hamburgerThemeToggleBtn').textContent = isLight ? 'สลับโหมด' : 'โหมดมืด';
+      qs('#themeToggleBtn').textContent = isLight ? 'โหมดมืด' : 'โหมดสว่าง';
+      qs('#hamburgerThemeToggleBtn').textContent = isLight ? 'โหมดมืด' : 'โหมดสว่าง';
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
 
     // ---------- Menu rendering ----------
@@ -586,29 +584,24 @@
           return 0;
         });
       }
-      if(!filtered.length){ wrap.innerHTML = `<div class="col-span-full text-center text-slate-300">ไม่มีเมนูที่ตรงกัน</div>`; return; }
+      if(!filtered.length){ wrap.innerHTML = `<div class="col-span-full text-center text-gray-500 py-6">ไม่มีเมนูที่ตรงกัน</div>`; return; }
       wrap.innerHTML = filtered.map(m=>`
-        <div class="glass rounded-2xl overflow-hidden menu-card transition-all duration-300">
-          <div class="h-48 bg-slate-800 overflow-hidden relative">
-            <img src="${m.image||'https://www.placeholderimage.online/placeholder/420/310/f3f4f6/1f2937?font=Lato.svg'}" alt="${m.name}" class="w-full h-full object-cover"/>
-            <div class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-              <div class="text-center text-white text-sm p-2">
-                <div class="font-semibold">${m.name}</div>
-                <div>${m.category||'-'}</div>
-                <div>${money(m.price)}</div>
-              </div>
-            </div>
+        <div class="glass rounded-xl overflow-hidden card-hover shadow-soft">
+          <div class="h-48 bg-gray-100 overflow-hidden">
+            <img src="${m.image||'https://placehold.net/400x400.png'}" alt="${m.name}" class="w-full h-full object-cover"/>
           </div>
-          <div class="p-3 flex items-start justify-between gap-2">
-            <div>
-              <div class="font-semibold">${m.name}</div>
-              <div class="text-sm text-slate-300">${m.category||'-'}</div>
-              <div class="text-sm mt-1">${money(m.price)}</div>
-            </div>
-            <div class="flex items-center gap-2 flex-wrap">
-              ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-lg bg-slate-200/90 text-slate-900 hover:bg-white text-sm">แก้ไข</button>` : ''}
-              <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-sm">เลือก</button>
-              <button data-id="${m.id}" class="quickAdd md:hidden px-3 py-1.5 rounded-lg bg-tea-500 hover:bg-tea-400 text-sm">เพิ่มทันที</button>
+          <div class="p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="font-semibold text-gray-900">${m.name}</div>
+                <div class="text-sm text-gray-500">${m.category||'-'}</div>
+                <div class="text-sm font-medium text-gray-900 mt-1">${money(m.price)}</div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium">แก้ไข</button>` : ''}
+                <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-full btn-primary text-white text-sm font-medium">เลือก</button>
+                <button data-id="${m.id}" class="quickAdd md:hidden px-3 py-1.5 rounded-full btn-secondary text-white text-sm font-medium">เพิ่มทันที</button>
+              </div>
             </div>
           </div>
         </div>
@@ -620,16 +613,16 @@
       const tbody = qs('#orderHistoryBody');
       const orders = store.orders;
       if(!orders.length){
-        tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-300">ยังไม่มีประวัติการสั่งซื้อ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500">ยังไม่มีประวัติการสั่งซื้อ</td></tr>';
         return;
       }
       tbody.innerHTML = orders.map((order, idx) => `
-        <tr class="border-b border-slate-600/50">
-          <td class="py-2 px-3">ออร์เดอร์ #${idx+1}</td>
-          <td class="py-2 px-3">${new Date(order.timestamp).toLocaleString('th-TH')}</td>
-          <td class="py-2 px-3">${order.items.map(item => `${item.name} x${item.qty} (${item.sweet}) ${item.fulfill}${item.cod ? ' (COD)' : ''}${item.note ? `, โน้ต: ${item.note}` : ''}`).join('<br>')}</td>
-          <td class="py-2 px-3">${money(order.total)}</td>
-          <td class="py-2 px-3">${order.items.some(item => item.address) ? order.items.map(item => item.address || '-').join('<br>') : '-'}</td>
+        <tr class="border-b border-gray-200">
+          <td class="py-3 px-4">ออร์เดอร์ #${idx+1}</td>
+          <td class="py-3 px-4">${new Date(order.timestamp).toLocaleString('th-TH')}</td>
+          <td class="py-3 px-4">${order.items.map(item => `${item.name} x${item.qty} (${item.sweet}) ${item.fulfill}${item.cod ? ' (COD)' : ''}${item.note ? `, โน้ต: ${item.note}` : ''}`).join('<br>')}</td>
+          <td class="py-3 px-4">${money(order.total)}</td>
+          <td class="py-3 px-4">${order.items.some(item => item.address) ? order.items.map(item => item.address || '-').join('<br>') : '-'}</td>
         </tr>
       `).join('');
     }
@@ -651,23 +644,23 @@
       badge.textContent = store.cart.reduce((s,i)=>s+(i.qty||0),0);
 
       const itemHTML = (item, idx) => `
-        <div class="py-3 flex items-start gap-3 hover:bg-white/5 rounded-lg transition">
+        <div class="py-4 flex items-start gap-4 hover:bg-gray-50/50 rounded-lg transition">
           <div class="flex-1">
-            <div class="flex items-center justify-between gap-2">
-              <div class="font-semibold">${item.name || 'ไม่ทราบ'} <span class="text-xs text-slate-300 font-normal">(${item.sweet || 'ไม่ระบุ'})</span></div>
-              <div class="text-sm">${money(item.price || 0)}</div>
+            <div class="flex items-center justify-between gap-3">
+              <div class="font-semibold text-gray-900">${item.name || 'ไม่ทราบ'} <span class="text-xs text-gray-500">(${item.sweet || 'ไม่ระบุ'})</span></div>
+              <div class="text-sm font-medium text-gray-900">${money(item.price || 0)}</div>
             </div>
-            <div class="text-xs text-slate-300">${item.fulfill || 'ไม่ระบุ'}${item.note? ' • โน้ต: '+item.note:''}${item.cod? ' • COD':''}${item.address? ' • ที่อยู่: '+item.address:''}</div>
-            <div class="mt-2 flex items-center gap-2">
-              <button class="qtyDec px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 min-h-[40px]" data-idx="${idx}">−</button>
-              <span class="min-w-[2ch] text-center">${item.qty || 1}</span>
-              <button class="qtyInc px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 min-h-[40px]" data-idx="${idx}">+</button>
-              <button class="rmItem ml-auto px-2 py-1 rounded bg-red-600/90 hover:bg-red-600 text-xs min-h-[40px]" data-idx="${idx}">ลบ</button>
+            <div class="text-xs text-gray-500 mt-1">${item.fulfill || 'ไม่ระบุ'}${item.note? ' • โน้ต: '+item.note:''}${item.cod? ' • COD':''}${item.address? ' • ที่อยู่: '+item.address:''}</div>
+            <div class="mt-3 flex items-center gap-3">
+              <button class="qtyDec px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">−</button>
+              <span class="min-w-[2ch] text-center font-medium">${item.qty || 1}</span>
+              <button class="qtyInc px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">+</button>
+              <button class="rmItem ml-auto px-3 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white text-sm font-medium" data-idx="${idx}">ลบ</button>
             </div>
           </div>
         </div>`;
 
-      const html = store.cart.map(itemHTML).join('') || '<div class="py-6 text-center text-slate-300">ยังไม่มีสินค้าในตะกร้า</div>';
+      const html = store.cart.map(itemHTML).join('') || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
       list.innerHTML = html;
       bottomSheet.innerHTML = html;
     }
@@ -677,7 +670,7 @@
         console.error('Invalid cart state on save:', store.cart);
         store.cart = [];
       }
-      store.cart = store.cart; // Trigger setter to save to localStorage
+      store.cart = store.cart;
       renderCart();
     }
 
@@ -686,10 +679,10 @@
       const sel = qs('#selectedMenu');
       const opt = sel.selectedOptions[0];
       if(!opt || !opt.dataset.price){
-        sel.classList.remove('premium-select-selected');
+        sel.classList.remove('ring-2', 'ring-brand-500');
         return;
       }
-      sel.classList.add('premium-select-selected');
+      sel.classList.add('ring-2', 'ring-brand-500');
       qs('#price').value = Number(opt.dataset.price).toFixed(2);
       calcTotal();
     }
@@ -807,7 +800,7 @@
     // ---------- Place order & Telegram ----------
     function buildOrderText(){
       const lines = [];
-      lines.push('🧋 *ชาบ้านน้องชิม* – คำสั่งซื้อใหม่');
+      lines.push('🧋 *ชาบ้านน้องขิม* – คำสั่งซื้อใหม่');
       const ts = new Date();
       lines.push(`🕒 ${ts.toLocaleString('th-TH')}`);
       lines.push('');
@@ -842,7 +835,7 @@
       const summary = qs('#confirmOrderSummary');
       summary.innerHTML = store.cart.map((it, i) => `
         <div>${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}</div>
-        <div class="text-xs text-slate-300 pl-4">หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}${it.note?' • โน้ต: '+it.note:''}${it.address?' • ที่อยู่: '+it.address:''}</div>
+        <div class="text-xs text-gray-500 pl-4">หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}${it.note?' • โน้ต: '+it.note:''}${it.address?' • ที่อยู่: '+it.address:''}</div>
       `).join('');
       qs('#confirmOrderModal').classList.remove('hidden');
     }
@@ -985,17 +978,11 @@
     // ---------- Cart Bottom Sheet ----------
     function openCart(){
       qs('#cartBottomSheet').classList.add('open');
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
     function closeCart(){
       qs('#cartBottomSheet').classList.remove('open');
-    }
-
-    // ---------- Hamburger Menu ----------
-    function openHamburgerMenu(){
-      qs('#hamburgerMenu').classList.remove('translate-x-full');
-    }
-    function closeHamburgerMenu(){
-      qs('#hamburgerMenu').classList.add('translate-x-full');
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
 
     // ---------- Order Modal ----------
@@ -1012,9 +999,11 @@
       qs('#cod').checked = true;
       handleFulfillChange();
       calcTotal();
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
     function closeOrderModal(){
       qs('#orderModal').classList.add('hidden');
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
 
     // ---------- History Modal ----------
@@ -1022,9 +1011,11 @@
       renderOrderHistory();
       qs('#historyModal').classList.remove('hidden');
       closeHamburgerMenu();
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
     function closeHistoryModal(){
       qs('#historyModal').classList.add('hidden');
+      if ('vibrate' in navigator) navigator.vibrate(50);
     }
 
     // ---------- Delivery Address Handling ----------
@@ -1100,33 +1091,27 @@
         if (e.target.matches('.quickAdd')){ quickAddToCart(e.target.dataset.id); }
         if (e.target.matches('.quickPreset')){ quickPresetAdd(e); }
         if (e.target.matches('.qtyInc')) {
-          console.log('Increase button clicked', e.target.dataset.idx);
           const idx = +e.target.dataset.idx;
           if (store.cart[idx]) {
             store.cart[idx].qty++;
             saveCart();
-          } else {
-            console.error('Invalid cart index:', idx);
+            if ('vibrate' in navigator) navigator.vibrate(30);
           }
         }
         if (e.target.matches('.qtyDec')) {
-          console.log('Decrease button clicked', e.target.dataset.idx);
           const idx = +e.target.dataset.idx;
           if (store.cart[idx] && store.cart[idx].qty > 1) {
             store.cart[idx].qty--;
             saveCart();
-          } else {
-            console.error('Invalid cart index or qty:', idx, store.cart[idx]);
+            if ('vibrate' in navigator) navigator.vibrate(30);
           }
         }
         if (e.target.matches('.rmItem')) {
-          console.log('Remove button clicked', e.target.dataset.idx);
           const idx = +e.target.dataset.idx;
           if (store.cart[idx]) {
             store.cart.splice(idx, 1);
             saveCart();
-          } else {
-            console.error('Invalid cart index:', idx);
+            if ('vibrate' in navigator) navigator.vibrate(30);
           }
         }
       });
@@ -1140,21 +1125,15 @@
       qs('#loginModal').addEventListener('click', (e) => { if(e.target === qs('#loginModal')) closeLoginModal(); });
       qs('#orderForm').onsubmit = (e) => { e.preventDefault(); addToCart(); };
       qs('#selectedMenu').onchange = updatePriceFromSelect;
-      qs('#qtyPlus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)+1); calcTotal(); };
-      qs('#qtyMinus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)-1); calcTotal(); };
+      qs('#qtyPlus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)+1); calcTotal(); if ('vibrate' in navigator) navigator.vibrate(30); };
+      qs('#qtyMinus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)-1); calcTotal(); if ('vibrate' in navigator) navigator.vibrate(30); };
       qs('#qty').oninput = calcTotal; qs('#price').oninput = calcTotal; calcTotal();
       qs('#addToCartBtn').onclick = addToCart;
       qs('#placeOrderBtn').onclick = openConfirmOrderModal;
       qs('#bottomSheetPlaceOrderBtn').onclick = openConfirmOrderModal;
       qs('#floatingOrderBtn').onclick = openConfirmOrderModal;
-      qs('#confirmOrderBtn').onclick = () => {
-        console.log('Confirm button clicked');
-        placeOrder();
-      };
-      qs('#cancelConfirmBtn').onclick = () => {
-        console.log('Cancel button clicked');
-        qs('#confirmOrderModal').classList.add('hidden');
-      };
+      qs('#confirmOrderBtn').onclick = placeOrder;
+      qs('#cancelConfirmBtn').onclick = () => qs('#confirmOrderModal').classList.add('hidden');
       qs('#confirmOrderModal').addEventListener('click', (e) => { if(e.target === qs('#confirmOrderModal')) qs('#confirmOrderModal').classList.add('hidden'); });
       qs('#searchInput').oninput = renderMenuGrid;
       qs('#categoryFilter').onchange = renderMenuGrid;
