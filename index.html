@@ -91,18 +91,75 @@
     .menu-card:hover img {
       transform: scale(1.05);
     }
-    @media (max-width: 640px) {
+    .filter-chip {
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background-color: #f3f4f6;
+      color: #374151;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover {
+      background-color: #e5e7eb;
+    }
+    .filter-chip.selected {
+      background-color: #14b8a6;
+      color: white;
+    }
+    .recommended-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: #eab308;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .preorder-note {
+      color: #ca8a04;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    .floating-search-btn {
+      position: fixed;
+      bottom: 4rem;
+      right: 1rem;
+      z-index: 50;
+      background: linear-gradient(90deg, #14b8a6, #0d9488);
+      padding: 0.75rem;
+      border-radius: 9999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .floating-search-btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(90deg, #0d9488, #14b8a6);
+    }
+    .modal {
+      animation: slide-up 0.3s ease-out;
+      border-radius: 1rem 1rem 0 0;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    @media (min-width: 640px) {
       .modal {
-        animation: slide-up 0.3s ease-out;
-        margin: 0;
-        border-radius: 1rem 1rem 0 0;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
+        border-radius: 1rem;
+        width: auto;
+        max-width: 32rem;
       }
-      #orderModal {
-        align-items: flex-end;
+      #searchFilterModal {
+        align-items: center;
       }
+      .floating-search-btn {
+        display: none; /* Hide floating button on desktop */
+      }
+    }
+    @media (max-width: 640px) {
       #cartBottomSheet {
         width: 100%;
         max-height: 85vh;
@@ -111,29 +168,6 @@
       }
       #cartBottomSheet.open {
         transform: translateY(0);
-      }
-      .text-sm {
-        font-size: 0.95rem;
-      }
-      .px-4 {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-      .py-2 {
-        padding-top: 16px;
-        padding-bottom: 16px;
-      }
-      .btn-primary, .btn-secondary, .quickPreset {
-        padding: 16px;
-        font-size: 1rem;
-      }
-      select, input, textarea {
-        font-size: 1rem;
-        padding: 14px;
-      }
-      .quantity-control button {
-        width: 56px;
-        height: 56px;
       }
     }
     input[type=number]::-webkit-outer-spin-button,
@@ -144,30 +178,65 @@
     input[type=number] {
       -moz-appearance: textfield;
     }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+    }
+    /* Footer styles */
+    .footer {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem 1.5rem;
+    margin-top: 2rem;
+    }
+    .footer a {
+    color: #14b8a6;
+    transition: color 0.3s ease;
+    }
+    .footer a:hover {
+    color: #0d9488;
+    }
+    .footer svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    }
   </style>
 </head>
 <body class="font-sans text-gray-900 min-h-screen">
-  <!-- App Config -->
-  <script>
-    const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
-    const TELEGRAM_CHAT_ID = "-1002728257218";
-    const TELEGRAM_PROXY_URL = "";
-  </script>
-
   <!-- Header -->
   <header class="sticky top-0 z-40 shadow-soft">
     <div class="glass backdrop-blur border-b border-gray-200/50">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-tea-500 flex items-center justify-center shadow-glow">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
-            <path d="M3 3h14a1 1 0 011 1v5a5 5 0 005 5h-1a6 6 0 01-6 6H9a6 6 0 01-6-6V4a1 1 0 011-1zm15 6V5H5v7a4 4 0 004 4h6a4 4 0 004-4V9zm2 0a3 3 0 002-2.236V11a3 3 0 01-2-2z"/>
-          </svg>
-        </div>
-        <div class="flex-1">
-          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-gray-900">ชาบ้านน้องขิม</h1>
-          <p class="text-sm text-gray-500">สั่งง่าย ส่งไว อร่อยทุกแก้ว</p>
+      <div class="max-w-7xl mx-auto header-container">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-tea-500 flex items-center justify-center shadow-glow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
+              <path d="M3 3h14a1 1 0 011 1v5a5 5 0 005 5h-1a6 6 0 01-6 6H9a6 6 0 01-6-6V4a1 1 0 011-1zm15 6V5H5v7a4 4 0 004 4h6a4 4 0 004-4V9zm2 0a3 3 0 002-2.236V11a3 3 0 01-2-2z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h1 class="text-xl md:text-2xl font-bold tracking-tight text-gray-900">ชาบ้านน้องขิม</h1>
+            <p class="text-sm text-gray-500">สั่งง่าย ส่งไว อร่อยทุกแก้ว</p>
+          </div>
         </div>
         <div class="flex items-center gap-3">
+          <!-- Search Button (Desktop Only) -->
+          <button id="openSearchModalBtn" class="hidden md:block p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+            <svg class="w-6 h-6 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
           <button id="openCartBtn" class="relative p-3 rounded-full bg-brand-600 hover:bg-brand-500 transition shadow-glow">
             <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -182,12 +251,19 @@
           <div class="hidden md:flex items-center gap-3">
             <button id="themeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">สลับโหมด</button>
             <button id="loginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">เข้าสู่ระบบ</button>
-            <button id="historyBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ประวัติการสั่งซื้อ</button>
+            <!-- <button id="historyBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ประวัติการสั่งซื้อ</button> -->
           </div>
         </div>
       </div>
     </div>
   </header>
+
+  <!-- Floating Search Button (Mobile Only) -->
+  <button id="openSearchModalBtnMobile" class="md:hidden floating-search-btn">
+    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  </button>
 
   <!-- Hamburger Menu Drawer -->
   <div id="hamburgerMenu" class="fixed inset-y-0 right-0 w-3/4 max-w-sm bg-white/95 backdrop-blur border-l border-gray-200 translate-x-full transition-transform z-50 flex flex-col md:hidden">
@@ -198,7 +274,7 @@
     <div class="p-4 flex flex-col gap-3">
       <button id="hamburgerThemeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">สลับโหมด</button>
       <button id="hamburgerLoginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">เข้าสู่ระบบ</button>
-      <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">ประวัติการสั่งซื้อ</button>
+      <!-- <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">ประวัติการสั่งซื้อ</button> -->
     </div>
   </div>
 
@@ -210,7 +286,7 @@
         <div class="flex flex-wrap items-center justify-between gap-4">
           <h2 class="text-lg font-semibold text-gray-900">จัดการเมนู</h2>
           <div class="flex items-center gap-3">
-            <button id="addMenuBtn" class="px-4 py-2 rounded-full bg-brand-600 hover:bg-brand-500 text-white transition text-sm font-medium">+ เพิ่มเมนู</button>
+            <button id="addMenuBtn" class="px-4 py-2 rounded-full btn-primary text-white transition text-sm font-medium">+ เพิ่มเมนู</button>
             <button id="importJsonBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">นำเข้า JSON</button>
             <button id="exportJsonBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ส่งออก JSON</button>
           </div>
@@ -218,30 +294,8 @@
         <p class="text-sm text-gray-500 mt-2">จัดการเมนูของคุณได้อย่างง่ายดาย เก็บข้อมูลใน LocalStorage</p>
       </div>
 
-      <!-- Menu Filters -->
-      <div class="glass rounded-xl p-6 shadow-soft animate-fade-in">
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="relative flex-1 min-w-[240px]">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-3 bg-white/80 text-gray-900 rounded-xl focus:ring-2 focus:ring-brand-500 transition" />
-          </div>
-          <select id="categoryFilter" class="bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition">
-            <option value="">ทุกหมวดหมู่</option>
-          </select>
-          <select id="sortFilter" class="bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition">
-            <option value="">เรียงตามปกติ</option>
-            <option value="price-asc">ราคา: น้อย → มาก</option>
-            <option value="price-desc">ราคา: มาก → น้อย</option>
-            <option value="name-asc">ชื่อ: A → Z</option>
-            <option value="name-desc">ชื่อ: Z → A</option>
-          </select>
-        </div>
-      </div>
-
       <!-- Menu Grid -->
-      <div id="menuGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+      <div id="menuGrid" class="space-y-8"></div>
     </section>
 
     <!-- Cart Panel (Desktop Only) -->
@@ -261,13 +315,6 @@
       </div>
     </aside>
 
-    <!-- Order Button (Mobile Only) -->
-    <button id="openOrderModalBtn" class="md:hidden fixed bottom-20 right-4 p-4 rounded-full bg-brand-600 hover:bg-brand-500 text-white shadow-glow z-30">
-      <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-      </svg>
-    </button>
-
     <!-- Floating Order Button (Mobile Only) -->
     <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 p-4 rounded-full btn-secondary text-white shadow-glow z-30">
       <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,60 +323,92 @@
     </button>
   </main>
 
+  <!-- Search and Filter Modal -->
+  <div id="searchFilterModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-end p-0 md:p-4 md:place-items-center">
+    <div class="w-full max-w-md glass rounded-xl p-6 md:p-8 modal max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">ค้นหาและกรอง</h3>
+        <button id="closeSearchFilterModal" class="text-gray-500 hover:text-gray-900 text-2xl p-3">✕</button>
+      </div>
+      <div class="space-y-6">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-3 bg-white/80 text-gray-900 rounded-xl focus:ring-2 focus:ring-brand-500 transition text-base" />
+        </div>
+        <div class="flex flex-col gap-4">
+          <h3 class="text-sm font-medium text-gray-700">หมวดหมู่</h3>
+          <div id="categoryChips" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <h3 class="text-sm font-medium text-gray-700">เรียงลำดับ</h3>
+          <div id="sortChips" class="flex flex-wrap gap-2">
+            <button data-sort="default" class="filter-chip selected">ปกติ</button>
+            <button data-sort="price-asc" class="filter-chip">ราคา: น้อย → มาก</button>
+            <button data-sort="price-desc" class="filter-chip">ราคา: มาก → น้อย</button>
+            <button data-sort="name-asc" class="filter-chip">ชื่อ: A → Z</button>
+            <button data-sort="name-desc" class="filter-chip">ชื่อ: Z → A</button>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button id="clearFiltersBtn" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-base font-medium">ล้าง</button>
+          <button id="applyFiltersBtn" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">นำไปใช้</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Order Modal -->
   <div id="orderModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-end p-0 md:p-4 md:place-items-center">
     <div class="w-full max-w-md glass rounded-xl p-6 md:p-8 modal max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-semibold text-gray-900">สั่งเครื่องดื่ม</h3>
+        <h3 class="text-xl font-semibold text-gray-900">สั่งเครื่องดื่มหรือแซนด์วิช</h3>
         <button id="closeOrderModal" class="text-gray-500 hover:text-gray-900 text-2xl p-3">✕</button>
       </div>
       <form id="orderForm" class="grid gap-6">
-        <!-- Quick Order Presets -->
-        <div class="grid grid-cols-2 gap-4">
-          <button type="button" class="quickPreset px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-base font-medium transition-transform transform active:scale-95" data-menu="ชานม" data-price="35" data-sweet="50%" data-fulfill="รับเองที่ร้าน">ชานม หวาน 50%</button>
-          <button type="button" class="quickPreset px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-base font-medium transition-transform transform active:scale-95" data-menu="ชาเขียว" data-price="35" data-sweet="25%" data-fulfill="รับเองที่ร้าน">ชาเขียว หวาน 25%</button>
-        </div>
         <div>
           <label class="text-base font-medium text-gray-700">เลือกเมนู</label>
-          <select id="selectedMenu" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base">
+          <select id="selectedMenu" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base">
             <option value="">— เลือกเมนู —</option>
           </select>
+          <p id="preorderNote" class="preorder-note hidden">*ต้องสั่งล่วงหน้า 1-2 วัน</p>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-base font-medium text-gray-700">ราคา / แก้ว (฿)</label>
-            <input id="price" type="number" min="0" step="0.5" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base" placeholder="เช่น 35.00" />
+            <label class="text-base font-medium text-gray-700">ราคา / ชิ้น (฿)</label>
+            <input id="price" type="number" min="0" step="0.5" required class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base" placeholder="เช่น 35.00" />
           </div>
           <div>
             <label class="text-base font-medium text-gray-700">จำนวน</label>
             <div class="mt-2 flex items-center rounded-xl overflow-hidden bg-white/80">
-              <button type="button" id="qtyMinus" class="quantity-control w-16 h-16 grid place-content-center hover:bg-gray-200 transition text-xl">−</button>
-              <input id="qty" type="number" value="1" min="1" class="w-full text-center bg-transparent text-gray-900 text-base py-4" placeholder="1" />
-              <button type="button" id="qtyPlus" class="quantity-control w-16 h-16 grid place-content-center hover:bg-gray-200 transition text-xl">+</button>
+              <button type="button" id="qtyMinus" class="quantity-control w-12 h-12 grid place-content-center hover:bg-gray-200 transition text-lg">−</button>
+              <input id="qty" type="number" value="1" min="1" class="w-full text-center bg-transparent text-gray-900 text-base py-3" />
+              <button type="button" id="qtyPlus" class="quantity-control w-12 h-12 grid place-content-center hover:bg-gray-200 transition text-lg">+</button>
             </div>
           </div>
         </div>
         <div>
-          <label class="text-base font-medium text-gray-700">ความหวาน</label>
-          <div class="mt-2 grid grid-cols-5 gap-3">
-            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="0%" class="sr-only" checked/>
+          <label class="text-base font-medium text-gray-700">ความหวาน (สำหรับเครื่องดื่ม)</label>
+          <div class="mt-2 grid grid-cols-5 gap-2">
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="0%" class="sr-only" />
               <span>0%</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="25%" class="sr-only"/>
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="25%" class="sr-only" />
               <span>25%</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="50%" class="sr-only"/>
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="50%" class="sr-only" checked />
               <span>50%</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="75%" class="sr-only"/>
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="75%" class="sr-only" />
               <span>75%</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-4 py-3 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="100%" class="sr-only"/>
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="100%" class="sr-only" />
               <span>100%</span>
             </label>
           </div>
@@ -337,41 +416,33 @@
         <div>
           <label class="text-base font-medium text-gray-700">วิธีรับสินค้า</label>
           <div class="mt-2 grid grid-cols-2 gap-4">
-            <label class="bg-white/80 rounded-xl px-6 py-4 flex items-center gap-3 cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="fulfill" value="รับเองที่ร้าน" class="accent-brand-600 w-5 h-5" checked/>
+            <label class="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="fulfill" value="รับเองที่ร้าน" class="accent-brand-600 w-5 h-5" checked />
               <span class="text-base">รับเอง</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-6 py-4 flex items-center gap-3 cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-brand-600 w-5 h-5"/>
+            <label class="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-brand-600 w-5 h-5" />
               <span class="text-base">จัดส่ง (ฟรี)</span>
             </label>
           </div>
         </div>
         <div id="deliveryAddressSection" class="hidden">
           <label class="text-base font-medium text-gray-700">ที่อยู่จัดส่ง</label>
-          <textarea id="deliveryAddress" rows="4" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
-          <div class="flex items-center gap-3 mt-3">
-            <input id="saveAddress" type="checkbox" class="accent-brand-600 w-5 h-5" />
-            <label for="saveAddress" class="text-base text-gray-700">บันทึกที่อยู่</label>
-          </div>
+          <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
         </div>
         <div>
           <label class="text-base font-medium text-gray-700">โน้ตถึงร้าน</label>
-          <textarea id="note" rows="4" placeholder="เช่น ไม่ใส่น้ำแข็ง, เพิ่มไข่มุก" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-4 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
-        </div>
-        <div class="flex items-center gap-3">
-          <input id="cod" type="checkbox" class="accent-brand-600 w-5 h-5" checked />
-          <label for="cod" class="text-base text-gray-700">เก็บเงินปลายทาง</label>
+          <textarea id="note" rows="3" placeholder="เช่น ชื่อผู้สั่ง, เบอร์โทร, แยกน้ำแข็ง, ใส่ฟองนม" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
         </div>
         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
           <div class="text-base text-gray-500">ยอดรวม: <span id="total" class="font-semibold text-gray-900">฿0.00</span></div>
-          <button id="addToCartBtn" class="px-6 py-4 rounded-xl btn-primary text-white text-base font-medium shadow-glow transition-transform transform active:scale-95">เพิ่มลงตะกร้า</button>
+          <button id="addToCartBtn" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">เพิ่มลงตะกร้า</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Other Modals -->
+  <!-- Menu Modal -->
   <div id="menuModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
     <div class="w-full max-w-md glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
@@ -382,19 +453,23 @@
         <input type="hidden" id="menuId" />
         <div>
           <label class="text-sm font-medium text-gray-700">ชื่อเมนู</label>
-          <input id="menuName" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชานม, ชาเขียว, โกโก้"/>
+          <input id="menuName" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชานม, แซนด์วิชแฮมชีส" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-700">ราคา (฿)</label>
-          <input id="menuPrice" type="number" step="0.5" min="0" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition"/>
+          <input id="menuPrice" type="number" step="0.5" min="0" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-700">หมวดหมู่</label>
-          <input id="menuCategory" class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชา, กาแฟ, โกโก้"/>
+          <input id="menuCategory" class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น ชา, แซนด์วิช" />
         </div>
-        <div>
-          <label class="text-sm font-medium text-gray-700">รูปภาพ (ลิงก์)</label>
-          <input id="menuImage" class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="https://...jpg"/>
+        <div class="flex items-center gap-3">
+          <input id="isRecommended" type="checkbox" class="accent-brand-600 w-5 h-5" />
+          <label for="isRecommended" class="text-sm text-gray-700">เมนูแนะนำ</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <input id="requiresPreorder" type="checkbox" class="accent-brand-600 w-5 h-5" />
+          <label for="requiresPreorder" class="text-sm text-gray-700">ต้องสั่งล่วงหน้า</label>
         </div>
         <div class="flex items-center justify-end gap-3 pt-2">
           <button type="button" id="deleteMenuBtn" class="hidden px-4 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium">ลบ</button>
@@ -404,6 +479,7 @@
     </div>
   </div>
 
+  <!-- Login Modal -->
   <div id="loginModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
     <div class="w-full max-w-sm glass rounded-xl p-6 modal">
       <div class="flex items-center justify-between">
@@ -413,56 +489,16 @@
       <form id="loginForm" class="mt-4 grid gap-4">
         <div>
           <label class="text-sm font-medium text-gray-700">ชื่อผู้ใช้</label>
-          <input id="username" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น admin321"/>
+          <input id="username" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="เช่น admin321" />
         </div>
         <div>
           <label class="text-sm font-medium text-gray-700">รหัสผ่าน</label>
-          <input id="password" type="password" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="รหัสผ่าน"/>
+          <input id="password" type="password" required class="mt-1 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition" placeholder="รหัสผ่าน" />
         </div>
         <div class="flex items-center justify-end pt-2">
           <button type="submit" class="px-4 py-2 rounded-full btn-primary text-white font-medium">เข้าสู่ระบบ</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <div id="confirmOrderModal" class="hidden fixed inset-0 z-60 bg-black/60 grid place-items-center p-4">
-    <div class="w-full max-w-md glass rounded-xl p-6 modal">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900">ยืนยันการสั่งซื้อ</h3>
-        <button id="closeConfirmModal" class="text-gray-500 hover:text-gray-900">✕</button>
-      </div>
-      <div class="mt-4">
-        <p class="text-sm text-gray-500">ยืนยันการส่งออร์เดอร์นี้หรือไม่?</p>
-        <div id="confirmOrderSummary" class="mt-3 text-sm text-gray-900"></div>
-        <div class="flex items-center justify-end gap-3 mt-4">
-          <button id="cancelConfirmBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium">ยกเลิก</button>
-          <button id="confirmOrderBtn" class="px-4 py-2 rounded-full btn-secondary text-white font-medium">ยืนยัน</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-black/60 grid place-items-center p-4">
-    <div class="w-full max-w-4xl glass rounded-xl p-6 modal">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900">ประวัติการสั่งซื้อ</h3>
-        <button id="closeHistoryModal" class="text-gray-500 hover:text-gray-900">✕</button>
-      </div>
-      <div class="mt-4 overflow-x-auto">
-        <table id="orderHistoryTable" class="w-full text-sm text-left text-gray-900">
-          <thead>
-            <tr class="border-b border-gray-200">
-              <th class="py-3 px-4">ออร์เดอร์</th>
-              <th class="py-3 px-4">วันที่</th>
-              <th class="py-3 px-4">รายการ</th>
-              <th class="py-3 px-4">ยอดรวม</th>
-              <th class="py-3 px-4">ที่อยู่</th>
-            </tr>
-          </thead>
-          <tbody id="orderHistoryBody"></tbody>
-        </table>
-      </div>
     </div>
   </div>
 
@@ -488,673 +524,619 @@
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden"></div>
 
+    <!-- Footer -->
+    <footer class="footer">
+    <div class="max-w-7xl mx-auto text-center">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">ติดต่อเรา</h3>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-base text-gray-700">
+        <div class="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M9 3v2m6-2v2M3 19h18M5 7h14v12H5V7zm7 5a2 2 0 100 4 2 2 0 000-4z" />
+            </svg>
+            <span>โทร: <a href="tel:+66812345678">094-592-1521 (แตงโม)</a></span>
+        </div>
+        <div class="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" />
+            </svg>
+            <span><a href="https://www.facebook.com/chabannongkhim" target="_blank" rel="noopener noreferrer">Facebook: </a></span>
+        </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-4">© 2025 ชาบ้านน้องขิม. สงวนลิขสิทธิ์.</p>
+    </div>
+    </footer>
   <script>
     // ---------- Utilities ----------
-    const qs = (s, el=document) => el.querySelector(s);
-    const qsa = (s, el=document) => [...el.querySelectorAll(s)];
-    const money = n => `฿${(Number(n)||0).toFixed(2)}`;
-    const uid = () => Math.random().toString(36).slice(2,9);
+    const qs = (s, el = document) => el.querySelector(s);
+    const qsa = (s, el = document) => [...el.querySelectorAll(s)];
+    const money = n => `฿${(Number(n) || 0).toFixed(2)}`;
+    const uid = () => Math.random().toString(36).slice(2, 9);
 
-    function showToast(msg, type="info"){
-      const t = qs('#toast');
-      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-full shadow-glow text-sm font-medium ${type==='error' ? 'bg-red-600 text-white' : 'bg-brand-600 text-white'}`;
+    function showToast(msg, type = "info") {
+      const t = qs("#toast");
+      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-full shadow-glow text-sm font-medium ${
+        type === "error" ? "bg-red-600 text-white" : "bg-brand-600 text-white"
+      }`;
       t.textContent = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3000);
-      if ('vibrate' in navigator) navigator.vibrate(50); // Haptic feedback
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 3000);
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
     // ---------- State ----------
     const store = {
-      get menu(){ return JSON.parse(localStorage.getItem('menuItems')||'[]'); },
-      set menu(v){ localStorage.setItem('menuItems', JSON.stringify(v)); },
-      get cart(){ return JSON.parse(localStorage.getItem('cart')||'[]'); },
-      set cart(v){ localStorage.setItem('cart', JSON.stringify(Array.isArray(v) ? v : [])); },
-      get isAdmin(){ return localStorage.getItem('isAdmin') === 'true'; },
-      set isAdmin(v){ localStorage.setItem('isAdmin', v); },
-      get orders(){ return JSON.parse(localStorage.getItem('orders')||'[]'); },
-      set orders(v){ localStorage.setItem('orders', JSON.stringify(v)); },
-      get savedAddress(){ return localStorage.getItem('savedAddress')||''; },
-      set savedAddress(v){ localStorage.setItem('savedAddress', v); },
-      get theme(){ return localStorage.getItem('theme')||'light'; },
-      set theme(v){ localStorage.setItem('theme', v); }
+      get menu() {
+        return JSON.parse(localStorage.getItem("menuItems") || "[]");
+      },
+      set menu(v) {
+        localStorage.setItem("menuItems", JSON.stringify(v));
+      },
+      get cart() {
+        return JSON.parse(localStorage.getItem("cart") || "[]");
+      },
+      set cart(v) {
+        localStorage.setItem("cart", JSON.stringify(Array.isArray(v) ? v : []));
+      },
+      get isAdmin() {
+        return localStorage.getItem("isAdmin") === "true";
+      },
+      set isAdmin(v) {
+        localStorage.setItem("isAdmin", v);
+      },
     };
 
     // Admin credentials
-    const ADMIN_USERNAME = 'admin321';
-    const ADMIN_PASSWORD = 'Aphisit321';
+    const ADMIN_USERNAME = "admin321";
+    const ADMIN_PASSWORD = "Aphisit321";
 
-    // Seed demo data if empty
-    function seedMenu(){
-      if(store.menu.length) return;
+    // Seed demo data
+    function seedMenu() {
+      if (store.menu.length) return;
       store.menu = [
-        { id: uid(), name: "ชานมเย็น", price: 25, category: "ชา", image: "" },
-        { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "" },
-        { id: uid(), name: "โกโก้เย็น", price: 25, category: "โกโก้", image: "" },
-        { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "" },
-        { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "" },
-        { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "" },
-        { id: uid(), name: "นมชมพู", price: 25, category: "นม", image: "" },
-        { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "" },
-        { id: uid(), name: "พั้นช์", price: 25, category: "เครื่องดื่มเย็น", image: "" }
+        { id: uid(), name: "ชานมเย็น/ชาไทย", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
+        { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
+        { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
+        { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
+
+        { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
+
+        { id: uid(), name: "นมชมพู", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
+        { id: uid(), name: "โกโก้เย็น", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
+        { id: uid(), name: "นมสดเย็น", price: 25, category: "นมสด/โกโก้", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "เฉาก๊วยนมสด", price: 30, category: "นมสด/โกโก้", image: "", isRecommended: true, requiresPreorder: false },
+    
+
+        { id: uid(), name: "พั้นช์", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "น้ำส้ม", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: true, requiresPreorder: false },
+        { id: uid(), name: "แดงมะนาวโซดาเย็น", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+        { id: uid(), name: "บลูฮาวายโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
+        { id: uid(), name: "น้ำผึ้งมะนาวโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
+        
+        
+        { id: uid(), name: "แซนด์วิชไส้ทูน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+        { id: uid(), name: "แซนด์วิชไส้ไข่ดาว+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+        { id: uid(), name: "แซนด์วิชไส้โบโลน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+        { id: uid(), name: "แซนด์วิชไส้แฮม+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+        { id: uid(), name: "แซนด์วิชไส้หมูยอง", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true }
       ];
     }
 
     // ---------- Theme Toggle ----------
-    function toggleTheme(){
+    function toggleTheme() {
       const body = document.body;
-      const isLight = store.theme === 'light';
-      store.theme = isLight ? 'dark' : 'light';
-      body.classList.toggle('light-theme', store.theme === 'light');
-      qs('#themeToggleBtn').textContent = isLight ? 'โหมดมืด' : 'โหมดสว่าง';
-      qs('#hamburgerThemeToggleBtn').textContent = isLight ? 'โหมดมืด' : 'โหมดสว่าง';
-      if ('vibrate' in navigator) navigator.vibrate(50);
+      const isLight = body.classList.contains("light-theme");
+      body.classList.toggle("light-theme", !isLight);
+      store.theme = isLight ? "dark" : "light";
+      qs("#themeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
+      qs("#hamburgerThemeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    // ---------- Menu rendering ----------
-    function renderMenuOptions(){
-      const sel = qs('#selectedMenu');
-      sel.innerHTML = '<option value="">— เลือกเมนู —</option>' + store.menu.map(m=>`<option data-price="${m.price}" value="${m.id}">${m.name}</option>`).join('');
+    // ---------- Menu Rendering ----------
+    function renderMenuOptions() {
+      const sel = qs("#selectedMenu");
+      sel.innerHTML = '<option value="">— เลือกเมนู —</option>' + store.menu.map(m => `<option data-price="${m.price}" data-preorder="${m.requiresPreorder}" value="${m.id}">${m.name}</option>`).join("");
     }
 
-    function renderCategories(){
-      const categories = [...new Set(store.menu.map(m => m.category).filter(c => c))].sort();
-      const select = qs('#categoryFilter');
-      const currentValue = select.value;
-      select.innerHTML = '<option value="">ทุกหมวดหมู่</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
-      select.value = currentValue;
+    let currentCategory = "";
+    let currentSort = "default";
+
+    function renderCategories() {
+      const categories = [...new Set(store.menu.map(m => m.category || "อื่นๆ"))].sort();
+      const container = qs("#categoryChips");
+      container.innerHTML = '<button class="filter-chip selected" data-category="">ทั้งหมด</button>' + categories.map(c => `<button class="filter-chip" data-category="${c}">${c}</button>`).join("");
     }
 
-    function renderMenuGrid(){
-      renderCategories();
-      const wrap = qs('#menuGrid');
-      const search = qs('#searchInput').value.toLowerCase();
-      const category = qs('#categoryFilter').value;
-      let filtered = store.menu.filter(m => 
-        m.name.toLowerCase().includes(search) &&
-        (category === '' || m.category === category)
-      );
-      const sort = qs('#sortFilter').value;
-      if(sort){
-        filtered.sort((a,b) => {
-          if(sort === 'price-asc') return a.price - b.price;
-          if(sort === 'price-desc') return b.price - b.price;
-          if(sort === 'name-asc') return a.name.localeCompare(b.name);
-          if(sort === 'name-desc') return b.name.localeCompare(a.name);
-          return 0;
-        });
-      }
-      if(!filtered.length){ wrap.innerHTML = `<div class="col-span-full text-center text-gray-500 py-6">ไม่มีเมนูที่ตรงกัน</div>`; return; }
-      wrap.innerHTML = filtered.map(m=>`
-        <div class="glass rounded-xl overflow-hidden card-hover shadow-soft">
+    function getSorter(sort) {
+      return (a, b) => {
+        if (sort === "price-asc") return a.price - b.price;
+        if (sort === "price-desc") return b.price - a.price;
+        if (sort === "name-asc") return a.name.localeCompare(b.name, "th");
+        if (sort === "name-desc") return b.name.localeCompare(a.name, "th");
+        return 0;
+      };
+    }
+
+    function renderMenuCard(m) {
+      return `
+        <div class="glass rounded-xl overflow-hidden card-hover shadow-soft menu-card relative">
           <div class="h-48 bg-gray-100 overflow-hidden">
-            <img src="${m.image||'https://placehold.net/400x400.png'}" alt="${m.name}" class="w-full h-full object-cover"/>
+            <img src="${m.image || 'https://placehold.net/400x400.png'}" alt="${m.name}" class="w-full h-full object-cover"/>
           </div>
           <div class="p-4">
             <div class="flex items-start justify-between gap-3">
               <div>
                 <div class="font-semibold text-gray-900">${m.name}</div>
-                <div class="text-sm text-gray-500">${m.category||'-'}</div>
+                <div class="text-sm text-gray-500">${m.category || '-'}</div>
                 <div class="text-sm font-medium text-gray-900 mt-1">${money(m.price)}</div>
+                ${m.requiresPreorder ? '<div class="preorder-note">*ต้องสั่งล่วงหน้า 1-2 วัน</div>' : ''}
               </div>
-              <div class="flex items-center gap-2 flex-wrap">
-                ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium">แก้ไข</button>` : ''}
+              <div class="flex items-center gap-2">
+                ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium">แก้ไข</button>` : ""}
                 <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-full btn-primary text-white text-sm font-medium">เลือก</button>
-                <button data-id="${m.id}" class="quickAdd md:hidden px-3 py-1.5 rounded-full btn-secondary text-white text-sm font-medium">เพิ่มทันที</button>
               </div>
             </div>
           </div>
+          ${m.isRecommended ? '<span class="recommended-badge">แนะนำ!</span>' : ""}
         </div>
-      `).join('');
+      `;
     }
 
-    // ---------- Order History ----------
-    function renderOrderHistory(){
-      const tbody = qs('#orderHistoryBody');
-      const orders = store.orders;
-      if(!orders.length){
-        tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500">ยังไม่มีประวัติการสั่งซื้อ</td></tr>';
+    function renderMenuGrid() {
+      const search = qs("#searchInput").value.toLowerCase();
+      let items = store.menu.filter(m => m.name.toLowerCase().includes(search));
+      if (currentCategory) items = items.filter(m => (m.category || "อื่นๆ") === currentCategory);
+      const sorter = getSorter(currentSort);
+      if (currentSort !== "default") items.sort(sorter);
+
+      const wrap = qs("#menuGrid");
+      if (!items.length) {
+        wrap.innerHTML = `<div class="text-center text-gray-500 py-6">ไม่มีเมนูที่ตรงกัน</div>`;
         return;
       }
-      tbody.innerHTML = orders.map((order, idx) => `
-        <tr class="border-b border-gray-200">
-          <td class="py-3 px-4">ออร์เดอร์ #${idx+1}</td>
-          <td class="py-3 px-4">${new Date(order.timestamp).toLocaleString('th-TH')}</td>
-          <td class="py-3 px-4">${order.items.map(item => `${item.name} x${item.qty} (${item.sweet}) ${item.fulfill}${item.cod ? ' (COD)' : ''}${item.note ? `, โน้ต: ${item.note}` : ''}`).join('<br>')}</td>
-          <td class="py-3 px-4">${money(order.total)}</td>
-          <td class="py-3 px-4">${order.items.some(item => item.address) ? order.items.map(item => item.address || '-').join('<br>') : '-'}</td>
-        </tr>
-      `).join('');
+
+      let html = "";
+      const recommended = items.filter(m => m.isRecommended);
+      if (recommended.length) {
+        html += `
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">เมนูแนะนำ</h2>
+            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              ${recommended.map(renderMenuCard).join("")}
+            </div>
+          </div>
+        `;
+      }
+      const groups = items.reduce((acc, m) => {
+        const cat = m.category || "อื่นๆ";
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(m);
+        return acc;
+      }, {});
+      const sortedCats = Object.keys(groups).sort();
+      html += sortedCats.map(cat => `
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">${cat}</h2>
+          <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            ${groups[cat].map(renderMenuCard).join("")}
+          </div>
+        </div>
+      `).join("");
+      wrap.innerHTML = html;
     }
 
     // ---------- Cart ----------
-    function cartTotal(){ return store.cart.reduce((s,i)=>s + (i.price||0)*(i.qty||0), 0); }
+    function cartTotal() {
+      return store.cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 0), 0);
+    }
 
-    function renderCart(){
-      const list = qs('#cartList');
-      const bottomSheet = qs('#cartBottomSheetList');
-      const badge = qs('#cartCountBadge');
-      if (!Array.isArray(store.cart)) {
-        console.error('Invalid cart state:', store.cart);
-        store.cart = [];
-      }
+    function renderCart() {
+      const list = qs("#cartList");
+      const bottomSheet = qs("#cartBottomSheetList");
+      const badge = qs("#cartCountBadge");
       const total = money(cartTotal());
-      qs('#cartGrandTotal').textContent = total;
-      qs('#bottomSheetTotal').textContent = total;
-      badge.textContent = store.cart.reduce((s,i)=>s+(i.qty||0),0);
+      qs("#cartGrandTotal").textContent = total;
+      qs("#bottomSheetTotal").textContent = total;
+      badge.textContent = store.cart.reduce((s, i) => s + (i.qty || 0), 0);
 
       const itemHTML = (item, idx) => `
         <div class="py-4 flex items-start gap-4 hover:bg-gray-50/50 rounded-lg transition">
           <div class="flex-1">
-            <div class="flex items-center justify-between gap-3">
-              <div class="font-semibold text-gray-900">${item.name || 'ไม่ทราบ'} <span class="text-xs text-gray-500">(${item.sweet || 'ไม่ระบุ'})</span></div>
-              <div class="text-sm font-medium text-gray-900">${money(item.price || 0)}</div>
-            </div>
-            <div class="text-xs text-gray-500 mt-1">${item.fulfill || 'ไม่ระบุ'}${item.note? ' • โน้ต: '+item.note:''}${item.cod? ' • COD':''}${item.address? ' • ที่อยู่: '+item.address:''}</div>
+            <div class="font-semibold text-gray-900">${item.name} <span class="text-xs text-gray-500">${item.sweet ? `(${item.sweet})` : ''}</span></div>
+            <div class="text-sm font-medium text-gray-900">${money(item.price)}</div>
+            <div class="text-xs text-gray-500 mt-1">${item.fulfill}${item.requiresPreorder ? ' • *ต้องสั่งล่วงหน้า 1-2 วัน' : ''}${item.note ? ` • โน้ต: ${item.note}` : ""}</div>
             <div class="mt-3 flex items-center gap-3">
               <button class="qtyDec px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">−</button>
-              <span class="min-w-[2ch] text-center font-medium">${item.qty || 1}</span>
+              <span class="min-w-[2ch] text-center font-medium">${item.qty}</span>
               <button class="qtyInc px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">+</button>
               <button class="rmItem ml-auto px-3 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white text-sm font-medium" data-idx="${idx}">ลบ</button>
             </div>
           </div>
         </div>`;
 
-      const html = store.cart.map(itemHTML).join('') || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
+      const html = store.cart.map(itemHTML).join("") || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
       list.innerHTML = html;
       bottomSheet.innerHTML = html;
     }
 
-    function saveCart(){
-      if (!Array.isArray(store.cart)) {
-        console.error('Invalid cart state on save:', store.cart);
-        store.cart = [];
-      }
-      store.cart = store.cart;
-      renderCart();
-    }
-
-    // ---------- Form interactions ----------
-    function updatePriceFromSelect(){
-      const sel = qs('#selectedMenu');
+    // ---------- Form Interactions ----------
+    function updatePriceFromSelect() {
+      const sel = qs("#selectedMenu");
       const opt = sel.selectedOptions[0];
-      if(!opt || !opt.dataset.price){
-        sel.classList.remove('ring-2', 'ring-brand-500');
-        return;
+      if (opt && opt.dataset.price) {
+        qs("#price").value = Number(opt.dataset.price).toFixed(2);
+        const isPreorder = opt.dataset.preorder === "true";
+        qs("#preorderNote").classList.toggle("hidden", !isPreorder);
+        qs("#orderForm .grid-cols-5").classList.toggle("hidden", isPreorder); // Hide sweetness for sandwiches
       }
-      sel.classList.add('ring-2', 'ring-brand-500');
-      qs('#price').value = Number(opt.dataset.price).toFixed(2);
       calcTotal();
     }
 
-    function calcTotal(){
-      const price = Number(qs('#price').value||0);
-      const qty = Math.max(1, Number(qs('#qty').value||1));
-      qs('#total').textContent = money(price*qty);
+    function calcTotal() {
+      const price = Number(qs("#price").value || 0);
+      const qty = Math.max(1, Number(qs("#qty").value || 1));
+      qs("#total").textContent = money(price * qty);
     }
 
-    function quickAddToCart(menuId){
-      const menu = store.menu.find(m => m.id === menuId);
-      if(!menu){ showToast('เมนูไม่พบ', 'error'); return; }
-      const newItem = {
-        id: uid(),
-        menuId: menu.id,
-        name: menu.name,
-        price: menu.price,
-        qty: 1,
-        sweet: '50%',
-        fulfill: 'รับเองที่ร้าน',
-        note: '',
-        cod: true,
-        address: ''
-      };
-      const existingItem = store.cart.find(item =>
-        item.menuId === newItem.menuId &&
-        item.sweet === newItem.sweet &&
-        item.fulfill === newItem.fulfill &&
-        item.note === newItem.note &&
-        item.cod === newItem.cod &&
-        item.address === newItem.address
-      );
-      if(existingItem){
-        existingItem.qty += newItem.qty;
-      } else {
-        store.cart = [...store.cart, newItem];
+    function addToCart() {
+      const selId = qs("#selectedMenu").value;
+      if (!selId) {
+        showToast("กรุณาเลือกเมนู", "error");
+        return;
       }
-      renderCart();
-      showToast(`เพิ่ม ${menu.name} ลงตะกร้าแล้ว`);
-    }
-
-    function quickPresetAdd(e){
-      const btn = e.target;
-      const menuName = btn.dataset.menu;
-      const menu = store.menu.find(m => m.name === menuName);
-      if(!menu){ showToast('เมนูไม่พบ', 'error'); return; }
-      const newItem = {
-        id: uid(),
-        menuId: menu.id,
-        name: menu.name,
-        price: Number(btn.dataset.price),
-        qty: 1,
-        sweet: btn.dataset.sweet,
-        fulfill: btn.dataset.fulfill,
-        note: '',
-        cod: true,
-        address: ''
-      };
-      const existingItem = store.cart.find(item =>
-        item.menuId === newItem.menuId &&
-        item.sweet === newItem.sweet &&
-        item.fulfill === newItem.fulfill &&
-        item.note === newItem.note &&
-        item.cod === newItem.cod &&
-        item.address === newItem.address
-      );
-      if(existingItem){
-        existingItem.qty += newItem.qty;
-      } else {
-        store.cart = [...store.cart, newItem];
+      const menu = store.menu.find(m => m.id === selId);
+      const price = Number(qs("#price").value || 0);
+      const qty = Math.max(1, Number(qs("#qty").value || 1));
+      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
+      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
+      const note = qs("#note").value.trim();
+      const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
+      if (fulfill.includes("จัดส่ง") && !address) {
+        showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
+        return;
       }
-      renderCart();
-      qs('#orderModal').classList.add('hidden');
-      showToast(`เพิ่ม ${menu.name} ลงตะกร้าแล้ว`);
-    }
-
-    function addToCart(){
-      const selId = qs('#selectedMenu').value; if(!selId){ showToast('กรุณาเลือกเมนู', 'error'); return; }
-      const menu = store.menu.find(m=>m.id===selId);
-      const price = Number(qs('#price').value||0);
-      const qty = Math.max(1, Number(qs('#qty').value||1));
-      const sweet = (qs('input[name="sweet"]:checked')||{}).value || '50%';
-      const fulfill = (qs('input[name="fulfill"]:checked')||{}).value || 'รับเองที่ร้าน';
-      const note = qs('#note').value.trim();
-      const cod = qs('#cod').checked;
-      const address = fulfill.includes('จัดส่ง') && qs('#deliveryAddress').value.trim() ? qs('#deliveryAddress').value.trim() : '';
-      if(fulfill.includes('จัดส่ง') && !address){ showToast('กรุณากรอกที่อยู่จัดส่ง', 'error'); return; }
-      if(qs('#saveAddress').checked && address) store.savedAddress = address;
-      const newItem = { id: uid(), menuId: selId, name: menu?.name || 'ไม่ทราบ', price, qty, sweet, fulfill, note, cod, address };
-      const existingItem = store.cart.find(item =>
-        item.menuId === newItem.menuId &&
-        item.sweet === newItem.sweet &&
-        item.fulfill === newItem.fulfill &&
-        item.note === newItem.note &&
-        item.cod === newItem.cod &&
-        item.address === newItem.address
-      );
-      if(existingItem){
-        existingItem.qty += newItem.qty;
-      } else {
-        store.cart = [...store.cart, newItem];
+      if (menu.requiresPreorder) {
+        showToast("เมนูนี้ต้องสั่งล่วงหน้า 1-2 วัน", "info");
       }
+
+      const newItem = { id: uid(), menuId: selId, name: menu.name, price, qty, sweet, fulfill, note, address, requiresPreorder: menu.requiresPreorder };
+      store.cart = [...store.cart, newItem];
       renderCart();
-      qs('#orderModal').classList.add('hidden');
-      showToast('เพิ่มลงตะกร้าแล้ว');
+      closeOrderModal();
+      showToast("เพิ่มลงตะกร้าแล้ว");
     }
 
-    function clearCart(){
+    function clearCart() {
       store.cart = [];
       renderCart();
-      showToast('ล้างตะกร้าแล้ว');
+      showToast("ล้างตะกร้าแล้ว");
     }
 
-    // ---------- Place order & Telegram ----------
-    function buildOrderText(){
-      const lines = [];
-      lines.push('🧋 *ชาบ้านน้องขิม* – คำสั่งซื้อใหม่');
-      const ts = new Date();
-      lines.push(`🕒 ${ts.toLocaleString('th-TH')}`);
-      lines.push('');
-      if(!store.cart.length){ return null; }
-      store.cart.forEach((it,i)=>{
-        lines.push(`${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}`);
-        lines.push(`   • หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}`);
-        if(it.note) lines.push(`   • โน้ต: ${it.note}`);
-        if(it.address) lines.push(`   • ที่อยู่: ${it.address}`);
-      });
-      lines.push('');
-      lines.push(`รวมทั้งสิ้น: *${money(cartTotal())}*`);
-      return lines.join('\n');
-    }
-
-    async function sendOrderToTelegram(text){
-      if(TELEGRAM_PROXY_URL){
-        const res = await fetch(TELEGRAM_PROXY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) });
-        if(!res.ok) throw new Error('Proxy error');
-        return true;
+    // ---------- Place Order ----------
+    function placeOrder() {
+      if (!store.cart.length) {
+        showToast("ตะกร้าว่าง", "error");
+        return;
       }
-      if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) throw new Error('ยังไม่ได้ตั้งค่า Telegram');
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }) });
-      if(!res.ok) throw new Error('ส่ง Telegram ไม่สำเร็จ (อาจติด CORS)');
-      return true;
-    }
-
-    function openConfirmOrderModal(){
-      if(!store.cart.length){ showToast('ตะกร้าว่าง', 'error'); return; }
+      const hasPreorder = store.cart.some(item => item.requiresPreorder);
+      store.cart = [];
+      renderCart();
       closeCart();
-      const summary = qs('#confirmOrderSummary');
-      summary.innerHTML = store.cart.map((it, i) => `
-        <div>${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}</div>
-        <div class="text-xs text-gray-500 pl-4">หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}${it.note?' • โน้ต: '+it.note:''}${it.address?' • ที่อยู่: '+it.address:''}</div>
-      `).join('');
-      qs('#confirmOrderModal').classList.remove('hidden');
+      showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
     }
 
-    async function placeOrder(){
-      const text = buildOrderText();
-      const btns = [qs('#placeOrderBtn'), qs('#bottomSheetPlaceOrderBtn'), qs('#floatingOrderBtn'), qs('#confirmOrderBtn')];
-      btns.forEach(b => b.disabled = true);
-      try {
-        await sendOrderToTelegram(text);
-        store.orders = [...store.orders, { timestamp: Date.now(), items: store.cart, total: cartTotal() }];
-        showToast('สั่งออร์เดอร์สำเร็จ ✅');
-        store.cart = [];
-        renderCart();
-        renderOrderHistory();
-        qs('#confirmOrderModal').classList.add('hidden');
-        closeCart();
-      } catch(err){
-        console.error('Place order error:', err);
-        showToast(err.message || 'เกิดข้อผิดพลาด', 'error');
-      } finally {
-        btns.forEach(b => b.disabled = false);
+    // ---------- Menu Modal Logic ----------
+    function openMenuModal(editId = null) {
+      if (!store.isAdmin) {
+        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+        return;
+      }
+      qs("#menuModal").classList.remove("hidden");
+      qs("#menuForm").reset();
+      qs("#menuId").value = "";
+      qs("#deleteMenuBtn").classList.add("hidden");
+      qs("#menuModalTitle").textContent = editId ? "แก้ไขเมนู" : "เพิ่มเมนู";
+      if (editId) {
+        const m = store.menu.find(x => x.id === editId);
+        if (!m) return;
+        qs("#menuId").value = m.id;
+        qs("#menuName").value = m.name;
+        qs("#menuPrice").value = m.price;
+        qs("#menuCategory").value = m.category || "";
+        qs("#isRecommended").checked = !!m.isRecommended;
+        qs("#requiresPreorder").checked = !!m.requiresPreorder;
+        qs("#deleteMenuBtn").classList.remove("hidden");
       }
     }
 
-    // ---------- Menu modal logic ----------
-    function openMenuModal(editId=null){
-      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
-      qs('#menuModal').classList.remove('hidden');
-      qs('#menuForm').reset();
-      qs('#menuId').value = '';
-      qs('#deleteMenuBtn').classList.add('hidden');
-      qs('#menuModalTitle').textContent = editId? 'แก้ไขเมนู' : 'เพิ่มเมนู';
-      if(editId){
-        const m = store.menu.find(x=>x.id===editId);
-        if(!m) return;
-        qs('#menuId').value = m.id;
-        qs('#menuName').value = m.name;
-        qs('#menuPrice').value = m.price;
-        qs('#menuCategory').value = m.category||'';
-        qs('#menuImage').value = m.image||'';
-        qs('#deleteMenuBtn').classList.remove('hidden');
-      }
+    function closeMenuModal() {
+      qs("#menuModal").classList.add("hidden");
     }
-    function closeMenuModal(){ qs('#menuModal').classList.add('hidden'); }
 
-    function upsertMenu(e){
+    function upsertMenu(e) {
       e.preventDefault();
-      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
-      const id = qs('#menuId').value || uid();
-      const item = { id, name: qs('#menuName').value.trim(), price: Number(qs('#menuPrice').value||0), category: qs('#menuCategory').value.trim(), image: qs('#menuImage').value.trim() };
-      if(!item.name){ showToast('กรอกชื่อเมนู', 'error'); return; }
-      let arr = store.menu.slice();
-      const idx = arr.findIndex(x=>x.id===id);
-      if(idx>-1) arr[idx]=item; else arr.push(item);
-      store.menu = arr;
-      renderMenuGrid(); renderMenuOptions();
-      closeMenuModal();
-      showToast('บันทึกเมนูแล้ว');
-    }
-
-    function deleteMenu(){
-      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อจัดการเมนู', 'error'); return; }
-      const id = qs('#menuId').value; if(!id) return;
-      store.menu = store.menu.filter(x=>x.id!==id);
-      renderMenuGrid(); renderMenuOptions();
-      closeMenuModal();
-      showToast('ลบเมนูแล้ว');
-    }
-
-    function exportJSON(){
-      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อส่งออก JSON', 'error'); return; }
-      const data = JSON.stringify(store.menu, null, 2);
-      const blob = new Blob([data], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'menu-items.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    function importJSON(){
-      if(!store.isAdmin){ showToast('ต้องเป็นผู้ดูแลเพื่อนำเข้า JSON', 'error'); return; }
-      const inp = document.createElement('input');
-      inp.type='file'; inp.accept='application/json';
-      inp.onchange = () => {
-        const f = inp.files[0]; if(!f) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          try { const arr = JSON.parse(reader.result); if(Array.isArray(arr)) { store.menu = arr; renderMenuGrid(); renderMenuOptions(); showToast('นำเข้าเมนูสำเร็จ'); } else throw new Error(); }
-          catch { showToast('ไฟล์ไม่ถูกต้อง', 'error'); }
-        };
-        reader.readAsText(f);
+      if (!store.isAdmin) {
+        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+        return;
+      }
+      const id = qs("#menuId").value || uid();
+      const item = {
+        id,
+        name: qs("#menuName").value.trim(),
+        price: Number(qs("#menuPrice").value || 0),
+        category: qs("#menuCategory").value.trim(),
+        isRecommended: qs("#isRecommended").checked,
+        requiresPreorder: qs("#requiresPreorder").checked,
       };
-      inp.click();
+      if (!item.name) {
+        showToast("กรุณากรอกชื่อเมนู", "error");
+        return;
+      }
+      let arr = store.menu.slice();
+      const idx = arr.findIndex(x => x.id === id);
+      if (idx > -1) arr[idx] = item;
+      else arr.push(item);
+      store.menu = arr;
+      renderMenuGrid();
+      renderMenuOptions();
+      closeMenuModal();
+      showToast("บันทึกเมนูแล้ว");
     }
 
-    // ---------- Login logic ----------
-    function openLoginModal(){
-      qs('#loginModal').classList.remove('hidden');
-      qs('#loginForm').reset();
+    function deleteMenu() {
+      if (!store.isAdmin) {
+        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+        return;
+      }
+      const id = qs("#menuId").value;
+      if (!id) return;
+      store.menu = store.menu.filter(x => x.id !== id);
+      renderMenuGrid();
+      renderMenuOptions();
+      closeMenuModal();
+      showToast("ลบเมนูแล้ว");
     }
 
-    function closeLoginModal(){
-      qs('#loginModal').classList.add('hidden');
+    // ---------- Login Logic ----------
+    function openLoginModal() {
+      qs("#loginModal").classList.remove("hidden");
+      qs("#loginForm").reset();
     }
 
-    function handleLogin(e){
+    function closeLoginModal() {
+      qs("#loginModal").classList.add("hidden");
+    }
+
+    function handleLogin(e) {
       e.preventDefault();
-      const username = qs('#username').value.trim();
-      const password = qs('#password').value.trim();
-      if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
+      const username = qs("#username").value.trim();
+      const password = qs("#password").value.trim();
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
         store.isAdmin = true;
-        qs('#adminControls').classList.remove('hidden');
-        qs('#loginBtn').textContent = 'ออกจากระบบ';
-        qs('#hamburgerLoginBtn').textContent = 'ออกจากระบบ';
-        qs('#loginBtn').onclick = handleLogout;
-        qs('#hamburgerLoginBtn').onclick = handleLogout;
+        qs("#adminControls").classList.remove("hidden");
+        qs("#loginBtn").textContent = "ออกจากระบบ";
+        qs("#hamburgerLoginBtn").textContent = "ออกจากระบบ";
+        qs("#loginBtn").onclick = handleLogout;
+        qs("#hamburgerLoginBtn").onclick = handleLogout;
         renderMenuGrid();
         closeLoginModal();
-        closeHamburgerMenu();
-        showToast('เข้าสู่ระบบสำเร็จ');
+        showToast("เข้าสู่ระบบสำเร็จ");
       } else {
-        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+        showToast("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "error");
       }
     }
 
-    function handleLogout(){
+    function handleLogout() {
       store.isAdmin = false;
-      qs('#adminControls').classList.add('hidden');
-      qs('#loginBtn').textContent = 'เข้าสู่ระบบ';
-      qs('#hamburgerLoginBtn').textContent = 'เข้าสู่ระบบ';
-      qs('#loginBtn').onclick = openLoginModal;
-      qs('#hamburgerLoginBtn').onclick = openLoginModal;
+      qs("#adminControls").classList.add("hidden");
+      qs("#loginBtn").textContent = "เข้าสู่ระบบ";
+      qs("#hamburgerLoginBtn").textContent = "เข้าสู่ระบบ";
+      qs("#loginBtn").onclick = openLoginModal;
+      qs("#hamburgerLoginBtn").onclick = openLoginModal;
       renderMenuGrid();
-      closeHamburgerMenu();
-      showToast('ออกจากระบบแล้ว');
+      showToast("ออกจากระบบแล้ว");
     }
 
     // ---------- Cart Bottom Sheet ----------
-    function openCart(){
-      qs('#cartBottomSheet').classList.add('open');
-      if ('vibrate' in navigator) navigator.vibrate(50);
+    function openCart() {
+      qs("#cartBottomSheet").classList.add("open");
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
-    function closeCart(){
-      qs('#cartBottomSheet').classList.remove('open');
-      if ('vibrate' in navigator) navigator.vibrate(50);
+
+    function closeCart() {
+      qs("#cartBottomSheet").classList.remove("open");
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
     // ---------- Order Modal ----------
-    function openOrderModal(){
-      qs('#orderModal').classList.remove('hidden');
-      qs('#orderForm').reset();
-      qs('#selectedMenu').value = '';
-      qs('#price').value = '';
-      qs('#qty').value = '1';
+    function openOrderModal(menuId = null) {
+      qs("#orderModal").classList.remove("hidden");
+      qs("#orderForm").reset();
+      qs("#selectedMenu").value = menuId || "";
+      qs("#price").value = "";
+      qs("#qty").value = "1";
       qs('input[name="sweet"][value="50%"]').checked = true;
       qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
-      qs('#deliveryAddress').value = store.savedAddress;
-      qs('#note').value = '';
-      qs('#cod').checked = true;
+      qs("#deliveryAddress").value = "";
+      qs("#note").value = "";
       handleFulfillChange();
-      calcTotal();
-      if ('vibrate' in navigator) navigator.vibrate(50);
-    }
-    function closeOrderModal(){
-      qs('#orderModal').classList.add('hidden');
-      if ('vibrate' in navigator) navigator.vibrate(50);
+      updatePriceFromSelect();
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    // ---------- History Modal ----------
-    function openHistoryModal(){
-      renderOrderHistory();
-      qs('#historyModal').classList.remove('hidden');
-      closeHamburgerMenu();
-      if ('vibrate' in navigator) navigator.vibrate(50);
+    function closeOrderModal() {
+      qs("#orderModal").classList.add("hidden");
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
-    function closeHistoryModal(){
-      qs('#historyModal').classList.add('hidden');
-      if ('vibrate' in navigator) navigator.vibrate(50);
+
+    // ---------- Search and Filter Modal ----------
+    function openSearchFilterModal() {
+      renderCategories();
+      qs("#searchFilterModal").classList.remove("hidden");
+      qs("#searchInput").value = "";
+      qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+      qs("#categoryChips .filter-chip[data-category='']").classList.add("selected");
+      qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+      qs("#sortChips .filter-chip[data-sort='default']").classList.add("selected");
+      if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    function closeSearchFilterModal() {
+      qs("#searchFilterModal").classList.add("hidden");
+      if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    function applyFilters() {
+      renderMenuGrid();
+      closeSearchFilterModal();
+      showToast("นำตัวกรองไปใช้แล้ว");
+    }
+
+    function clearFilters() {
+      qs("#searchInput").value = "";
+      currentCategory = "";
+      currentSort = "default";
+      qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+      qs("#categoryChips .filter-chip[data-category='']").classList.add("selected");
+      qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+      qs("#sortChips .filter-chip[data-sort='default']").classList.add("selected");
+      renderMenuGrid();
+      showToast("ล้างตัวกรองแล้ว");
     }
 
     // ---------- Delivery Address Handling ----------
-    function handleFulfillChange(){
-      const fulfill = (qs('input[name="fulfill"]:checked')||{}).value || 'รับเองที่ร้าน';
-      const addressSection = qs('#deliveryAddressSection');
-      if(fulfill.includes('จัดส่ง')){
-        addressSection.classList.remove('hidden');
-        qs('#deliveryAddress').value = store.savedAddress;
+    function handleFulfillChange() {
+      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
+      const addressSection = qs("#deliveryAddressSection");
+      if (fulfill.includes("จัดส่ง")) {
+        addressSection.classList.remove("hidden");
       } else {
-        addressSection.classList.add('hidden');
+        addressSection.classList.add("hidden");
       }
     }
 
-    // ---------- Pull-to-Refresh ----------
-    function setupPullToRefresh(){
-      let startY = 0;
-      let isPulling = false;
-      const menuGrid = qs('#menuGrid');
-      menuGrid.addEventListener('touchstart', (e) => {
-        if(window.scrollY === 0) {
-          startY = e.touches[0].clientY;
-          isPulling = true;
+    // ---------- Event Listeners ----------
+    function setupEventListeners() {
+      qs("#openSearchModalBtn").onclick = openSearchFilterModal;
+      qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
+      qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
+      qs("#applyFiltersBtn").onclick = applyFilters;
+      qs("#clearFiltersBtn").onclick = clearFilters;
+
+      qs("#categoryChips").onclick = e => {
+        const chip = e.target.closest(".filter-chip");
+        if (chip) {
+          qsa("#categoryChips .filter-chip").forEach(c => c.classList.remove("selected"));
+          chip.classList.add("selected");
+          currentCategory = chip.dataset.category;
         }
-      });
-      menuGrid.addEventListener('touchmove', (e) => {
-        if(isPulling && e.touches[0].clientY - startY > 100) {
-          renderMenuGrid();
-          showToast('รีเฟรชเมนูแล้ว');
-          isPulling = false;
+      };
+
+      qs("#sortChips").onclick = e => {
+        const chip = e.target.closest(".filter-chip");
+        if (chip) {
+          qsa("#sortChips .filter-chip").forEach(c => c.classList.remove("selected"));
+          chip.classList.add("selected");
+          currentSort = chip.dataset.sort;
         }
-      });
-      menuGrid.addEventListener('touchend', () => {
-        isPulling = false;
-      });
+      };
+
+      qs("#openCartBtn").onclick = openCart;
+      qs("#closeCartBtn").onclick = closeCart;
+      qs("#floatingOrderBtn").onclick = openCart;
+      qs("#clearCartBtn").onclick = clearCart;
+      qs("#bottomSheetClearCartBtn").onclick = clearCart;
+      qs("#placeOrderBtn").onclick = placeOrder;
+      qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
+
+      qs("#openHamburgerBtn").onclick = openHamburgerMenu;
+      qs("#closeHamburgerBtn").onclick = closeHamburgerMenu;
+      qs("#themeToggleBtn").onclick = toggleTheme;
+      qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
+      qs("#loginBtn").onclick = openLoginModal;
+      qs("#hamburgerLoginBtn").onclick = openLoginModal;
+      qs("#closeLoginModal").onclick = closeLoginModal;
+      qs("#loginForm").onsubmit = handleLogin;
+
+      qs("#addMenuBtn").onclick = () => openMenuModal();
+      qs("#closeMenuModal").onclick = closeMenuModal;
+      qs("#menuForm").onsubmit = upsertMenu;
+      qs("#deleteMenuBtn").onclick = deleteMenu;
+
+      qs("#selectedMenu").onchange = updatePriceFromSelect;
+      qs("#price").oninput = calcTotal;
+      qs("#qty").oninput = calcTotal;
+      qs("#qtyMinus").onclick = () => {
+        const inp = qs("#qty");
+        inp.value = Math.max(1, Number(inp.value) - 1);
+        calcTotal();
+      };
+      qs("#qtyPlus").onclick = () => {
+        const inp = qs("#qty");
+        inp.value = Number(inp.value) + 1;
+        calcTotal();
+      };
+      qs("#addToCartBtn").onclick = addToCart;
+      qs("#closeOrderModal").onclick = closeOrderModal;
+
+      qs("#menuGrid").onclick = e => {
+        const editBtn = e.target.closest(".editMenu");
+        const selectBtn = e.target.closest(".quickSelect");
+        if (editBtn) openMenuModal(editBtn.dataset.id);
+        if (selectBtn) openOrderModal(selectBtn.dataset.id);
+      };
+
+      qs("#cartList").onclick = e => {
+        const dec = e.target.closest(".qtyDec");
+        const inc = e.target.closest(".qtyInc");
+        const rm = e.target.closest(".rmItem");
+        if (dec || inc || rm) {
+          const idx = Number((dec || inc || rm).dataset.idx);
+          let cart = store.cart.slice();
+          if (dec && cart[idx].qty > 1) cart[idx].qty -= 1;
+          if (inc) cart[idx].qty += 1;
+          if (rm) cart.splice(idx, 1);
+          store.cart = cart;
+          renderCart();
+        }
+      };
+
+      qs("#cartBottomSheetList").onclick = qs("#cartList").onclick;
+      qsa('input[name="fulfill"]').forEach(r => r.onchange = handleFulfillChange);
+    }
+
+    // ---------- Hamburger Menu ----------
+    function openHamburgerMenu() {
+      qs("#hamburgerMenu").classList.remove("translate-x-full");
+      if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    function closeHamburgerMenu() {
+      qs("#hamburgerMenu").classList.add("translate-x-full");
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
     // ---------- Init ----------
-    function init(){
+    function init() {
       seedMenu();
       renderMenuGrid();
       renderMenuOptions();
       renderCart();
-      if(store.isAdmin){
-        qs('#adminControls').classList.remove('hidden');
-        qs('#loginBtn').textContent = 'ออกจากระบบ';
-        qs('#hamburgerLoginBtn').textContent = 'ออกจากระบบ';
-        qs('#loginBtn').onclick = handleLogout;
-        qs('#hamburgerLoginBtn').onclick = handleLogout;
-      } else {
-        qs('#loginBtn').onclick = openLoginModal;
-        qs('#hamburgerLoginBtn').onclick = openLoginModal;
+      if (store.isAdmin) {
+        qs("#adminControls").classList.remove("hidden");
+        qs("#loginBtn").textContent = "ออกจากระบบ";
+        qs("#hamburgerLoginBtn").textContent = "ออกจากระบบ";
+        qs("#loginBtn").onclick = handleLogout;
+        qs("#hamburgerLoginBtn").onclick = handleLogout;
       }
-      if(store.theme === 'light'){
-        document.body.classList.add('light-theme');
-        qs('#themeToggleBtn').textContent = 'โหมดมืด';
-        qs('#hamburgerThemeToggleBtn').textContent = 'โหมดมืด';
-      }
-
-      qs('#themeToggleBtn').onclick = toggleTheme;
-      qs('#hamburgerThemeToggleBtn').onclick = toggleTheme;
-      qs('#addMenuBtn').onclick = () => openMenuModal();
-      qs('#exportJsonBtn').onclick = exportJSON;
-      qs('#importJsonBtn').onclick = importJSON;
-      qs('#historyBtn').onclick = openHistoryModal;
-      qs('#hamburgerHistoryBtn').onclick = openHistoryModal;
-      qs('#closeHistoryModal').onclick = closeHistoryModal;
-      qs('#historyModal').addEventListener('click', (e) => { if(e.target === qs('#historyModal')) closeHistoryModal(); });
-
-      document.addEventListener('click', (e) => {
-        if (e.target.matches('.editMenu')){ openMenuModal(e.target.dataset.id); }
-        if (e.target.matches('.quickSelect')){ const id=e.target.dataset.id; openOrderModal(); qs('#selectedMenu').value=id; updatePriceFromSelect(); }
-        if (e.target.matches('.quickAdd')){ quickAddToCart(e.target.dataset.id); }
-        if (e.target.matches('.quickPreset')){ quickPresetAdd(e); }
-        if (e.target.matches('.qtyInc')) {
-          const idx = +e.target.dataset.idx;
-          if (store.cart[idx]) {
-            store.cart[idx].qty++;
-            saveCart();
-            if ('vibrate' in navigator) navigator.vibrate(30);
-          }
-        }
-        if (e.target.matches('.qtyDec')) {
-          const idx = +e.target.dataset.idx;
-          if (store.cart[idx] && store.cart[idx].qty > 1) {
-            store.cart[idx].qty--;
-            saveCart();
-            if ('vibrate' in navigator) navigator.vibrate(30);
-          }
-        }
-        if (e.target.matches('.rmItem')) {
-          const idx = +e.target.dataset.idx;
-          if (store.cart[idx]) {
-            store.cart.splice(idx, 1);
-            saveCart();
-            if ('vibrate' in navigator) navigator.vibrate(30);
-          }
-        }
-      });
-
-      qs('#menuForm').onsubmit = upsertMenu;
-      qs('#deleteMenuBtn').onclick = deleteMenu;
-      qs('#closeMenuModal').onclick = closeMenuModal;
-      qs('#menuModal').addEventListener('click', (e) => { if(e.target === qs('#menuModal')) closeMenuModal(); });
-      qs('#loginForm').onsubmit = handleLogin;
-      qs('#closeLoginModal').onclick = closeLoginModal;
-      qs('#loginModal').addEventListener('click', (e) => { if(e.target === qs('#loginModal')) closeLoginModal(); });
-      qs('#orderForm').onsubmit = (e) => { e.preventDefault(); addToCart(); };
-      qs('#selectedMenu').onchange = updatePriceFromSelect;
-      qs('#qtyPlus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)+1); calcTotal(); if ('vibrate' in navigator) navigator.vibrate(30); };
-      qs('#qtyMinus').onclick = () => { qs('#qty').value = Math.max(1, Number(qs('#qty').value||1)-1); calcTotal(); if ('vibrate' in navigator) navigator.vibrate(30); };
-      qs('#qty').oninput = calcTotal; qs('#price').oninput = calcTotal; calcTotal();
-      qs('#addToCartBtn').onclick = addToCart;
-      qs('#placeOrderBtn').onclick = openConfirmOrderModal;
-      qs('#bottomSheetPlaceOrderBtn').onclick = openConfirmOrderModal;
-      qs('#floatingOrderBtn').onclick = openConfirmOrderModal;
-      qs('#confirmOrderBtn').onclick = placeOrder;
-      qs('#cancelConfirmBtn').onclick = () => qs('#confirmOrderModal').classList.add('hidden');
-      qs('#confirmOrderModal').addEventListener('click', (e) => { if(e.target === qs('#confirmOrderModal')) qs('#confirmOrderModal').classList.add('hidden'); });
-      qs('#searchInput').oninput = renderMenuGrid;
-      qs('#categoryFilter').onchange = renderMenuGrid;
-      qs('#sortFilter').onchange = renderMenuGrid;
-      qsa('input[name="fulfill"]').forEach(el => el.addEventListener('change', handleFulfillChange));
-      qs('#openOrderModalBtn').onclick = openOrderModal;
-      qs('#closeOrderModal').onclick = closeOrderModal;
-      qs('#orderModal').addEventListener('click', (e) => { if(e.target === qs('#orderModal')) closeOrderModal(); });
-      handleFulfillChange();
-      qs('#openCartBtn').onclick = openCart;
-      qs('#closeCartBtn').onclick = closeCart;
-      qs('#clearCartBtn').onclick = clearCart;
-      qs('#bottomSheetClearCartBtn').onclick = clearCart;
-      qs('#openHamburgerBtn').onclick = openHamburgerMenu;
-      qs('#closeHamburgerBtn').onclick = closeHamburgerMenu;
-      qs('#hamburgerMenu').addEventListener('click', (e) => { if(e.target === qs('#hamburgerMenu')) closeHamburgerMenu(); });
-
-      setupPullToRefresh();
+      setupEventListeners();
+      if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    init();
   </script>
 </body>
 </html>
