@@ -391,26 +391,26 @@
         <div>
           <label class="text-base font-medium text-gray-700">ความหวาน (สำหรับเครื่องดื่ม)</label>
           <div class="mt-2 grid grid-cols-5 gap-2">
-            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+            <!-- <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
               <input type="radio" name="sweet" value="0%" class="sr-only" />
               <span>0%</span>
+            </label> -->
+            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+              <input type="radio" name="sweet" value="หวานน้อย" class="sr-only" />
+              <span>หวานน้อย</span>
             </label>
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="25%" class="sr-only" />
-              <span>25%</span>
+              <input type="radio" name="sweet" value="หวานปกติ" class="sr-only" checked />
+              <span>หวานปกติ</span>
             </label>
-            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="50%" class="sr-only" checked />
-              <span>50%</span>
-            </label>
-            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
+            <!-- <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
               <input type="radio" name="sweet" value="75%" class="sr-only" />
               <span>75%</span>
             </label>
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
               <input type="radio" name="sweet" value="100%" class="sr-only" />
               <span>100%</span>
-            </label>
+            </label> -->
           </div>
         </div>
         <div>
@@ -790,7 +790,7 @@
       const menu = store.menu.find(m => m.id === selId);
       const price = Number(qs("#price").value || 0);
       const qty = Math.max(1, Number(qs("#qty").value || 1));
-      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
+      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "หวานปกติ");
       const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
       const note = qs("#note").value.trim();
       const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
@@ -1121,7 +1121,7 @@
 
     // ---------- Init ----------
     function init() {
-      localStorage.clear();
+    //   localStorage.clear();
       seedMenu();
       renderMenuGrid();
       renderMenuOptions();
