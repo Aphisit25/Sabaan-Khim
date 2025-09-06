@@ -80,6 +80,11 @@
       background: linear-gradient(90deg, #ca8a04, #eab308);
       transform: translateY(-2px);
     }
+    .btn-disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
     input:focus, select:focus, textarea:focus {
       outline: none;
       ring: 2px solid #14b8a6;
@@ -156,7 +161,7 @@
         align-items: center;
       }
       .floating-search-btn {
-        display: none; /* Hide floating button on desktop */
+        display: none;
       }
     }
     @media (max-width: 640px) {
@@ -192,25 +197,24 @@
       gap: 1rem;
       padding: 1rem 1.5rem;
     }
-    /* Footer styles */
     .footer {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 2rem 1.5rem;
-    margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 2rem 1.5rem;
+      margin-top: 2rem;
     }
     .footer a {
-    color: #14b8a6;
-    transition: color 0.3s ease;
+      color: #14b8a6;
+      transition: color 0.3s ease;
     }
     .footer a:hover {
-    color: #0d9488;
+      color: #0d9488;
     }
     .footer svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: 0.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 0.5rem;
     }
   </style>
 </head>
@@ -219,6 +223,7 @@
     const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
     const TELEGRAM_CHAT_ID = "-1002728257218";
     const TELEGRAM_PROXY_URL = "";
+    const STORE_LOCATION = { lat: 13.7325997, lng: 100.9996336 };
   </script>
   <!-- Header -->
   <header class="sticky top-0 z-40 shadow-soft">
@@ -236,7 +241,6 @@
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <!-- Search Button (Desktop Only) -->
           <button id="openSearchModalBtn" class="hidden md:block p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition">
             <svg class="w-6 h-6 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -256,7 +260,6 @@
           <div class="hidden md:flex items-center gap-3">
             <button id="themeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">สลับโหมด</button>
             <button id="loginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">เข้าสู่ระบบ</button>
-            <!-- <button id="historyBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium">ประวัติการสั่งซื้อ</button> -->
           </div>
         </div>
       </div>
@@ -279,14 +282,11 @@
     <div class="p-4 flex flex-col gap-3">
       <button id="hamburgerThemeToggleBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">สลับโหมด</button>
       <button id="hamburgerLoginBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">เข้าสู่ระบบ</button>
-      <!-- <button id="hamburgerHistoryBtn" class="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 transition text-sm font-medium text-left">ประวัติการสั่งซื้อ</button> -->
     </div>
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Menu & Admin panel column -->
     <section class="lg:col-span-2 space-y-6">
-      <!-- Admin Controls -->
       <div id="adminControls" class="glass rounded-xl p-6 hidden shadow-soft">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <h2 class="text-lg font-semibold text-gray-900">จัดการเมนู</h2>
@@ -298,29 +298,33 @@
         </div>
         <p class="text-sm text-gray-500 mt-2">จัดการเมนูของคุณได้อย่างง่ายดาย เก็บข้อมูลใน LocalStorage</p>
       </div>
-
-      <!-- Menu Grid -->
       <div id="menuGrid" class="space-y-8"></div>
     </section>
-
-    <!-- Cart Panel (Desktop Only) -->
     <aside class="lg:col-span-1 space-y-6 hidden lg:block">
       <div class="glass rounded-xl p-6 shadow-soft animate-fade-in">
         <h3 class="text-lg font-semibold text-gray-900">ตะกร้าของฉัน</h3>
         <div id="cartList" class="divide-y divide-gray-200 my-4"></div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <span>รวมทั้งสิ้น</span>
-          <span id="cartGrandTotal" class="font-bold text-gray-900">฿0.00</span>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>ยอดรวมสินค้า</span>
+            <span id="cartSubTotal" class="font-bold text-gray-900">฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>ค่าจัดส่ง</span>
+            <span id="cartDeliveryFee" class="font-bold text-gray-900">฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>รวมทั้งสิ้น</span>
+            <span id="cartGrandTotal" class="font-bold text-gray-900">฿0.00</span>
+          </div>
         </div>
         <div class="flex gap-3 mt-4">
           <button id="clearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
           <button id="placeOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
         </div>
-        <p class="text-xs text-gray-500 mt-2">*ไม่มีค่าจัดส่ง</p>
+        <p id="deliveryNote" class="text-xs text-gray-500 mt-2"></p>
       </div>
     </aside>
-
-    <!-- Floating Order Button (Mobile Only) -->
     <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 p-4 rounded-full btn-secondary text-white shadow-glow z-30">
       <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -393,13 +397,9 @@
             </div>
           </div>
         </div>
-        <div>
+        <div id="sweetnessSection">
           <label class="text-base font-medium text-gray-700">ความหวาน (สำหรับเครื่องดื่ม)</label>
           <div class="mt-2 grid grid-cols-5 gap-2">
-            <!-- <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="0%" class="sr-only" />
-              <span>0%</span>
-            </label> -->
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
               <input type="radio" name="sweet" value="25%" class="sr-only" />
               <span>หวานน้อย</span>
@@ -408,14 +408,6 @@
               <input type="radio" name="sweet" value="50%" class="sr-only" checked />
               <span>หวานปกติ</span>
             </label>
-            <!-- <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="75%" class="sr-only" />
-              <span>75%</span>
-            </label>
-            <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="100%" class="sr-only" />
-              <span>100%</span>
-            </label> -->
           </div>
         </div>
         <div>
@@ -426,14 +418,16 @@
               <span class="text-base">รับเอง</span>
             </label>
             <label class="bg-white/80 rounded-xl px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="fulfill" value="จัดส่ง (ฟรี)" class="accent-brand-600 w-5 h-5" />
-              <span class="text-base">จัดส่ง (ฟรี)</span>
+              <input type="radio" name="fulfill" value="จัดส่ง" class="accent-brand-600 w-5 h-5" />
+              <span class="text-base">จัดส่ง</span>
             </label>
           </div>
         </div>
         <div id="deliveryAddressSection" class="hidden">
           <label class="text-base font-medium text-gray-700">ที่อยู่จัดส่ง</label>
           <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
+          <!-- <button type="button" id="getLocationBtn" class="mt-2 px-4 py-2 rounded-xl btn-primary text-white text-base font-medium">ใช้ตำแหน่งปัจจุบัน</button> -->
+          <p id="deliveryStatus" class="text-sm text-gray-500 mt-2"></p>
         </div>
         <div>
           <label class="text-base font-medium text-gray-700">โน้ตถึงร้าน</label>
@@ -441,7 +435,7 @@
         </div>
         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
           <div class="text-base text-gray-500">ยอดรวม: <span id="total" class="font-semibold text-gray-900">฿0.00</span></div>
-          <button id="addToCartBtn" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">เพิ่มลงตะกร้า</button>
+          <button id="addToCartBtn" type="button" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">เพิ่มลงตะกร้า</button>
         </div>
       </form>
     </div>
@@ -515,41 +509,53 @@
     </div>
     <div id="cartBottomSheetList" class="flex-1 overflow-y-auto p-4 divide-y divide-gray-200"></div>
     <div class="p-4 border-t border-gray-200 space-y-3">
-      <div class="flex items-center justify-between text-sm font-medium">
-        <span>รวม</span>
-        <span id="bottomSheetTotal" class="font-bold text-gray-900">฿0.00</span>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>ยอดรวมสินค้า</span>
+          <span id="bottomSheetSubTotal" class="font-bold text-gray-900">฿0.00</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>ค่าจัดส่ง</span>
+          <span id="bottomSheetDeliveryFee" class="font-bold text-gray-900">฿0.00</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>รวมทั้งสิ้น</span>
+          <span id="bottomSheetTotal" class="font-bold text-gray-900">฿0.00</span>
+        </div>
       </div>
       <div class="flex gap-3">
         <button id="bottomSheetClearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
         <button id="bottomSheetPlaceOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
       </div>
+      <p id="bottomSheetDeliveryNote" class="text-xs text-gray-500"></p>
     </div>
   </div>
 
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden"></div>
 
-    <!-- Footer -->
-    <footer class="footer">
+  <!-- Footer -->
+  <footer class="footer">
     <div class="max-w-7xl mx-auto text-center">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">ติดต่อเรา</h3>
-        <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-base text-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">ติดต่อเรา</h3>
+      <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-base text-gray-700">
         <div class="flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M9 3v2m6-2v2M3 19h18M5 7h14v12H5V7zm7 5a2 2 0 100 4 2 2 0 000-4z" />
-            </svg>
-            <span>โทร: <a href="tel:+66812345678">094-592-1521 (แตงโม)</a></span>
+          </svg>
+          <span>โทร: <a href="tel:+66812345678">094-592-1521 (แตงโม)</a></span>
         </div>
         <div class="flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" />
-            </svg>
-            <span><a href="https://www.facebook.com/chabannongkhim" target="_blank" rel="noopener noreferrer">Facebook: </a></span>
+          </svg>
+          <span><a href="https://www.facebook.com/chabannongkhim" target="_blank" rel="noopener noreferrer">Facebook: ชาบ้านน้องขิม</a></span>
         </div>
-        </div>
-        <p class="text-sm text-gray-500 mt-4">© 2025 ชาบ้านน้องขิม. สงวนลิขสิทธิ์.</p>
+      </div>
+      <p class="text-sm text-gray-500 mt-4">© 2025 ชาบ้านน้องขิม. สงวนลิขสิทธิ์.</p>
     </div>
-    </footer>
+  </footer>
+
   <script>
     // ---------- Utilities ----------
     const qs = (s, el = document) => el.querySelector(s);
@@ -566,6 +572,18 @@
       t.classList.remove("hidden");
       setTimeout(() => t.classList.add("hidden"), 3000);
       if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    // Haversine formula to calculate distance in kilometers
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
     }
 
     // ---------- State ----------
@@ -588,6 +606,7 @@
       set isAdmin(v) {
         localStorage.setItem("isAdmin", v);
       },
+      userLocation: null
     };
 
     // Admin credentials
@@ -602,25 +621,18 @@
         { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
         { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
         { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
-
         { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
         { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
-
         { id: uid(), name: "นมชมพู", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
         { id: uid(), name: "โกโก้เย็น", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
         { id: uid(), name: "นมสดเย็น", price: 25, category: "นมสด/โกโก้", image: "", isRecommended: false, requiresPreorder: false },
         { id: uid(), name: "เฉาก๊วยนมสด", price: 30, category: "นมสด/โกโก้", image: "", isRecommended: true, requiresPreorder: false },
-    
-
         { id: uid(), name: "พั้นช์", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
         { id: uid(), name: "น้ำส้ม", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
         { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: true, requiresPreorder: false },
         { id: uid(), name: "แดงมะนาวโซดาเย็น", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
         { id: uid(), name: "บลูฮาวายโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
         { id: uid(), name: "น้ำผึ้งมะนาวโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
-        
-        
         { id: uid(), name: "แซนด์วิชไส้ทูน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
         { id: uid(), name: "แซนด์วิชไส้ไข่ดาว+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
         { id: uid(), name: "แซนด์วิชไส้โบโลน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
@@ -632,9 +644,9 @@
     // ---------- Theme Toggle ----------
     function toggleTheme() {
       const body = document.body;
-      const isLight = body.classList.contains("light-theme");
+      const isLight = !body.classList.contains("dark-theme");
+      body.classList.toggle("dark-theme", isLight);
       body.classList.toggle("light-theme", !isLight);
-      store.theme = isLight ? "dark" : "light";
       qs("#themeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
       qs("#hamburgerThemeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
       if ("vibrate" in navigator) navigator.vibrate(50);
@@ -734,17 +746,107 @@
     }
 
     // ---------- Cart ----------
-    function cartTotal() {
+    function cartSubTotal() {
       return store.cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 0), 0);
+    }
+
+    function calculateDeliveryFee() {
+      const subTotal = cartSubTotal();
+      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      if (!hasDelivery || !store.userLocation) return 0;
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      if (subTotal >= 100) {
+        return distance <= 10 ? 0 : null; // null indicates delivery not allowed
+      } else {
+        if (distance <= 3) return 0;
+        if (distance <= 10) return 10;
+        return null; // Delivery not allowed
+      }
+    }
+
+    function canPlaceOrder() {
+      const subTotal = cartSubTotal();
+      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      if (!hasDelivery) return true;
+      if (!store.userLocation) return false;
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      return distance <= 10;
+    }
+
+    function updateDeliveryStatus() {
+      const subTotal = cartSubTotal();
+      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      const deliveryFee = calculateDeliveryFee();
+      const placeOrderBtn = qs("#placeOrderBtn");
+      const bottomSheetPlaceOrderBtn = qs("#bottomSheetPlaceOrderBtn");
+      const deliveryNote = qs("#deliveryNote");
+      const bottomSheetDeliveryNote = qs("#bottomSheetDeliveryNote");
+
+      if (!hasDelivery) {
+        deliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+        bottomSheetDeliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+        return;
+      }
+
+      if (!store.userLocation) {
+        deliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+        bottomSheetDeliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+        placeOrderBtn.classList.add("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+        placeOrderBtn.disabled = true;
+        bottomSheetPlaceOrderBtn.disabled = true;
+        return;
+      }
+
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      if (distance > 10) {
+        deliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+        bottomSheetDeliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+        placeOrderBtn.classList.add("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+        placeOrderBtn.disabled = true;
+        bottomSheetPlaceOrderBtn.disabled = true;
+      } else if (subTotal >= 100) {
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+      } else if (distance <= 3) {
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+      } else {
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+      }
     }
 
     function renderCart() {
       const list = qs("#cartList");
       const bottomSheet = qs("#cartBottomSheetList");
       const badge = qs("#cartCountBadge");
-      const total = money(cartTotal());
-      qs("#cartGrandTotal").textContent = total;
-      qs("#bottomSheetTotal").textContent = total;
+      const subTotal = cartSubTotal();
+      const deliveryFee = calculateDeliveryFee() || 0;
+      const grandTotal = subTotal + deliveryFee;
+      qs("#cartSubTotal").textContent = money(subTotal);
+      qs("#cartDeliveryFee").textContent = money(deliveryFee);
+      qs("#cartGrandTotal").textContent = money(grandTotal);
+      qs("#bottomSheetSubTotal").textContent = money(subTotal);
+      qs("#bottomSheetDeliveryFee").textContent = money(deliveryFee);
+      qs("#bottomSheetTotal").textContent = money(grandTotal);
       badge.textContent = store.cart.reduce((s, i) => s + (i.qty || 0), 0);
 
       const itemHTML = (item, idx) => `
@@ -752,7 +854,7 @@
           <div class="flex-1">
             <div class="font-semibold text-gray-900">${item.name} <span class="text-xs text-gray-500">${item.sweet ? `(${item.sweet})` : ''}</span></div>
             <div class="text-sm font-medium text-gray-900">${money(item.price)}</div>
-            <div class="text-xs text-gray-500 mt-1">${item.fulfill}${item.requiresPreorder ? ' • *ต้องสั่งล่วงหน้า 1-2 วัน' : ''}${item.note ? ` • โน้ต: ${item.note}` : ""}</div>
+            <div class="text-xs text-gray-500 mt-1">${item.fulfill}${item.requiresPreorder ? ' • *ต้องสั่งล่วงหน้า 1-2 วัน' : ''}${item.note ? ` • โน้ต: ${item.note}` : ""}${item.address ? ` • ที่อยู่: ${item.address}` : ""}</div>
             <div class="mt-3 flex items-center gap-3">
               <button class="qtyDec px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">−</button>
               <span class="min-w-[2ch] text-center font-medium">${item.qty}</span>
@@ -765,6 +867,7 @@
       const html = store.cart.map(itemHTML).join("") || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
       list.innerHTML = html;
       bottomSheet.innerHTML = html;
+      updateDeliveryStatus();
     }
 
     // ---------- Form Interactions ----------
@@ -775,7 +878,7 @@
         qs("#price").value = Number(opt.dataset.price).toFixed(2);
         const isPreorder = opt.dataset.preorder === "true";
         qs("#preorderNote").classList.toggle("hidden", !isPreorder);
-        qs("#orderForm .grid-cols-5").classList.toggle("hidden", isPreorder); // Hide sweetness for sandwiches
+        qs("#sweetnessSection").classList.toggle("hidden", isPreorder);
       }
       calcTotal();
     }
@@ -796,12 +899,15 @@
       const price = Number(qs("#price").value || 0);
       const qty = Math.max(1, Number(qs("#qty").value || 1));
       const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
-    //   const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "หวานปกติ");
       const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
       const note = qs("#note").value.trim();
       const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
       if (fulfill.includes("จัดส่ง") && !address) {
         showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
+        return;
+      }
+      if (fulfill.includes("จัดส่ง") && !store.userLocation) {
+        showToast("กรุณาระบุตำแหน่งเพื่อคำนวณระยะทาง", "error");
         return;
       }
       if (menu.requiresPreorder) {
@@ -817,19 +923,74 @@
 
     function clearCart() {
       store.cart = [];
+      store.userLocation = null;
       renderCart();
       showToast("ล้างตะกร้าแล้ว");
     }
 
-    // ---------- Place Order ----------
+    // ---------- Telegram Integration ----------
+    function buildOrderText() {
+      const subTotal = cartSubTotal();
+      const deliveryFee = calculateDeliveryFee() || 0;
+      const grandTotal = subTotal + deliveryFee;
+      const items = store.cart.map((item, idx) => {
+        const lines = [
+          `${idx + 1}. ${item.name} (${item.sweet || 'ไม่มีระดับความหวาน'})`,
+          `   ราคา: ${money(item.price)} x ${item.qty} = ${money(item.price * item.qty)}`,
+          `   วิธีรับ: ${item.fulfill}`,
+          item.address ? `   ที่อยู่: ${item.address}` : "",
+          item.note ? `   โน้ต: ${item.note}` : "",
+          item.requiresPreorder ? `   *ต้องสั่งล่วงหน้า 1-2 วัน` : ""
+        ];
+        return lines.filter(l => l).join("\n");
+      }).join("\n\n");
+
+      const distance = store.userLocation ? calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng).toFixed(1) : "N/A";
+      return [
+        "🧋 ออร์เดอร์ใหม่จากชาบ้านน้องขิม 🧋",
+        "",
+        items,
+        "",
+        `ยอดรวมสินค้า: ${money(subTotal)}`,
+        `ค่าจัดส่ง${store.cart.some(i => i.fulfill.includes("จัดส่ง")) ? ` (ระยะทาง ${distance} กม.)` : ""}: ${money(deliveryFee)}`,
+        `รวมทั้งสิ้น: ${money(grandTotal)}`
+      ].join("\n");
+    }
+
+    async function sendOrderToTelegram(text) {
+      const url = TELEGRAM_PROXY_URL || `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text,
+            parse_mode: "Markdown"
+          })
+        });
+        if (!response.ok) throw new Error("Failed to send order");
+        return true;
+      } catch (e) {
+        showToast("ไม่สามารถส่งออร์เดอร์ไปยัง Telegram ได้", "error");
+        console.error(e);
+        return false;
+      }
+    }
+
     async function placeOrder() {
       if (!store.cart.length) {
         showToast("ตะกร้าว่าง", "error");
         return;
       }
+      if (!canPlaceOrder()) {
+        showToast("ไม่สามารถจัดส่งได้ เนื่องจากอยู่นอกรัศมี 10 กม.", "error");
+        return;
+      }
       const text = buildOrderText();
       const hasPreorder = store.cart.some(item => item.requiresPreorder);
       store.cart = [];
+      store.userLocation = null;
       renderCart();
       closeCart();
       showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
@@ -876,6 +1037,7 @@
         name: qs("#menuName").value.trim(),
         price: Number(qs("#menuPrice").value || 0),
         category: qs("#menuCategory").value.trim(),
+        image: "",
         isRecommended: qs("#isRecommended").checked,
         requiresPreorder: qs("#requiresPreorder").checked,
       };
@@ -906,6 +1068,49 @@
       renderMenuOptions();
       closeMenuModal();
       showToast("ลบเมนูแล้ว");
+    }
+
+    // ---------- JSON Import/Export ----------
+    function importJson() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (!Array.isArray(data)) throw new Error("Invalid JSON format");
+            store.menu = data.map(item => ({
+              ...item,
+              id: item.id || uid(),
+              price: Number(item.price) || 0,
+              image: item.image || ""
+            }));
+            renderMenuGrid();
+            renderMenuOptions();
+            showToast("นำเข้าเมนูสำเร็จ");
+          } catch (err) {
+            showToast("ไม่สามารถนำเข้า JSON ได้", "error");
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function exportJson() {
+      const data = JSON.stringify(store.menu, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "menu.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("ส่งออกเมนูสำเร็จ");
     }
 
     // ---------- Login Logic ----------
@@ -970,6 +1175,7 @@
       qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
       qs("#deliveryAddress").value = "";
       qs("#note").value = "";
+      qs("#deliveryStatus").textContent = "";
       handleFulfillChange();
       updatePriceFromSelect();
       if ("vibrate" in navigator) navigator.vibrate(50);
@@ -1017,159 +1223,185 @@
 
     // ---------- Delivery Address Handling ----------
     function handleFulfillChange() {
-      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
-      const addressSection = qs("#deliveryAddressSection");
-      if (fulfill.includes("จัดส่ง")) {
-        addressSection.classList.remove("hidden");
-      } else {
-        addressSection.classList.add("hidden");
-      }
+        const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
+        const deliverySection = qs("#deliveryAddressSection");
+        deliverySection.classList.toggle("hidden", !fulfill.includes("จัดส่ง"));
+        if (!fulfill.includes("จัดส่ง")) {
+            qs("#deliveryAddress").value = "";
+            qs("#deliveryStatus").textContent = "";
+            store.userLocation = null;
+            renderCart();
+        } else if (!store.userLocation) {
+            // เรียกตำแหน่งอัตโนมัติเมื่อเลือก "จัดส่ง" และยังไม่มีตำแหน่ง
+            getUserLocation();
+        }
+    }
+
+    function getUserLocation() {
+        if (!navigator.geolocation) {
+            showToast("เบราว์เซอร์นี้ไม่รองรับการระบุตำแหน่ง", "error");
+            qs("#deliveryStatus").textContent = "เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง";
+            return;
+        }
+        qs("#deliveryStatus").textContent = "กำลังดึงตำแหน่ง...";
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+            store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+            qs("#deliveryStatus").textContent = distance > 10 
+                ? `ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (ระยะทาง ${distance.toFixed(1)} กม.)`
+                : `ระยะทางจากร้าน ${distance.toFixed(1)} กม.`;
+            renderCart();
+            showToast("ดึงตำแหน่งสำเร็จ");
+            },
+            err => {
+            showToast("ไม่สามารถดึงตำแหน่งได้: " + err.message, "error");
+            store.userLocation = null;
+            qs("#deliveryStatus").textContent = "ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง";
+            renderCart();
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
     }
 
     // ---------- Event Listeners ----------
     function setupEventListeners() {
-      qs("#openSearchModalBtn").onclick = openSearchFilterModal;
-      qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
-      qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
-      qs("#applyFiltersBtn").onclick = applyFilters;
-      qs("#clearFiltersBtn").onclick = clearFilters;
+      // Theme Toggle
+      qs("#themeToggleBtn").addEventListener("click", toggleTheme);
+      qs("#hamburgerThemeToggleBtn").addEventListener("click", toggleTheme);
 
-      qs("#categoryChips").onclick = e => {
-        const chip = e.target.closest(".filter-chip");
-        if (chip) {
-          qsa("#categoryChips .filter-chip").forEach(c => c.classList.remove("selected"));
-          chip.classList.add("selected");
-          currentCategory = chip.dataset.category;
-        }
-      };
+      // Hamburger Menu
+      qs("#openHamburgerBtn").addEventListener("click", () => qs("#hamburgerMenu").classList.remove("translate-x-full"));
+      qs("#closeHamburgerBtn").addEventListener("click", () => qs("#hamburgerMenu").classList.add("translate-x-full"));
 
-      qs("#sortChips").onclick = e => {
-        const chip = e.target.closest(".filter-chip");
-        if (chip) {
-          qsa("#sortChips .filter-chip").forEach(c => c.classList.remove("selected"));
-          chip.classList.add("selected");
-          currentSort = chip.dataset.sort;
-        }
-      };
+      // Login
+      qs("#loginBtn").addEventListener("click", store.isAdmin ? handleLogout : openLoginModal);
+      qs("#hamburgerLoginBtn").addEventListener("click", store.isAdmin ? handleLogout : openLoginModal);
+      qs("#loginForm").addEventListener("submit", handleLogin);
+      qs("#closeLoginModal").addEventListener("click", closeLoginModal);
 
-      qs("#openCartBtn").onclick = openCart;
-      qs("#closeCartBtn").onclick = closeCart;
-      qs("#floatingOrderBtn").onclick = openCart;
-      qs("#clearCartBtn").onclick = clearCart;
-      qs("#bottomSheetClearCartBtn").onclick = clearCart;
-      qs("#placeOrderBtn").onclick = placeOrder;
-      qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
+      // Cart
+      qs("#openCartBtn").addEventListener("click", openCart);
+      qs("#floatingOrderBtn").addEventListener("click", openCart);
+      qs("#closeCartBtn").addEventListener("click", closeCart);
+      qs("#clearCartBtn").addEventListener("click", clearCart);
+      qs("#bottomSheetClearCartBtn").addEventListener("click", clearCart);
+      qs("#placeOrderBtn").addEventListener("click", placeOrder);
+      qs("#bottomSheetPlaceOrderBtn").addEventListener("click", placeOrder);
 
-      qs("#openHamburgerBtn").onclick = openHamburgerMenu;
-      qs("#closeHamburgerBtn").onclick = closeHamburgerMenu;
-      qs("#themeToggleBtn").onclick = toggleTheme;
-      qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
-      qs("#loginBtn").onclick = openLoginModal;
-      qs("#hamburgerLoginBtn").onclick = openLoginModal;
-      qs("#closeLoginModal").onclick = closeLoginModal;
-      qs("#loginForm").onsubmit = handleLogin;
-
-      qs("#addMenuBtn").onclick = () => openMenuModal();
-      qs("#closeMenuModal").onclick = closeMenuModal;
-      qs("#menuForm").onsubmit = upsertMenu;
-      qs("#deleteMenuBtn").onclick = deleteMenu;
-
-      qs("#selectedMenu").onchange = updatePriceFromSelect;
-      qs("#price").oninput = calcTotal;
-      qs("#qty").oninput = calcTotal;
-      qs("#qtyMinus").onclick = () => {
-        const inp = qs("#qty");
-        inp.value = Math.max(1, Number(inp.value) - 1);
-        calcTotal();
-      };
-      qs("#qtyPlus").onclick = () => {
-        const inp = qs("#qty");
-        inp.value = Number(inp.value) + 1;
-        calcTotal();
-      };
-      qs("#addToCartBtn").onclick = addToCart;
-      qs("#closeOrderModal").onclick = closeOrderModal;
-
-      qs("#menuGrid").onclick = e => {
-        const editBtn = e.target.closest(".editMenu");
-        const selectBtn = e.target.closest(".quickSelect");
-        if (editBtn) openMenuModal(editBtn.dataset.id);
-        if (selectBtn) openOrderModal(selectBtn.dataset.id);
-      };
-
-      qs("#cartList").onclick = e => {
-        const dec = e.target.closest(".qtyDec");
-        const inc = e.target.closest(".qtyInc");
-        const rm = e.target.closest(".rmItem");
-        if (dec || inc || rm) {
-          const idx = Number((dec || inc || rm).dataset.idx);
-          let cart = store.cart.slice();
-          if (dec && cart[idx].qty > 1) cart[idx].qty -= 1;
-          if (inc) cart[idx].qty += 1;
-          if (rm) cart.splice(idx, 1);
-          store.cart = cart;
+      // Cart Item Actions
+      qs("#cartList").addEventListener("click", e => {
+        const idx = Number(e.target.dataset.idx);
+        if (e.target.classList.contains("qtyInc")) {
+          store.cart[idx].qty = (store.cart[idx].qty || 1) + 1;
+          store.cart = [...store.cart];
           renderCart();
         }
-      };
-
-      qs("#cartBottomSheetList").onclick = qs("#cartList").onclick;
-      qsa('input[name="fulfill"]').forEach(r => r.onchange = handleFulfillChange);
-    }
-
-    // ---------- Hamburger Menu ----------
-    function openHamburgerMenu() {
-      qs("#hamburgerMenu").classList.remove("translate-x-full");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    function closeHamburgerMenu() {
-      qs("#hamburgerMenu").classList.add("translate-x-full");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    // ---------- Place order & Telegram ----------
-    function buildOrderText(){
-      const lines = [];
-      lines.push('🧋 *ชาบ้านน้องขิม* – คำสั่งซื้อใหม่');
-      const ts = new Date();
-      lines.push(`🕒 ${ts.toLocaleString('th-TH')}`);
-      lines.push('');
-      if(!store.cart.length){ return null; }
-      store.cart.forEach((it,i)=>{
-        lines.push(`${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}`);
-        lines.push(`   • หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}`);
-        if(it.note) lines.push(`   • โน้ต: ${it.note}`);
-        if(it.address) lines.push(`   • ที่อยู่: ${it.address}`);
+        if (e.target.classList.contains("qtyDec")) {
+          if (store.cart[idx].qty > 1) {
+            store.cart[idx].qty -= 1;
+            store.cart = [...store.cart];
+            renderCart();
+          }
+        }
+        if (e.target.classList.contains("rmItem")) {
+          store.cart = store.cart.filter((_, i) => i !== idx);
+          renderCart();
+          showToast("ลบรายการแล้ว");
+        }
       });
-      lines.push('');
-      lines.push(`รวมทั้งสิ้น: *${money(cartTotal())}*`);
-      return lines.join('\n');
+      qs("#cartBottomSheetList").addEventListener("click", e => {
+        const idx = Number(e.target.dataset.idx);
+        if (e.target.classList.contains("qtyInc")) {
+          store.cart[idx].qty = (store.cart[idx].qty || 1) + 1;
+          store.cart = [...store.cart];
+          renderCart();
+        }
+        if (e.target.classList.contains("qtyDec")) {
+          if (store.cart[idx].qty > 1) {
+            store.cart[idx].qty -= 1;
+            store.cart = [...store.cart];
+            renderCart();
+          }
+        }
+        if (e.target.classList.contains("rmItem")) {
+          store.cart = store.cart.filter((_, i) => i !== idx);
+          renderCart();
+          showToast("ลบรายการแล้ว");
+        }
+      });
+
+      // Order Modal
+      qs("#selectedMenu").addEventListener("change", updatePriceFromSelect);
+      qs("#price").addEventListener("input", calcTotal);
+      qs("#qty").addEventListener("input", calcTotal);
+      qs("#qtyMinus").addEventListener("click", () => {
+        const input = qs("#qty");
+        input.value = Math.max(1, Number(input.value || 1) - 1);
+        calcTotal();
+      });
+      qs("#qtyPlus").addEventListener("click", () => {
+        const input = qs("#qty");
+        input.value = Number(input.value || 1) + 1;
+        calcTotal();
+      });
+      qs("#addToCartBtn").addEventListener("click", addToCart);
+      qs("#closeOrderModal").addEventListener("click", closeOrderModal);
+      qsa('input[name="fulfill"]').forEach(radio => radio.addEventListener("change", handleFulfillChange));
+    //   qs("#getLocationBtn").addEventListener("click", getUserLocation);
+
+      // Menu Grid Actions
+      qs("#menuGrid").addEventListener("click", e => {
+        const id = e.target.dataset.id;
+        if (e.target.classList.contains("quickSelect")) openOrderModal(id);
+        if (e.target.classList.contains("editMenu")) openMenuModal(id);
+      });
+
+      // Menu Modal
+      qs("#addMenuBtn").addEventListener("click", () => openMenuModal());
+      qs("#closeMenuModal").addEventListener("click", closeMenuModal);
+      qs("#menuForm").addEventListener("submit", upsertMenu);
+      qs("#deleteMenuBtn").addEventListener("click", deleteMenu);
+
+      // Search and Filter Modal
+      qs("#openSearchModalBtn").addEventListener("click", openSearchFilterModal);
+      qs("#openSearchModalBtnMobile").addEventListener("click", openSearchFilterModal);
+      qs("#closeSearchFilterModal").addEventListener("click", closeSearchFilterModal);
+      qs("#applyFiltersBtn").addEventListener("click", applyFilters);
+      qs("#clearFiltersBtn").addEventListener("click", clearFilters);
+      qs("#searchInput").addEventListener("input", () => renderMenuGrid());
+      qs("#categoryChips").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+          e.target.classList.add("selected");
+          currentCategory = e.target.dataset.category || "";
+          renderMenuGrid();
+        }
+      });
+      qs("#sortChips").addEventListener("click", e => {
+        if (e.target.classList.contains("filter-chip")) {
+          qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
+          e.target.classList.add("selected");
+          currentSort = e.target.dataset.sort || "default";
+          renderMenuGrid();
+        }
+      });
+
+      // JSON Import/Export
+      qs("#importJsonBtn").addEventListener("click", importJson);
+      qs("#exportJsonBtn").addEventListener("click", exportJson);
     }
 
-    async function sendOrderToTelegram(text){
-      if(TELEGRAM_PROXY_URL){
-        const res = await fetch(TELEGRAM_PROXY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) });
-        if(!res.ok) throw new Error('Proxy error');
-        return true;
-      }
-      if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) throw new Error('ยังไม่ได้ตั้งค่า Telegram');
-      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }) });
-      if(!res.ok) throw new Error('ส่ง Telegram ไม่สำเร็จ (อาจติด CORS)');
-      return true;
-    }
-
-    // ---------- Init ----------
+    // ---------- Initialize ----------
     function init() {
-    //   localStorage.clear();
       seedMenu();
       renderMenuGrid();
       renderMenuOptions();
       renderCart();
+      qs("#adminControls").classList.toggle("hidden", !store.isAdmin);
+      qs("#loginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
+      qs("#hamburgerLoginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
       if (store.isAdmin) {
-        qs("#adminControls").classList.remove("hidden");
-        qs("#loginBtn").textContent = "ออกจากระบบ";
-        qs("#hamburgerLoginBtn").textContent = "ออกจากระบบ";
         qs("#loginBtn").onclick = handleLogout;
         qs("#hamburgerLoginBtn").onclick = handleLogout;
       }
@@ -1177,7 +1409,7 @@
       if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    init();
+    document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
