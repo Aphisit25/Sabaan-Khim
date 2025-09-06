@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -342,7 +343,7 @@
       <div class="space-y-6">
         <div class="relative">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0115 0z" />
           </svg>
           <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-3 bg-white/80 text-gray-900 rounded-xl focus:ring-2 focus:ring-brand-500 transition text-base" />
         </div>
@@ -426,7 +427,6 @@
         <div id="deliveryAddressSection" class="hidden">
           <label class="text-base font-medium text-gray-700">ที่อยู่จัดส่ง</label>
           <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
-          <!-- <button type="button" id="getLocationBtn" class="mt-2 px-4 py-2 rounded-xl btn-primary text-white text-base font-medium">ใช้ตำแหน่งปัจจุบัน</button> -->
           <p id="deliveryStatus" class="text-sm text-gray-500 mt-2"></p>
         </div>
         <div>
@@ -755,17 +755,13 @@
       const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
       if (!hasDelivery || !store.userLocation) return 0;
       const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-      if (subTotal >= 100) {
-        return distance <= 10 ? 0 : null; // null indicates delivery not allowed
-      } else {
-        if (distance <= 3) return 0;
-        if (distance <= 10) return 10;
-        return null; // Delivery not allowed
-      }
+      if (distance > 10) return null; // Delivery not allowed
+      if (subTotal >= 100) return 0; // Free delivery for orders >= 100 THB
+      if (distance <= 3) return 0; // Free delivery for distance <= 3 km
+      return 10; // 10 THB for 3-10 km and orders < 100 THB
     }
 
     function canPlaceOrder() {
-      const subTotal = cartSubTotal();
       const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
       if (!hasDelivery) return true;
       if (!store.userLocation) return false;
@@ -810,6 +806,7 @@
         bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
         placeOrderBtn.disabled = true;
         bottomSheetPlaceOrderBtn.disabled = true;
+        showToast("ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
       } else if (subTotal >= 100) {
         deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
         bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
@@ -906,9 +903,12 @@
         showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
         return;
       }
-      if (fulfill.includes("จัดส่ง") && !store.userLocation) {
-        showToast("กรุณาระบุตำแหน่งเพื่อคำนวณระยะทาง", "error");
-        return;
+      if (fulfill.includes("จัดส่ง") && store.userLocation) {
+        const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+        if (distance > 10) {
+          showToast("ไม่สามารถเพิ่มลงตะกร้าได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+          return;
+        }
       }
       if (menu.requiresPreorder) {
         showToast("เมนูนี้ต้องสั่งล่วงหน้า 1-2 วัน", "info");
@@ -984,7 +984,7 @@
         return;
       }
       if (!canPlaceOrder()) {
-        showToast("ไม่สามารถจัดส่งได้ เนื่องจากอยู่นอกรัศมี 10 กม.", "error");
+        showToast("ไม่สามารถสั่งออร์เดอร์ได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
         return;
       }
       const text = buildOrderText();
@@ -1173,11 +1173,13 @@
       qs("#qty").value = "1";
       qs('input[name="sweet"][value="50%"]').checked = true;
       qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
-      qs("#deliveryAddress").value = "";
       qs("#note").value = "";
+      qs("#deliveryAddress").value = "";
       qs("#deliveryStatus").textContent = "";
+      qs("#sweetnessSection").classList.remove("hidden");
+      qs("#preorderNote").classList.add("hidden");
       handleFulfillChange();
-      updatePriceFromSelect();
+      if (menuId) updatePriceFromSelect();
       if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
@@ -1188,13 +1190,8 @@
 
     // ---------- Search and Filter Modal ----------
     function openSearchFilterModal() {
-      renderCategories();
       qs("#searchFilterModal").classList.remove("hidden");
-      qs("#searchInput").value = "";
-      qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#categoryChips .filter-chip[data-category='']").classList.add("selected");
-      qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#sortChips .filter-chip[data-sort='default']").classList.add("selected");
+      renderCategories();
       if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
@@ -1223,45 +1220,50 @@
 
     // ---------- Delivery Address Handling ----------
     function handleFulfillChange() {
-        const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
-        const deliverySection = qs("#deliveryAddressSection");
-        deliverySection.classList.toggle("hidden", !fulfill.includes("จัดส่ง"));
-        if (!fulfill.includes("จัดส่ง")) {
-            qs("#deliveryAddress").value = "";
-            qs("#deliveryStatus").textContent = "";
-            store.userLocation = null;
-            renderCart();
-        } else if (!store.userLocation) {
-            // เรียกตำแหน่งอัตโนมัติเมื่อเลือก "จัดส่ง" และยังไม่มีตำแหน่ง
-            getUserLocation();
-        }
+      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
+      const deliverySection = qs("#deliveryAddressSection");
+      deliverySection.classList.toggle("hidden", !fulfill.includes("จัดส่ง"));
+      if (!fulfill.includes("จัดส่ง")) {
+        qs("#deliveryAddress").value = "";
+        qs("#deliveryStatus").textContent = "";
+        store.userLocation = null;
+        renderCart();
+      } else if (!store.userLocation) {
+        // เรียกตำแหน่งอัตโนมัติเมื่อเลือก "จัดส่ง"
+        getUserLocation();
+      }
     }
 
     function getUserLocation() {
-        if (!navigator.geolocation) {
-            showToast("เบราว์เซอร์นี้ไม่รองรับการระบุตำแหน่ง", "error");
-            qs("#deliveryStatus").textContent = "เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง";
-            return;
-        }
-        qs("#deliveryStatus").textContent = "กำลังดึงตำแหน่ง...";
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-            store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-            qs("#deliveryStatus").textContent = distance > 10 
-                ? `ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (ระยะทาง ${distance.toFixed(1)} กม.)`
-                : `ระยะทางจากร้าน ${distance.toFixed(1)} กม.`;
-            renderCart();
+      if (!navigator.geolocation) {
+        showToast("เบราว์เซอร์นี้ไม่รองรับการระบุตำแหน่ง", "error");
+        qs("#deliveryStatus").textContent = "เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง";
+        renderCart();
+        return;
+      }
+      qs("#deliveryStatus").textContent = "กำลังดึงตำแหน่ง...";
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+          if (distance > 10) {
+            qs("#deliveryStatus").textContent = `ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (ระยะทาง ${distance.toFixed(1)} กม.)`;
+            store.userLocation = null; // ป้องกันการใช้ตำแหน่งที่เกินรัศมี
+            showToast("ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+          } else {
+            qs("#deliveryStatus").textContent = `ระยะทางจากร้าน ${distance.toFixed(1)} กม.`;
             showToast("ดึงตำแหน่งสำเร็จ");
-            },
-            err => {
-            showToast("ไม่สามารถดึงตำแหน่งได้: " + err.message, "error");
-            store.userLocation = null;
-            qs("#deliveryStatus").textContent = "ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง";
-            renderCart();
-            },
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-        );
+          }
+          renderCart();
+        },
+        err => {
+          showToast("ไม่สามารถดึงตำแหน่งได้: " + err.message, "error");
+          store.userLocation = null;
+          qs("#deliveryStatus").textContent = "ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง";
+          renderCart();
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
     }
 
     // ---------- Event Listeners ----------
@@ -1348,7 +1350,6 @@
       qs("#addToCartBtn").addEventListener("click", addToCart);
       qs("#closeOrderModal").addEventListener("click", closeOrderModal);
       qsa('input[name="fulfill"]').forEach(radio => radio.addEventListener("change", handleFulfillChange));
-    //   qs("#getLocationBtn").addEventListener("click", getUserLocation);
 
       // Menu Grid Actions
       qs("#menuGrid").addEventListener("click", e => {
