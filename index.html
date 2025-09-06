@@ -215,6 +215,11 @@
   </style>
 </head>
 <body class="font-sans text-gray-900 min-h-screen">
+  <script>
+    const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
+    const TELEGRAM_CHAT_ID = "-1002728257218";
+    const TELEGRAM_PROXY_URL = "";
+  </script>
   <!-- Header -->
   <header class="sticky top-0 z-40 shadow-soft">
     <div class="glass backdrop-blur border-b border-gray-200/50">
@@ -396,11 +401,11 @@
               <span>0%</span>
             </label> -->
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="หวานน้อย" class="sr-only" />
+              <input type="radio" name="sweet" value="25%" class="sr-only" />
               <span>หวานน้อย</span>
             </label>
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
-              <input type="radio" name="sweet" value="หวานปกติ" class="sr-only" checked />
+              <input type="radio" name="sweet" value="50%" class="sr-only" checked />
               <span>หวานปกติ</span>
             </label>
             <!-- <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
@@ -790,7 +795,8 @@
       const menu = store.menu.find(m => m.id === selId);
       const price = Number(qs("#price").value || 0);
       const qty = Math.max(1, Number(qs("#qty").value || 1));
-      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "หวานปกติ");
+      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
+    //   const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "หวานปกติ");
       const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
       const note = qs("#note").value.trim();
       const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
@@ -816,16 +822,18 @@
     }
 
     // ---------- Place Order ----------
-    function placeOrder() {
+    async function placeOrder() {
       if (!store.cart.length) {
         showToast("ตะกร้าว่าง", "error");
         return;
       }
+      const text = buildOrderText();
       const hasPreorder = store.cart.some(item => item.requiresPreorder);
       store.cart = [];
       renderCart();
       closeCart();
       showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
+      await sendOrderToTelegram(text);
     }
 
     // ---------- Menu Modal Logic ----------
@@ -1117,6 +1125,38 @@
     function closeHamburgerMenu() {
       qs("#hamburgerMenu").classList.add("translate-x-full");
       if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    // ---------- Place order & Telegram ----------
+    function buildOrderText(){
+      const lines = [];
+      lines.push('🧋 *ชาบ้านน้องขิม* – คำสั่งซื้อใหม่');
+      const ts = new Date();
+      lines.push(`🕒 ${ts.toLocaleString('th-TH')}`);
+      lines.push('');
+      if(!store.cart.length){ return null; }
+      store.cart.forEach((it,i)=>{
+        lines.push(`${i+1}. ${it.name} x${it.qty} — ${money(it.price*it.qty)}`);
+        lines.push(`   • หวาน: ${it.sweet} • ${it.fulfill}${it.cod?' • COD':''}`);
+        if(it.note) lines.push(`   • โน้ต: ${it.note}`);
+        if(it.address) lines.push(`   • ที่อยู่: ${it.address}`);
+      });
+      lines.push('');
+      lines.push(`รวมทั้งสิ้น: *${money(cartTotal())}*`);
+      return lines.join('\n');
+    }
+
+    async function sendOrderToTelegram(text){
+      if(TELEGRAM_PROXY_URL){
+        const res = await fetch(TELEGRAM_PROXY_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) });
+        if(!res.ok) throw new Error('Proxy error');
+        return true;
+      }
+      if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) throw new Error('ยังไม่ได้ตั้งค่า Telegram');
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' }) });
+      if(!res.ok) throw new Error('ส่ง Telegram ไม่สำเร็จ (อาจติด CORS)');
+      return true;
     }
 
     // ---------- Init ----------
