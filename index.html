@@ -555,833 +555,857 @@
     </div>
   </footer>
 
-  <script>
-    // ---------- Utilities ----------
-    const qs = (s, el = document) => el.querySelector(s);
-    const qsa = (s, el = document) => [...el.querySelectorAll(s)];
-    const money = n => `฿${(Number(n) || 0).toFixed(2)}`;
-    const uid = () => Math.random().toString(36).slice(2, 9);
+    <script>
+        // ---------- Utilities ----------
+        const qs = (s, el = document) => el.querySelector(s);
+        const qsa = (s, el = document) => [...el.querySelectorAll(s)];
+        const money = n => `฿${(Number(n) || 0).toFixed(2)}`;
+        const uid = () => Math.random().toString(36).slice(2, 9);
 
-    function showToast(msg, type = "info") {
-      const t = qs("#toast");
-      t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-full shadow-glow text-sm font-medium ${
-        type === "error" ? "bg-red-600 text-white" : "bg-brand-600 text-white"
-      }`;
-      t.textContent = msg;
-      t.classList.remove("hidden");
-      setTimeout(() => t.classList.add("hidden"), 3000);
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    // Haversine formula to calculate distance in kilometers
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Earth's radius in km
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
-    }
-
-    // ---------- State ----------
-    const store = {
-      get menu() {
-        return JSON.parse(localStorage.getItem("menuItems") || "[]");
-      },
-      set menu(v) {
-        localStorage.setItem("menuItems", JSON.stringify(v));
-      },
-      get cart() {
-        return JSON.parse(localStorage.getItem("cart") || "[]");
-      },
-      set cart(v) {
-        localStorage.setItem("cart", JSON.stringify(Array.isArray(v) ? v : []));
-      },
-      get isAdmin() {
-        return localStorage.getItem("isAdmin") === "true";
-      },
-      set isAdmin(v) {
-        localStorage.setItem("isAdmin", v);
-      },
-      userLocation: null
-    };
-
-    // Admin credentials
-    const ADMIN_USERNAME = "admin321";
-    const ADMIN_PASSWORD = "Aphisit321";
-
-    // Seed demo data
-    function seedMenu() {
-      if (store.menu.length) return;
-      store.menu = [
-        { id: uid(), name: "ชานมเย็น/ชาไทย", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
-        { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
-        { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
-        { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
-        { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "นมชมพู", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
-        { id: uid(), name: "โกโก้เย็น", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
-        { id: uid(), name: "นมสดเย็น", price: 25, category: "นมสด/โกโก้", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "เฉาก๊วยนมสด", price: 30, category: "นมสด/โกโก้", image: "", isRecommended: true, requiresPreorder: false },
-        { id: uid(), name: "พั้นช์", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "น้ำส้ม", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: true, requiresPreorder: false },
-        { id: uid(), name: "แดงมะนาวโซดาเย็น", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
-        { id: uid(), name: "บลูฮาวายโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
-        { id: uid(), name: "น้ำผึ้งมะนาวโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
-        { id: uid(), name: "แซนด์วิชไส้ทูน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
-        { id: uid(), name: "แซนด์วิชไส้ไข่ดาว+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
-        { id: uid(), name: "แซนด์วิชไส้โบโลน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
-        { id: uid(), name: "แซนด์วิชไส้แฮม+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
-        { id: uid(), name: "แซนด์วิชไส้หมูยอง", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true }
-      ];
-    }
-
-    // ---------- Theme Toggle ----------
-    function toggleTheme() {
-      const body = document.body;
-      const isLight = !body.classList.contains("dark-theme");
-      body.classList.toggle("dark-theme", isLight);
-      body.classList.toggle("light-theme", !isLight);
-      qs("#themeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
-      qs("#hamburgerThemeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    // ---------- Menu Rendering ----------
-    function renderMenuOptions() {
-      const sel = qs("#selectedMenu");
-      sel.innerHTML = '<option value="">— เลือกเมนู —</option>' + store.menu.map(m => `<option data-price="${m.price}" data-preorder="${m.requiresPreorder}" value="${m.id}">${m.name}</option>`).join("");
-    }
-
-    let currentCategory = "";
-    let currentSort = "default";
-
-    function renderCategories() {
-      const categories = [...new Set(store.menu.map(m => m.category || "อื่นๆ"))].sort();
-      const container = qs("#categoryChips");
-      container.innerHTML = '<button class="filter-chip selected" data-category="">ทั้งหมด</button>' + categories.map(c => `<button class="filter-chip" data-category="${c}">${c}</button>`).join("");
-    }
-
-    function getSorter(sort) {
-      return (a, b) => {
-        if (sort === "price-asc") return a.price - b.price;
-        if (sort === "price-desc") return b.price - a.price;
-        if (sort === "name-asc") return a.name.localeCompare(b.name, "th");
-        if (sort === "name-desc") return b.name.localeCompare(a.name, "th");
-        return 0;
-      };
-    }
-
-    function renderMenuCard(m) {
-      return `
-        <div class="glass rounded-xl overflow-hidden card-hover shadow-soft menu-card relative">
-          <div class="h-48 bg-gray-100 overflow-hidden">
-            <img src="${m.image || 'https://placehold.net/400x400.png'}" alt="${m.name}" class="w-full h-full object-cover"/>
-          </div>
-          <div class="p-4">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <div class="font-semibold text-gray-900">${m.name}</div>
-                <div class="text-sm text-gray-500">${m.category || '-'}</div>
-                <div class="text-sm font-medium text-gray-900 mt-1">${money(m.price)}</div>
-                ${m.requiresPreorder ? '<div class="preorder-note">*ต้องสั่งล่วงหน้า 1-2 วัน</div>' : ''}
-              </div>
-              <div class="flex items-center gap-2">
-                ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium">แก้ไข</button>` : ""}
-                <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-full btn-primary text-white text-sm font-medium">เลือก</button>
-              </div>
-            </div>
-          </div>
-          ${m.isRecommended ? '<span class="recommended-badge">แนะนำ!</span>' : ""}
-        </div>
-      `;
-    }
-
-    function renderMenuGrid() {
-      const search = qs("#searchInput").value.toLowerCase();
-      let items = store.menu.filter(m => m.name.toLowerCase().includes(search));
-      if (currentCategory) items = items.filter(m => (m.category || "อื่นๆ") === currentCategory);
-      const sorter = getSorter(currentSort);
-      if (currentSort !== "default") items.sort(sorter);
-
-      const wrap = qs("#menuGrid");
-      if (!items.length) {
-        wrap.innerHTML = `<div class="text-center text-gray-500 py-6">ไม่มีเมนูที่ตรงกัน</div>`;
-        return;
-      }
-
-      let html = "";
-      const recommended = items.filter(m => m.isRecommended);
-      if (recommended.length) {
-        html += `
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">เมนูแนะนำ</h2>
-            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              ${recommended.map(renderMenuCard).join("")}
-            </div>
-          </div>
-        `;
-      }
-      const groups = items.reduce((acc, m) => {
-        const cat = m.category || "อื่นๆ";
-        if (!acc[cat]) acc[cat] = [];
-        acc[cat].push(m);
-        return acc;
-      }, {});
-      const sortedCats = Object.keys(groups).sort();
-      html += sortedCats.map(cat => `
-        <div>
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">${cat}</h2>
-          <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            ${groups[cat].map(renderMenuCard).join("")}
-          </div>
-        </div>
-      `).join("");
-      wrap.innerHTML = html;
-    }
-
-    // ---------- Cart ----------
-    function cartSubTotal() {
-      return store.cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 0), 0);
-    }
-
-    function calculateDeliveryFee() {
-      const subTotal = cartSubTotal();
-      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
-      if (!hasDelivery || !store.userLocation) return 0;
-      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-      if (distance > 10) return null; // Delivery not allowed
-      if (subTotal >= 100) return 0; // Free delivery for orders >= 100 THB
-      if (distance <= 3) return 0; // Free delivery for distance <= 3 km
-      return 10; // 10 THB for 3-10 km and orders < 100 THB
-    }
-
-    function canPlaceOrder() {
-      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
-      if (!hasDelivery) return true;
-      if (!store.userLocation) return false;
-      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-      return distance <= 10;
-    }
-
-    function updateDeliveryStatus() {
-      const subTotal = cartSubTotal();
-      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
-      const deliveryFee = calculateDeliveryFee() || 0;
-      const placeOrderBtn = qs("#placeOrderBtn");
-      const bottomSheetPlaceOrderBtn = qs("#bottomSheetPlaceOrderBtn");
-      const deliveryNote = qs("#deliveryNote");
-      const bottomSheetDeliveryNote = qs("#bottomSheetDeliveryNote");
-
-      if (!hasDelivery) {
-        deliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
-        bottomSheetDeliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
-        placeOrderBtn.classList.remove("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
-        placeOrderBtn.disabled = false;
-        bottomSheetPlaceOrderBtn.disabled = false;
-        return;
-      }
-
-      if (!store.userLocation) {
-        deliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
-        bottomSheetDeliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
-        placeOrderBtn.classList.add("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
-        placeOrderBtn.disabled = true;
-        bottomSheetPlaceOrderBtn.disabled = true;
-        return;
-      }
-
-      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-      if (distance > 10) {
-        deliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
-        bottomSheetDeliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
-        placeOrderBtn.classList.add("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
-        placeOrderBtn.disabled = true;
-        bottomSheetPlaceOrderBtn.disabled = true;
-        showToast("ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
-      } else if (subTotal >= 100) {
-        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
-        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
-        placeOrderBtn.classList.remove("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
-        placeOrderBtn.disabled = false;
-        bottomSheetPlaceOrderBtn.disabled = false;
-      } else if (distance <= 3) {
-        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
-        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
-        placeOrderBtn.classList.remove("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
-        placeOrderBtn.disabled = false;
-        bottomSheetPlaceOrderBtn.disabled = false;
-      } else {
-        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
-        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
-        placeOrderBtn.classList.remove("btn-disabled");
-        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
-        placeOrderBtn.disabled = false;
-        bottomSheetPlaceOrderBtn.disabled = false;
-      }
-    }
-
-    function renderCart() {
-      const list = qs("#cartList");
-      const bottomSheet = qs("#cartBottomSheetList");
-      const badge = qs("#cartCountBadge");
-      const subTotal = cartSubTotal();
-      const deliveryFee = calculateDeliveryFee() || 0;
-      const grandTotal = subTotal + deliveryFee;
-      qs("#cartSubTotal").textContent = money(subTotal);
-      qs("#cartDeliveryFee").textContent = money(deliveryFee);
-      qs("#cartGrandTotal").textContent = money(grandTotal);
-      qs("#bottomSheetSubTotal").textContent = money(subTotal);
-      qs("#bottomSheetDeliveryFee").textContent = money(deliveryFee);
-      qs("#bottomSheetTotal").textContent = money(grandTotal);
-      badge.textContent = store.cart.reduce((s, i) => s + (i.qty || 0), 0);
-
-      const itemHTML = (item, idx) => `
-        <div class="py-4 flex items-start gap-4 hover:bg-gray-50/50 rounded-lg transition">
-          <div class="flex-1">
-            <div class="font-semibold text-gray-900">${item.name} <span class="text-xs text-gray-500">${item.sweet ? `(${item.sweet})` : ''}</span></div>
-            <div class="text-sm font-medium text-gray-900">${money(item.price)}</div>
-            <div class="text-xs text-gray-500 mt-1">${item.fulfill}${item.requiresPreorder ? ' • *ต้องสั่งล่วงหน้า 1-2 วัน' : ''}${item.note ? ` • โน้ต: ${item.note}` : ""}${item.address ? ` • ที่อยู่: ${item.address}` : ""}</div>
-            <div class="mt-3 flex items-center gap-3">
-              <button class="qtyDec px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">−</button>
-              <span class="min-w-[2ch] text-center font-medium">${item.qty}</span>
-              <button class="qtyInc px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">+</button>
-              <button class="rmItem ml-auto px-3 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white text-sm font-medium" data-idx="${idx}">ลบ</button>
-            </div>
-          </div>
-        </div>`;
-
-      const html = store.cart.map(itemHTML).join("") || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
-      list.innerHTML = html;
-      bottomSheet.innerHTML = html;
-      updateDeliveryStatus();
-    }
-
-    // ---------- Form Interactions ----------
-    function updatePriceFromSelect() {
-      const sel = qs("#selectedMenu");
-      const opt = sel.selectedOptions[0];
-      if (opt && opt.dataset.price) {
-        qs("#price").value = Number(opt.dataset.price).toFixed(2);
-        const isPreorder = opt.dataset.preorder === "true";
-        qs("#preorderNote").classList.toggle("hidden", !isPreorder);
-        qs("#sweetnessSection").classList.toggle("hidden", isPreorder);
-      }
-      calcTotal();
-    }
-
-    function calcTotal() {
-      const price = Number(qs("#price").value || 0);
-      const qty = Math.max(1, Number(qs("#qty").value || 1));
-      qs("#total").textContent = money(price * qty);
-    }
-
-    function addToCart() {
-      const selId = qs("#selectedMenu").value;
-      if (!selId) {
-        showToast("กรุณาเลือกเมนู", "error");
-        return;
-      }
-      const menu = store.menu.find(m => m.id === selId);
-      const price = Number(qs("#price").value || 0);
-      const qty = Math.max(1, Number(qs("#qty").value || 1));
-      const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
-      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
-      const note = qs("#note").value.trim();
-      const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
-      if (fulfill.includes("จัดส่ง") && !address) {
-        showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
-        return;
-      }
-      if (fulfill.includes("จัดส่ง") && store.userLocation) {
-        const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
-        if (distance > 10) {
-          showToast("ไม่สามารถเพิ่มลงตะกร้าได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
-          return;
+        function showToast(msg, type = "info") {
+            const t = qs("#toast");
+            t.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-3 rounded-full shadow-glow text-sm font-medium ${
+            type === "error" ? "bg-red-600 text-white" : "bg-brand-600 text-white"
+            }`;
+            t.textContent = msg;
+            t.classList.remove("hidden");
+            setTimeout(() => t.classList.add("hidden"), 3000);
+            if ("vibrate" in navigator) navigator.vibrate(50);
         }
-      }
-      if (menu.requiresPreorder) {
-        showToast("เมนูนี้ต้องสั่งล่วงหน้า 1-2 วัน", "info");
-      }
 
-      const newItem = { id: uid(), menuId: selId, name: menu.name, price, qty, sweet, fulfill, note, address, requiresPreorder: menu.requiresPreorder };
-      store.cart = [...store.cart, newItem];
-      renderCart();
-      closeOrderModal();
-      showToast("เพิ่มลงตะกร้าแล้ว");
-    }
+        // Haversine formula to calculate distance in kilometers
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
 
-    function clearCart() {
-      store.cart = [];
-      store.userLocation = null;
-      renderCart();
-      showToast("ล้างตะกร้าแล้ว");
-    }
+        // ---------- State ----------
+        const store = {
+            get menu() {
+            return JSON.parse(localStorage.getItem("menuItems") || "[]");
+            },
+            set menu(v) {
+            localStorage.setItem("menuItems", JSON.stringify(v));
+            },
+            get cart() {
+            return JSON.parse(localStorage.getItem("cart") || "[]");
+            },
+            set cart(v) {
+            localStorage.setItem("cart", JSON.stringify(Array.isArray(v) ? v : []));
+            },
+            get isAdmin() {
+            return localStorage.getItem("isAdmin") === "true";
+            },
+            set isAdmin(v) {
+            localStorage.setItem("isAdmin", v);
+            },
+            get userLocation() {
+            return JSON.parse(localStorage.getItem("userLocation") || "null");
+            },
+            set userLocation(v) {
+            localStorage.setItem("userLocation", JSON.stringify(v));
+            },
+            get savedAddress() {
+            return localStorage.getItem("savedAddress") || "";
+            },
+            set savedAddress(v) {
+            localStorage.setItem("savedAddress", v);
+            }
+        };
 
-    // ---------- Telegram Integration ----------
-    function buildOrderText() {
-      const subTotal = cartSubTotal();
-      const deliveryFee = calculateDeliveryFee() || 0;
-      const grandTotal = subTotal + deliveryFee;
-      const items = store.cart.map((item, idx) => {
-        const lines = [
-          `${idx + 1}. ${item.name} (${item.sweet || 'ไม่มีระดับความหวาน'})`,
-          `   ราคา: ${money(item.price)} x ${item.qty} = ${money(item.price * item.qty)}`,
-          `   วิธีรับ: ${item.fulfill}`,
-          item.address ? `   ที่อยู่: ${item.address}` : "",
-          item.note ? `   โน้ต: ${item.note}` : "",
-          item.requiresPreorder ? `   *ต้องสั่งล่วงหน้า 1-2 วัน` : ""
-        ];
-        return lines.filter(l => l).join("\n");
-      }).join("\n\n");
+            // Admin credentials
+            const ADMIN_USERNAME = "admin321";
+            const ADMIN_PASSWORD = "Aphisit321";
 
-      const distance = store.userLocation ? calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng).toFixed(1) : "N/A";
-      return [
-        "🧋 ออร์เดอร์ใหม่จากชาบ้านน้องขิม 🧋",
-        "",
-        items,
-        "",
-        `ยอดรวมสินค้า: ${money(subTotal)}`,
-        `ค่าจัดส่ง${store.cart.some(i => i.fulfill.includes("จัดส่ง")) ? ` (ระยะทาง ${distance} กม.)` : ""}: ${money(deliveryFee)}`,
-        `รวมทั้งสิ้น: ${money(grandTotal)}`
-      ].join("\n");
-    }
+            // Seed demo data
+            function seedMenu() {
+            if (store.menu.length) return;
+            store.menu = [
+                { id: uid(), name: "ชานมเย็น/ชาไทย", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
+                { id: uid(), name: "ชาเขียวเย็น", price: 25, category: "ชา", image: "", isRecommended: true, requiresPreorder: false },
+                { id: uid(), name: "ชามะนาวเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
+                { id: uid(), name: "ชานมเผือกเย็น", price: 25, category: "ชา", image: "", requiresPreorder: false },
+                { id: uid(), name: "เนสกาแฟเย็น", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "โอเลี้ยง", price: 25, category: "กาแฟ", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "นมชมพู", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
+                { id: uid(), name: "โกโก้เย็น", price: 25, category: "นมสด/โกโก้", image: "", requiresPreorder: false },
+                { id: uid(), name: "นมสดเย็น", price: 25, category: "นมสด/โกโก้", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "เฉาก๊วยนมสด", price: 30, category: "นมสด/โกโก้", image: "", isRecommended: true, requiresPreorder: false },
+                { id: uid(), name: "พั้นช์", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "น้ำส้ม", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "สตอเบอร์รี่นมสด", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: true, requiresPreorder: false },
+                { id: uid(), name: "แดงมะนาวโซดาเย็น", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", isRecommended: false, requiresPreorder: false },
+                { id: uid(), name: "บลูฮาวายโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
+                { id: uid(), name: "น้ำผึ้งมะนาวโซดา", price: 25, category: "น้ำผลไม้/เมนูสุขภาพ/โซดา", image: "", requiresPreorder: false },
+                { id: uid(), name: "แซนด์วิชไส้ทูน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+                { id: uid(), name: "แซนด์วิชไส้ไข่ดาว+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+                { id: uid(), name: "แซนด์วิชไส้โบโลน่า+ปูอัด", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+                { id: uid(), name: "แซนด์วิชไส้แฮม+ไส้กรอก", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true },
+                { id: uid(), name: "แซนด์วิชไส้หมูยอง", price: 25, category: "แซนด์วิช", image: "", isRecommended: false, requiresPreorder: true }
+            ];
+            }
 
-    async function sendOrderToTelegram(text) {
-      const url = TELEGRAM_PROXY_URL || `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text,
-            parse_mode: "Markdown"
-          })
-        });
-        if (!response.ok) throw new Error("Failed to send order");
-        return true;
-      } catch (e) {
-        showToast("ไม่สามารถส่งออร์เดอร์ไปยัง Telegram ได้", "error");
-        console.error(e);
-        return false;
-      }
-    }
+        // ---------- Theme Toggle ----------
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = !body.classList.contains("dark-theme");
+            body.classList.toggle("dark-theme", isLight);
+            body.classList.toggle("light-theme", !isLight);
+            qs("#themeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
+            qs("#hamburgerThemeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
 
-    async function placeOrder() {
-      if (!store.cart.length) {
-        showToast("ตะกร้าว่าง", "error");
-        return;
-      }
-      if (!canPlaceOrder()) {
-        showToast("ไม่สามารถสั่งออร์เดอร์ได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
-        return;
-      }
-      const text = buildOrderText();
-      const hasPreorder = store.cart.some(item => item.requiresPreorder);
-      store.cart = [];
-      store.userLocation = null;
-      renderCart();
-      closeCart();
-      showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
-      await sendOrderToTelegram(text);
-    }
+        // ---------- Menu Rendering ----------
+        function renderMenuOptions() {
+            const sel = qs("#selectedMenu");
+            sel.innerHTML = '<option value="">— เลือกเมนู —</option>' + store.menu.map(m => `<option data-price="${m.price}" data-preorder="${m.requiresPreorder}" value="${m.id}">${m.name}</option>`).join("");
+        }
 
-    // ---------- Menu Modal Logic ----------
-    function openMenuModal(editId = null) {
-      if (!store.isAdmin) {
-        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
-        return;
-      }
-      qs("#menuModal").classList.remove("hidden");
-      qs("#menuForm").reset();
-      qs("#menuId").value = "";
-      qs("#deleteMenuBtn").classList.add("hidden");
-      qs("#menuModalTitle").textContent = editId ? "แก้ไขเมนู" : "เพิ่มเมนู";
-      if (editId) {
-        const m = store.menu.find(x => x.id === editId);
-        if (!m) return;
-        qs("#menuId").value = m.id;
-        qs("#menuName").value = m.name;
-        qs("#menuPrice").value = m.price;
-        qs("#menuCategory").value = m.category || "";
-        qs("#isRecommended").checked = !!m.isRecommended;
-        qs("#requiresPreorder").checked = !!m.requiresPreorder;
-        qs("#deleteMenuBtn").classList.remove("hidden");
-      }
-    }
+        let currentCategory = "";
+        let currentSort = "default";
 
-    function closeMenuModal() {
-      qs("#menuModal").classList.add("hidden");
-    }
+        function renderCategories() {
+            const categories = [...new Set(store.menu.map(m => m.category || "อื่นๆ"))].sort();
+            const container = qs("#categoryChips");
+            container.innerHTML = '<button class="filter-chip selected" data-category="">ทั้งหมด</button>' + categories.map(c => `<button class="filter-chip" data-category="${c}">${c}</button>`).join("");
+        }
 
-    function upsertMenu(e) {
-      e.preventDefault();
-      if (!store.isAdmin) {
-        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
-        return;
-      }
-      const id = qs("#menuId").value || uid();
-      const item = {
-        id,
-        name: qs("#menuName").value.trim(),
-        price: Number(qs("#menuPrice").value || 0),
-        category: qs("#menuCategory").value.trim(),
-        image: "",
-        isRecommended: qs("#isRecommended").checked,
-        requiresPreorder: qs("#requiresPreorder").checked,
-      };
-      if (!item.name) {
-        showToast("กรุณากรอกชื่อเมนู", "error");
-        return;
-      }
-      let arr = store.menu.slice();
-      const idx = arr.findIndex(x => x.id === id);
-      if (idx > -1) arr[idx] = item;
-      else arr.push(item);
-      store.menu = arr;
-      renderMenuGrid();
-      renderMenuOptions();
-      closeMenuModal();
-      showToast("บันทึกเมนูแล้ว");
-    }
+        function getSorter(sort) {
+            return (a, b) => {
+            if (sort === "price-asc") return a.price - b.price;
+            if (sort === "price-desc") return b.price - a.price;
+            if (sort === "name-asc") return a.name.localeCompare(b.name, "th");
+            if (sort === "name-desc") return b.name.localeCompare(a.name, "th");
+            return 0;
+            };
+        }
 
-    function deleteMenu() {
-      if (!store.isAdmin) {
-        showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
-        return;
-      }
-      const id = qs("#menuId").value;
-      if (!id) return;
-      store.menu = store.menu.filter(x => x.id !== id);
-      renderMenuGrid();
-      renderMenuOptions();
-      closeMenuModal();
-      showToast("ลบเมนูแล้ว");
-    }
+        function renderMenuCard(m) {
+            return `
+            <div class="glass rounded-xl overflow-hidden card-hover shadow-soft menu-card relative">
+                <div class="h-48 bg-gray-100 overflow-hidden">
+                <img src="${m.image || 'https://placehold.net/400x400.png'}" alt="${m.name}" class="w-full h-full object-cover"/>
+                </div>
+                <div class="p-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                    <div class="font-semibold text-gray-900">${m.name}</div>
+                    <div class="text-sm text-gray-500">${m.category || '-'}</div>
+                    <div class="text-sm font-medium text-gray-900 mt-1">${money(m.price)}</div>
+                    ${m.requiresPreorder ? '<div class="preorder-note">*ต้องสั่งล่วงหน้า 1-2 วัน</div>' : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                    ${store.isAdmin ? `<button data-id="${m.id}" class="editMenu px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium">แก้ไข</button>` : ""}
+                    <button data-id="${m.id}" class="quickSelect px-3 py-1.5 rounded-full btn-primary text-white text-sm font-medium">เลือก</button>
+                    </div>
+                </div>
+                </div>
+                ${m.isRecommended ? '<span class="recommended-badge">แนะนำ!</span>' : ""}
+            </div>
+            `;
+        }
 
-    // ---------- JSON Import/Export ----------
-    function importJson() {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".json";
-      input.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-          try {
-            const data = JSON.parse(ev.target.result);
-            if (!Array.isArray(data)) throw new Error("Invalid JSON format");
-            store.menu = data.map(item => ({
-              ...item,
-              id: item.id || uid(),
-              price: Number(item.price) || 0,
-              image: item.image || ""
-            }));
+        function renderMenuGrid() {
+            const search = qs("#searchInput").value.toLowerCase();
+            let items = store.menu.filter(m => m.name.toLowerCase().includes(search));
+            if (currentCategory) items = items.filter(m => (m.category || "อื่นๆ") === currentCategory);
+            const sorter = getSorter(currentSort);
+            if (currentSort !== "default") items.sort(sorter);
+
+            const wrap = qs("#menuGrid");
+            if (!items.length) {
+            wrap.innerHTML = `<div class="text-center text-gray-500 py-6">ไม่มีเมนูที่ตรงกัน</div>`;
+            return;
+            }
+
+            let html = "";
+            const recommended = items.filter(m => m.isRecommended);
+            if (recommended.length) {
+            html += `
+                <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">เมนูแนะนำ</h2>
+                <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    ${recommended.map(renderMenuCard).join("")}
+                </div>
+                </div>
+            `;
+            }
+            const groups = items.reduce((acc, m) => {
+            const cat = m.category || "อื่นๆ";
+            if (!acc[cat]) acc[cat] = [];
+            acc[cat].push(m);
+            return acc;
+            }, {});
+            const sortedCats = Object.keys(groups).sort();
+            html += sortedCats.map(cat => `
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">${cat}</h2>
+                <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                ${groups[cat].map(renderMenuCard).join("")}
+                </div>
+            </div>
+            `).join("");
+            wrap.innerHTML = html;
+        }
+
+        // ---------- Cart ----------
+        function cartSubTotal() {
+            return store.cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 0), 0);
+        }
+
+        function calculateDeliveryFee() {
+            const subTotal = cartSubTotal();
+            const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+            if (!hasDelivery || !store.userLocation) return 0;
+            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+            if (distance > 10) return null; // Delivery not allowed
+            if (subTotal >= 100) return 0; // Free delivery for orders >= 100 THB
+            if (distance <= 3) return 0; // Free delivery for distance <= 3 km
+            return 10; // 10 THB for 3-10 km and orders < 100 THB
+        }
+
+        function canPlaceOrder() {
+            const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+            if (!hasDelivery) return true;
+            if (!store.userLocation || !store.savedAddress) return false;
+            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+            return distance <= 10;
+        }
+
+        function updateDeliveryStatus() {
+            const subTotal = cartSubTotal();
+            const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+            const deliveryFee = calculateDeliveryFee() || 0;
+            const placeOrderBtn = qs("#placeOrderBtn");
+            const bottomSheetPlaceOrderBtn = qs("#bottomSheetPlaceOrderBtn");
+            const deliveryNote = qs("#deliveryNote");
+            const bottomSheetDeliveryNote = qs("#bottomSheetDeliveryNote");
+
+            if (!hasDelivery) {
+            deliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+            bottomSheetDeliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+            placeOrderBtn.classList.remove("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+            placeOrderBtn.disabled = false;
+            bottomSheetPlaceOrderBtn.disabled = false;
+            return;
+            }
+
+            if (!store.userLocation || !store.savedAddress) {
+            deliveryNote.textContent = "กรุณาระบุที่อยู่และตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+            bottomSheetDeliveryNote.textContent = "กรุณาระบุที่อยู่และตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+            placeOrderBtn.classList.add("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+            placeOrderBtn.disabled = true;
+            bottomSheetPlaceOrderBtn.disabled = true;
+            return;
+            }
+
+            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+            if (distance > 10) {
+            deliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+            bottomSheetDeliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+            placeOrderBtn.classList.add("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+            placeOrderBtn.disabled = true;
+            bottomSheetPlaceOrderBtn.disabled = true;
+            showToast("ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+            } else if (subTotal >= 100) {
+            deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+            bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+            placeOrderBtn.classList.remove("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+            placeOrderBtn.disabled = false;
+            bottomSheetPlaceOrderBtn.disabled = false;
+            } else if (distance <= 3) {
+            deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+            bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+            placeOrderBtn.classList.remove("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+            placeOrderBtn.disabled = false;
+            bottomSheetPlaceOrderBtn.disabled = false;
+            } else {
+            deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+            bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+            placeOrderBtn.classList.remove("btn-disabled");
+            bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+            placeOrderBtn.disabled = false;
+            bottomSheetPlaceOrderBtn.disabled = false;
+            }
+        }
+
+        function renderCart() {
+            const list = qs("#cartList");
+            const bottomSheet = qs("#cartBottomSheetList");
+            const badge = qs("#cartCountBadge");
+            const subTotal = cartSubTotal();
+            const deliveryFee = calculateDeliveryFee() || 0;
+            const grandTotal = subTotal + deliveryFee;
+            qs("#cartSubTotal").textContent = money(subTotal);
+            qs("#cartDeliveryFee").textContent = money(deliveryFee);
+            qs("#cartGrandTotal").textContent = money(grandTotal);
+            qs("#bottomSheetSubTotal").textContent = money(subTotal);
+            qs("#bottomSheetDeliveryFee").textContent = money(deliveryFee);
+            qs("#bottomSheetTotal").textContent = money(grandTotal);
+            badge.textContent = store.cart.reduce((s, i) => s + (i.qty || 0), 0);
+
+            const itemHTML = (item, idx) => `
+            <div class="py-4 flex items-start gap-4 hover:bg-gray-50/50 rounded-lg transition">
+                <div class="flex-1">
+                <div class="font-semibold text-gray-900">${item.name} <span class="text-xs text-gray-500">${item.sweet ? `(${item.sweet})` : ''}</span></div>
+                <div class="text-sm font-medium text-gray-900">${money(item.price)}</div>
+                <div class="text-xs text-gray-500 mt-1">${item.fulfill}${item.requiresPreorder ? ' • *ต้องสั่งล่วงหน้า 1-2 วัน' : ''}${item.note ? ` • โน้ต: ${item.note}` : ""}${item.address ? ` • ที่อยู่: ${item.address}` : ""}</div>
+                <div class="mt-3 flex items-center gap-3">
+                    <button class="qtyDec px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">−</button>
+                    <span class="min-w-[2ch] text-center font-medium">${item.qty}</span>
+                    <button class="qtyInc px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium" data-idx="${idx}">+</button>
+                    <button class="rmItem ml-auto px-3 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white text-sm font-medium" data-idx="${idx}">ลบ</button>
+                </div>
+                </div>
+            </div>`;
+
+            const html = store.cart.map(itemHTML).join("") || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
+            list.innerHTML = html;
+            bottomSheet.innerHTML = html;
+            updateDeliveryStatus();
+        }
+
+        // ---------- Form Interactions ----------
+        function updatePriceFromSelect() {
+            const sel = qs("#selectedMenu");
+            const opt = sel.selectedOptions[0];
+            if (opt && opt.dataset.price) {
+            qs("#price").value = Number(opt.dataset.price).toFixed(2);
+            const isPreorder = opt.dataset.preorder === "true";
+            qs("#preorderNote").classList.toggle("hidden", !isPreorder);
+            qs("#sweetnessSection").classList.toggle("hidden", isPreorder);
+            }
+            calcTotal();
+        }
+
+        function calcTotal() {
+            const price = Number(qs("#price").value || 0);
+            const qty = Math.max(1, Number(qs("#qty").value || 1));
+            qs("#total").textContent = money(price * qty);
+        }
+
+        function addToCart() {
+            const selId = qs("#selectedMenu").value;
+            if (!selId) {
+            showToast("กรุณาเลือกเมนู", "error");
+            return;
+            }
+            const menu = store.menu.find(m => m.id === selId);
+            const price = Number(qs("#price").value || 0);
+            const qty = Math.max(1, Number(qs("#qty").value || 1));
+            const sweet = menu.requiresPreorder ? "" : (qs('input[name="sweet"]:checked')?.value || "50%");
+            const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
+            const note = qs("#note").value.trim();
+            const address = fulfill.includes("จัดส่ง") ? qs("#deliveryAddress").value.trim() : "";
+            if (fulfill.includes("จัดส่ง") && !address) {
+            showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
+            return;
+            }
+            if (fulfill.includes("จัดส่ง") && store.userLocation) {
+            const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+            if (distance > 10) {
+                showToast("ไม่สามารถเพิ่มลงตะกร้าได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+                return;
+            }
+            // Save address to localStorage
+            store.savedAddress = address;
+            }
+            if (menu.requiresPreorder) {
+            showToast("เมนูนี้ต้องสั่งล่วงหน้า 1-2 วัน", "info");
+            }
+
+            const newItem = { id: uid(), menuId: selId, name: menu.name, price, qty, sweet, fulfill, note, address, requiresPreorder: menu.requiresPreorder };
+            store.cart = [...store.cart, newItem];
+            renderCart();
+            closeOrderModal();
+            showToast("เพิ่มลงตะกร้าแล้ว");
+        }
+
+        function clearCart() {
+            store.cart = [];
+            // Do not clear savedAddress or userLocation to persist them
+            renderCart();
+            showToast("ล้างตะกร้าแล้ว");
+        }
+
+        // ---------- Telegram Integration ----------
+        function buildOrderText() {
+            const subTotal = cartSubTotal();
+            const deliveryFee = calculateDeliveryFee() || 0;
+            const grandTotal = subTotal + deliveryFee;
+            const items = store.cart.map((item, idx) => {
+            const lines = [
+                `${idx + 1}. ${item.name} (${item.sweet || 'ไม่มีระดับความหวาน'})`,
+                `   ราคา: ${money(item.price)} x ${item.qty} = ${money(item.price * item.qty)}`,
+                `   วิธีรับ: ${item.fulfill}`,
+                item.address ? `   ที่อยู่: ${item.address}` : "",
+                item.note ? `   โน้ต: ${item.note}` : "",
+                item.requiresPreorder ? `   *ต้องสั่งล่วงหน้า 1-2 วัน` : ""
+            ];
+            return lines.filter(l => l).join("\n");
+            }).join("\n\n");
+
+            const distance = store.userLocation ? calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng).toFixed(1) : "N/A";
+            return [
+            "🧋 ออร์เดอร์ใหม่จากชาบ้านน้องขิม 🧋",
+            "",
+            items,
+            "",
+            `ยอดรวมสินค้า: ${money(subTotal)}`,
+            `ค่าจัดส่ง${store.cart.some(i => i.fulfill.includes("จัดส่ง")) ? ` (ระยะทาง ${distance} กม.)` : ""}: ${money(deliveryFee)}`,
+            `รวมทั้งสิ้น: ${money(grandTotal)}`
+            ].join("\n");
+        }
+
+        async function sendOrderToTelegram(text) {
+            const url = TELEGRAM_PROXY_URL || `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text,
+                parse_mode: "Markdown"
+                })
+            });
+            if (!response.ok) throw new Error("Failed to send order");
+            return true;
+            } catch (e) {
+            showToast("ไม่สามารถส่งออร์เดอร์ไปยัง Telegram ได้", "error");
+            console.error(e);
+            return false;
+            }
+        }
+
+        async function placeOrder() {
+            if (!store.cart.length) {
+            showToast("ตะกร้าว่าง", "error");
+            return;
+            }
+            if (!canPlaceOrder()) {
+            showToast("ไม่สามารถสั่งออร์เดอร์ได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.) หรือไม่ได้ระบุที่อยู่", "error");
+            return;
+            }
+            const text = buildOrderText();
+            const hasPreorder = store.cart.some(item => item.requiresPreorder);
+            store.cart = [];
+            // Do not clear savedAddress or userLocation
+            renderCart();
+            closeCart();
+            showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
+            await sendOrderToTelegram(text);
+        }
+
+        // ---------- Menu Modal Logic ----------
+        function openMenuModal(editId = null) {
+            if (!store.isAdmin) {
+            showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+            return;
+            }
+            qs("#menuModal").classList.remove("hidden");
+            qs("#menuForm").reset();
+            qs("#menuId").value = "";
+            qs("#deleteMenuBtn").classList.add("hidden");
+            qs("#menuModalTitle").textContent = editId ? "แก้ไขเมนู" : "เพิ่มเมนู";
+            if (editId) {
+            const m = store.menu.find(x => x.id === editId);
+            if (!m) return;
+            qs("#menuId").value = m.id;
+            qs("#menuName").value = m.name;
+            qs("#menuPrice").value = m.price;
+            qs("#menuCategory").value = m.category || "";
+            qs("#isRecommended").checked = !!m.isRecommended;
+            qs("#requiresPreorder").checked = !!m.requiresPreorder;
+            qs("#deleteMenuBtn").classList.remove("hidden");
+            }
+        }
+
+        function closeMenuModal() {
+            qs("#menuModal").classList.add("hidden");
+        }
+
+        function upsertMenu(e) {
+            e.preventDefault();
+            if (!store.isAdmin) {
+            showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+            return;
+            }
+            const id = qs("#menuId").value || uid();
+            const item = {
+            id,
+            name: qs("#menuName").value.trim(),
+            price: Number(qs("#menuPrice").value || 0),
+            category: qs("#menuCategory").value.trim(),
+            image: "",
+            isRecommended: qs("#isRecommended").checked,
+            requiresPreorder: qs("#requiresPreorder").checked,
+            };
+            if (!item.name) {
+            showToast("กรุณากรอกชื่อเมนู", "error");
+            return;
+            }
+            let arr = store.menu.slice();
+            const idx = arr.findIndex(x => x.id === id);
+            if (idx > -1) arr[idx] = item;
+            else arr.push(item);
+            store.menu = arr;
             renderMenuGrid();
             renderMenuOptions();
-            showToast("นำเข้าเมนูสำเร็จ");
-          } catch (err) {
-            showToast("ไม่สามารถนำเข้า JSON ได้", "error");
-          }
-        };
-        reader.readAsText(file);
-      };
-      input.click();
-    }
-
-    function exportJson() {
-      const data = JSON.stringify(store.menu, null, 2);
-      const blob = new Blob([data], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "menu.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("ส่งออกเมนูสำเร็จ");
-    }
-
-    // ---------- Login Logic ----------
-    function openLoginModal() {
-      qs("#loginModal").classList.remove("hidden");
-      qs("#loginForm").reset();
-    }
-
-    function closeLoginModal() {
-      qs("#loginModal").classList.add("hidden");
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const username = qs("#username").value.trim();
-      const password = qs("#password").value.trim();
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        store.isAdmin = true;
-        qs("#adminControls").classList.remove("hidden");
-        qs("#loginBtn").textContent = "ออกจากระบบ";
-        qs("#hamburgerLoginBtn").textContent = "ออกจากระบบ";
-        qs("#loginBtn").onclick = handleLogout;
-        qs("#hamburgerLoginBtn").onclick = handleLogout;
-        renderMenuGrid();
-        closeLoginModal();
-        showToast("เข้าสู่ระบบสำเร็จ");
-      } else {
-        showToast("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "error");
-      }
-    }
-
-    function handleLogout() {
-      store.isAdmin = false;
-      qs("#adminControls").classList.add("hidden");
-      qs("#loginBtn").textContent = "เข้าสู่ระบบ";
-      qs("#hamburgerLoginBtn").textContent = "เข้าสู่ระบบ";
-      qs("#loginBtn").onclick = openLoginModal;
-      qs("#hamburgerLoginBtn").onclick = openLoginModal;
-      renderMenuGrid();
-      showToast("ออกจากระบบแล้ว");
-    }
-
-    // ---------- Cart Bottom Sheet ----------
-    function openCart() {
-      qs("#cartBottomSheet").classList.add("open");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    function closeCart() {
-      qs("#cartBottomSheet").classList.remove("open");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-// ---------- Order Modal (continued) ----------
-      function openOrderModal(menuId = null) {
-        qs("#orderModal").classList.remove("hidden");
-        qs("#orderForm").reset();
-        qs("#selectedMenu").value = menuId || "";
-        qs("#price").value = "";
-        qs("#qty").value = "1";
-        qs('input[name="sweet"][value="50%"]').checked = true;
-        qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
-        qs("#note").value = "";
-        qs("#deliveryAddress").value = "";
-        qs("#deliveryStatus").textContent = "";
-        qs("#sweetnessSection").classList.remove("hidden");
-        qs("#preorderNote").classList.add("hidden");
-        qs("#deliveryAddressSection").classList.add("hidden");
-        updatePriceFromSelect();
-        if ("vibrate" in navigator) navigator.vibrate(50);
-      }
-
-      function closeOrderModal() {
-        qs("#orderModal").classList.add("hidden");
-        if ("vibrate" in navigator) navigator.vibrate(50);
-      }
-
-      // ---------- Search and Filter Modal ----------
-      function openSearchFilterModal() {
-        qs("#searchFilterModal").classList.remove("hidden");
-        if ("vibrate" in navigator) navigator.vibrate(50);
-      }
-
-      function closeSearchFilterModal() {
-        qs("#searchFilterModal").classList.add("hidden");
-        if ("vibrate" in navigator) navigator.vibrate(50);
-      }
-
-      // ---------- Geolocation ----------
-      function updateUserLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            pos => {
-              store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-              updateDeliveryStatus();
-              renderCart();
-            },
-            err => {
-              console.error("Geolocation error:", err);
-              store.userLocation = null;
-              updateDeliveryStatus();
-              showToast("ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง", "error");
-            }
-          );
-        } else {
-          showToast("เบราว์เซอร์นี้ไม่รองรับ Geolocation", "error");
+            closeMenuModal();
+            showToast("บันทึกเมนูแล้ว");
         }
-      }
 
-      // ---------- Cart Quantity and Removal ----------
-      function updateCartItemQuantity(idx, delta) {
-        const cart = store.cart.slice();
-        const item = cart[idx];
-        if (!item) return;
-        item.qty = Math.max(1, (item.qty || 1) + delta);
-        store.cart = cart;
-        renderCart();
-        showToast(`ปรับจำนวน ${item.name} เป็น ${item.qty} แล้ว`);
-      }
-
-      function removeCartItem(idx) {
-        const cart = store.cart.slice();
-        const item = cart[idx];
-        if (!item) return;
-        cart.splice(idx, 1);
-        store.cart = cart;
-        renderCart();
-        showToast(`ลบ ${item.name} ออกจากตะกร้าแล้ว`);
-      }
-
-      // ---------- Event Listeners ----------
-      function setupEventListeners() {
-        // Theme Toggle
-        qs("#themeToggleBtn").onclick = toggleTheme;
-        qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
-
-        // Login
-        qs("#loginBtn").onclick = openLoginModal;
-        qs("#hamburgerLoginBtn").onclick = openLoginModal;
-        qs("#loginForm").onsubmit = handleLogin;
-        qs("#closeLoginModal").onclick = closeLoginModal;
-
-        // Hamburger Menu
-        qs("#openHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.remove("translate-x-full");
-        qs("#closeHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.add("translate-x-full");
-
-        // Cart
-        qs("#openCartBtn").onclick = openCart;
-        qs("#floatingOrderBtn").onclick = openCart;
-        qs("#closeCartBtn").onclick = closeCart;
-        qs("#clearCartBtn").onclick = clearCart;
-        qs("#bottomSheetClearCartBtn").onclick = clearCart;
-        qs("#placeOrderBtn").onclick = placeOrder;
-        qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
-
-        // Cart Quantity and Removal
-        [qs("#cartList"), qs("#cartBottomSheetList")].forEach(list => {
-          list.onclick = e => {
-            const target = e.target;
-            const idx = target.dataset.idx;
-            if (target.classList.contains("qtyInc")) {
-              updateCartItemQuantity(Number(idx), 1);
-            } else if (target.classList.contains("qtyDec")) {
-              updateCartItemQuantity(Number(idx), -1);
-            } else if (target.classList.contains("rmItem")) {
-              removeCartItem(Number(idx));
+        function deleteMenu() {
+            if (!store.isAdmin) {
+            showToast("ต้องเป็นผู้ดูแลเพื่อจัดการเมนู", "error");
+            return;
             }
-          };
-        });
+            const id = qs("#menuId").value;
+            if (!id) return;
+            store.menu = store.menu.filter(x => x.id !== id);
+            renderMenuGrid();
+            renderMenuOptions();
+            closeMenuModal();
+            showToast("ลบเมนูแล้ว");
+        }
 
-        // Menu Grid
-        qs("#menuGrid").onclick = e => {
-          const t = e.target;
-          if (t.classList.contains("quickSelect")) {
-            openOrderModal(t.dataset.id);
-          } else if (t.classList.contains("editMenu")) {
-            openMenuModal(t.dataset.id);
-          }
-        };
+        // ---------- JSON Import/Export ----------
+        function importJson() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try {
+                const data = JSON.parse(ev.target.result);
+                if (!Array.isArray(data)) throw new Error("Invalid JSON format");
+                store.menu = data.map(item => ({
+                    ...item,
+                    id: item.id || uid(),
+                    price: Number(item.price) || 0,
+                    image: item.image || ""
+                }));
+                renderMenuGrid();
+                renderMenuOptions();
+                showToast("นำเข้าเมนูสำเร็จ");
+                } catch (err) {
+                showToast("ไม่สามารถนำเข้า JSON ได้", "error");
+                }
+            };
+            reader.readAsText(file);
+            };
+            input.click();
+        }
 
-        // Order Modal
-        qs("#selectedMenu").onchange = updatePriceFromSelect;
-        qs("#price").oninput = calcTotal;
-        qs("#qty").oninput = calcTotal;
-        qs("#qtyPlus").onclick = () => {
-          qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) + 1);
-          calcTotal();
-        };
-        qs("#qtyMinus").onclick = () => {
-          qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) - 1);
-          calcTotal();
-        };
-        qs("#addToCartBtn").onclick = addToCart;
-        qs("#closeOrderModal").onclick = closeOrderModal;
-        qsa('input[name="fulfill"]').forEach(r =>
-          r.onchange = () => {
+        function exportJson() {
+            const data = JSON.stringify(store.menu, null, 2);
+            const blob = new Blob([data], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "menu.json";
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("ส่งออกเมนูสำเร็จ");
+        }
+
+        // ---------- Login Logic ----------
+        function openLoginModal() {
+            qs("#loginModal").classList.remove("hidden");
+            qs("#loginForm").reset();
+        }
+
+        function closeLoginModal() {
+            qs("#loginModal").classList.add("hidden");
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = qs("#username").value.trim();
+            const password = qs("#password").value.trim();
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            store.isAdmin = true;
+            qs("#adminControls").classList.remove("hidden");
+            qs("#loginBtn").textContent = "ออกจากระบบ";
+            qs("#hamburgerLoginBtn").textContent = "ออกจากระบบ";
+            qs("#loginBtn").onclick = handleLogout;
+            qs("#hamburgerLoginBtn").onclick = handleLogout;
+            renderMenuGrid();
+            closeLoginModal();
+            showToast("เข้าสู่ระบบสำเร็จ");
+            } else {
+            showToast("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "error");
+            }
+        }
+
+        function handleLogout() {
+            store.isAdmin = false;
+            qs("#adminControls").classList.add("hidden");
+            qs("#loginBtn").textContent = "เข้าสู่ระบบ";
+            qs("#hamburgerLoginBtn").textContent = "เข้าสู่ระบบ";
+            qs("#loginBtn").onclick = openLoginModal;
+            qs("#hamburgerLoginBtn").onclick = openLoginModal;
+            renderMenuGrid();
+            showToast("ออกจากระบบแล้ว");
+        }
+
+        // ---------- Cart Bottom Sheet ----------
+        function openCart() {
+            qs("#cartBottomSheet").classList.add("open");
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
+
+        function closeCart() {
+            qs("#cartBottomSheet").classList.remove("open");
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
+
+        // ---------- Order Modal ----------
+        function openOrderModal(menuId = null) {
+            qs("#orderModal").classList.remove("hidden");
+            qs("#orderForm").reset();
+            qs("#selectedMenu").value = menuId || "";
+            qs("#price").value = "";
+            qs("#qty").value = "1";
+            qs('input[name="sweet"][value="50%"]').checked = true;
+            qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
+            qs("#note").value = "";
+            // Load saved address if available
+            qs("#deliveryAddress").value = store.savedAddress || "";
+            qs("#deliveryStatus").textContent = "";
+            qs("#sweetnessSection").classList.remove("hidden");
+            qs("#preorderNote").classList.add("hidden");
             qs("#deliveryAddressSection").classList.toggle("hidden", !qs('input[name="fulfill"][value="จัดส่ง"]').checked);
+            updatePriceFromSelect();
             updateDeliveryStatus();
-          }
-        );
-
-        // Menu Modal
-        qs("#addMenuBtn").onclick = () => openMenuModal();
-        qs("#menuForm").onsubmit = upsertMenu;
-        qs("#deleteMenuBtn").onclick = deleteMenu;
-        qs("#closeMenuModal").onclick = closeMenuModal;
-
-        // Search and Filter
-        qs("#openSearchModalBtn").onclick = openSearchFilterModal;
-        qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
-        qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
-        qs("#searchInput").oninput = () => renderMenuGrid();
-        qs("#categoryChips").onclick = e => {
-          const t = e.target;
-          if (t.dataset.category !== undefined) {
-            currentCategory = t.dataset.category;
-            qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
-            renderMenuGrid();
-          }
-        };
-        qs("#sortChips").onclick = e => {
-          const t = e.target;
-          if (t.dataset.sort) {
-            currentSort = t.dataset.sort;
-            qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
-            renderMenuGrid();
-          }
-        };
-        qs("#clearFiltersBtn").onclick = () => {
-          qs("#searchInput").value = "";
-          currentCategory = "";
-          currentSort = "default";
-          qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.category === ""));
-          qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.sort === "default"));
-          renderMenuGrid();
-        };
-        qs("#applyFiltersBtn").onclick = closeSearchFilterModal;
-
-        // JSON Import/Export
-        qs("#importJsonBtn").onclick = importJson;
-        qs("#exportJsonBtn").onclick = exportJson;
-
-        // Delivery Address
-        qs("#deliveryAddress").oninput = () => {
-          updateDeliveryStatus();
-          if (qs("#deliveryAddress").value.trim()) {
-            // Simulate geolocation from address (in real app, use a geocoding API)
-            // For demo, assume user location is set manually or via geolocation
-            updateUserLocation();
-          }
-        };
-      }
-
-      // ---------- Initialization ----------
-      function init() {
-        seedMenu();
-        renderMenuOptions();
-        renderCategories();
-        renderMenuGrid();
-        renderCart();
-        qs("#adminControls").classList.toggle("hidden", !store.isAdmin);
-        qs("#loginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
-        qs("#hamburgerLoginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
-        if (store.isAdmin) {
-          qs("#loginBtn").onclick = handleLogout;
-          qs("#hamburgerLoginBtn").onclick = handleLogout;
+            if ("vibrate" in navigator) navigator.vibrate(50);
         }
-        setupEventListeners();
-        updateUserLocation();
-      }
 
-      init();
+        function closeOrderModal() {
+            qs("#orderModal").classList.add("hidden");
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
+
+        // ---------- Search and Filter Modal ----------
+        function openSearchFilterModal() {
+            qs("#searchFilterModal").classList.remove("hidden");
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
+
+        function closeSearchFilterModal() {
+            qs("#searchFilterModal").classList.add("hidden");
+            if ("vibrate" in navigator) navigator.vibrate(50);
+        }
+
+        // ---------- Geolocation ----------
+        function updateUserLocation() {
+            if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                updateDeliveryStatus();
+                renderCart();
+                },
+                err => {
+                console.error("Geolocation error:", err);
+                // Do not clear savedAddress
+                updateDeliveryStatus();
+                showToast("ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง", "error");
+                }
+            );
+            } else {
+            showToast("เบราว์เซอร์นี้ไม่รองรับ Geolocation", "error");
+            }
+        }
+
+        // ---------- Cart Quantity and Removal ----------
+        function updateCartItemQuantity(idx, delta) {
+            const cart = store.cart.slice();
+            const item = cart[idx];
+            if (!item) return;
+            item.qty = Math.max(1, (item.qty || 1) + delta);
+            store.cart = cart;
+            renderCart();
+            showToast(`ปรับจำนวน ${item.name} เป็น ${item.qty} แล้ว`);
+        }
+
+        function removeCartItem(idx) {
+            const cart = store.cart.slice();
+            const item = cart[idx];
+            if (!item) return;
+            cart.splice(idx, 1);
+            store.cart = cart;
+            renderCart();
+            showToast(`ลบ ${item.name} ออกจากตะกร้าแล้ว`);
+        }
+
+        // ---------- Event Listeners ----------
+        function setupEventListeners() {
+            // Theme Toggle
+            qs("#themeToggleBtn").onclick = toggleTheme;
+            qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
+
+            // Login
+            qs("#loginBtn").onclick = openLoginModal;
+            qs("#hamburgerLoginBtn").onclick = openLoginModal;
+            qs("#loginForm").onsubmit = handleLogin;
+            qs("#closeLoginModal").onclick = closeLoginModal;
+
+            // Hamburger Menu
+            qs("#openHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.remove("translate-x-full");
+            qs("#closeHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.add("translate-x-full");
+
+            // Cart
+            qs("#openCartBtn").onclick = openCart;
+            qs("#floatingOrderBtn").onclick = openCart;
+            qs("#closeCartBtn").onclick = closeCart;
+            qs("#clearCartBtn").onclick = clearCart;
+            qs("#bottomSheetClearCartBtn").onclick = clearCart;
+            qs("#placeOrderBtn").onclick = placeOrder;
+            qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
+
+            // Cart Quantity and Removal
+            [qs("#cartList"), qs("#cartBottomSheetList")].forEach(list => {
+            list.onclick = e => {
+                const target = e.target;
+                const idx = target.dataset.idx;
+                if (target.classList.contains("qtyInc")) {
+                updateCartItemQuantity(Number(idx), 1);
+                } else if (target.classList.contains("qtyDec")) {
+                updateCartItemQuantity(Number(idx), -1);
+                } else if (target.classList.contains("rmItem")) {
+                removeCartItem(Number(idx));
+                }
+            };
+            });
+
+            // Menu Grid
+            qs("#menuGrid").onclick = e => {
+            const t = e.target;
+            if (t.classList.contains("quickSelect")) {
+                openOrderModal(t.dataset.id);
+            } else if (t.classList.contains("editMenu")) {
+                openMenuModal(t.dataset.id);
+            }
+            };
+
+            // Order Modal
+            qs("#selectedMenu").onchange = updatePriceFromSelect;
+            qs("#price").oninput = calcTotal;
+            qs("#qty").oninput = calcTotal;
+            qs("#qtyPlus").onclick = () => {
+            qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) + 1);
+            calcTotal();
+            };
+            qs("#qtyMinus").onclick = () => {
+            qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) - 1);
+            calcTotal();
+            };
+            qs("#addToCartBtn").onclick = addToCart;
+            qs("#closeOrderModal").onclick = closeOrderModal;
+            qsa('input[name="fulfill"]').forEach(r =>
+            r.onchange = () => {
+                qs("#deliveryAddressSection").classList.toggle("hidden", !qs('input[name="fulfill"][value="จัดส่ง"]').checked);
+                // Load saved address when switching to delivery
+                if (qs('input[name="fulfill"][value="จัดส่ง"]').checked) {
+                qs("#deliveryAddress").value = store.savedAddress || "";
+                }
+                updateDeliveryStatus();
+            }
+            );
+
+            // Menu Modal
+            qs("#addMenuBtn").onclick = () => openMenuModal();
+            qs("#menuForm").onsubmit = upsertMenu;
+            qs("#deleteMenuBtn").onclick = deleteMenu;
+            qs("#closeMenuModal").onclick = closeMenuModal;
+
+            // Search and Filter
+            qs("#openSearchModalBtn").onclick = openSearchFilterModal;
+            qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
+            qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
+            qs("#searchInput").oninput = () => renderMenuGrid();
+            qs("#categoryChips").onclick = e => {
+            const t = e.target;
+            if (t.dataset.category !== undefined) {
+                currentCategory = t.dataset.category;
+                qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
+                renderMenuGrid();
+            }
+            };
+            qs("#sortChips").onclick = e => {
+            const t = e.target;
+            if (t.dataset.sort) {
+                currentSort = t.dataset.sort;
+                qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
+                renderMenuGrid();
+            }
+            };
+            qs("#clearFiltersBtn").onclick = () => {
+            qs("#searchInput").value = "";
+            currentCategory = "";
+            currentSort = "default";
+            qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.category === ""));
+            qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.sort === "default"));
+            renderMenuGrid();
+            };
+            qs("#applyFiltersBtn").onclick = closeSearchFilterModal;
+
+            // JSON Import/Export
+            qs("#importJsonBtn").onclick = importJson;
+            qs("#exportJsonBtn").onclick = exportJson;
+
+            // Delivery Address
+            qs("#deliveryAddress").oninput = () => {
+            const address = qs("#deliveryAddress").value.trim();
+            store.savedAddress = address;
+            updateDeliveryStatus();
+            if (address) {
+                // Simulate geolocation from address (in real app, use a geocoding API)
+                updateUserLocation();
+            }
+            };
+        }
+
+        // ---------- Initialization ----------
+        function init() {
+            seedMenu();
+            renderMenuOptions();
+            renderCategories();
+            renderMenuGrid();
+            renderCart();
+            qs("#adminControls").classList.toggle("hidden", !store.isAdmin);
+            qs("#loginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
+            qs("#hamburgerLoginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
+            if (store.isAdmin) {
+            qs("#loginBtn").onclick = handleLogout;
+            qs("#hamburgerLoginBtn").onclick = handleLogout;
+            }
+            setupEventListeners();
+            // Load saved address into delivery field if available
+            if (store.savedAddress) {
+            qs("#deliveryAddress").value = store.savedAddress;
+            }
+            updateUserLocation();
+        }
+
+        init();
     </script>
   </body>
 </html>
