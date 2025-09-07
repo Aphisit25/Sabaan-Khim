@@ -6,7 +6,6 @@
   <title>ชาบ้านน้องขิม</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -73,11 +72,6 @@
       background: linear-gradient(90deg, #0d9488, #14b8a6);
       transform: translateY(-2px);
     }
-    .btn-primary:disabled {
-      background: linear-gradient(90deg, #6b7280, #6b7280);
-      cursor: not-allowed;
-      transform: none;
-    }
     .btn-secondary {
       background: linear-gradient(90deg, #eab308, #ca8a04);
       transition: all 0.3s ease;
@@ -86,8 +80,8 @@
       background: linear-gradient(90deg, #ca8a04, #eab308);
       transform: translateY(-2px);
     }
-    .btn-secondary:disabled {
-      background: linear-gradient(90deg, #6b7280, #6b7280);
+    .btn-disabled {
+      background: #d1d5db;
       cursor: not-allowed;
       transform: none;
     }
@@ -167,7 +161,7 @@
         align-items: center;
       }
       .floating-search-btn {
-        display: none; /* Hide floating button on desktop */
+        display: none;
       }
     }
     @media (max-width: 640px) {
@@ -203,7 +197,6 @@
       gap: 1rem;
       padding: 1rem 1.5rem;
     }
-    /* Footer styles */
     .footer {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
@@ -230,7 +223,7 @@
     const TELEGRAM_BOT_TOKEN = "7778167506:AAFB5V66g5NjwrSv6WvAUL2jDcV3ccUcxIk";
     const TELEGRAM_CHAT_ID = "-1002728257218";
     const TELEGRAM_PROXY_URL = "";
-    const SHOP_LOCATION = { lat: 13.7325997, lng: 100.9996336 };
+    const STORE_LOCATION = { lat: 13.7325997, lng: 100.9996336 };
   </script>
   <!-- Header -->
   <header class="sticky top-0 z-40 shadow-soft">
@@ -248,7 +241,6 @@
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <!-- Search Button (Desktop Only) -->
           <button id="openSearchModalBtn" class="hidden md:block p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition">
             <svg class="w-6 h-6 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -294,9 +286,7 @@
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Menu & Admin panel column -->
     <section class="lg:col-span-2 space-y-6">
-      <!-- Admin Controls -->
       <div id="adminControls" class="glass rounded-xl p-6 hidden shadow-soft">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <h2 class="text-lg font-semibold text-gray-900">จัดการเมนู</h2>
@@ -308,36 +298,33 @@
         </div>
         <p class="text-sm text-gray-500 mt-2">จัดการเมนูของคุณได้อย่างง่ายดาย เก็บข้อมูลใน LocalStorage</p>
       </div>
-
-      <!-- Menu Grid -->
       <div id="menuGrid" class="space-y-8"></div>
     </section>
-
-    <!-- Cart Panel (Desktop Only) -->
     <aside class="lg:col-span-1 space-y-6 hidden lg:block">
       <div class="glass rounded-xl p-6 shadow-soft animate-fade-in">
         <h3 class="text-lg font-semibold text-gray-900">ตะกร้าของฉัน</h3>
         <div id="cartList" class="divide-y divide-gray-200 my-4"></div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <span>รวมทั้งสิ้น</span>
-          <span id="cartGrandTotal" class="font-bold text-gray-900">฿0.00</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <span>ค่าจัดส่ง</span>
-          <span id="cartShippingFee" class="font-bold text-gray-900">฿0.00</span>
-        </div>
-        <div class="flex items-center justify-between text-sm font-medium">
-          <span>ยอดรวมทั้งหมด</span>
-          <span id="cartTotalWithShipping" class="font-bold text-gray-900">฿0.00</span>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>ยอดรวมสินค้า</span>
+            <span id="cartSubTotal" class="font-bold text-gray-900">฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>ค่าจัดส่ง</span>
+            <span id="cartDeliveryFee" class="font-bold text-gray-900">฿0.00</span>
+          </div>
+          <div class="flex items-center justify-between text-sm font-medium">
+            <span>รวมทั้งสิ้น</span>
+            <span id="cartGrandTotal" class="font-bold text-gray-900">฿0.00</span>
+          </div>
         </div>
         <div class="flex gap-3 mt-4">
           <button id="clearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
           <button id="placeOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
         </div>
+        <p id="deliveryNote" class="text-xs text-gray-500 mt-2"></p>
       </div>
     </aside>
-
-    <!-- Floating Order Button (Mobile Only) -->
     <button id="floatingOrderBtn" class="md:hidden fixed bottom-4 right-4 p-4 rounded-full btn-secondary text-white shadow-glow z-30">
       <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -355,7 +342,7 @@
       <div class="space-y-6">
         <div class="relative">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0115 0z" />
           </svg>
           <input id="searchInput" placeholder="ค้นหาเมนู..." class="w-full pl-10 pr-3 py-3 bg-white/80 text-gray-900 rounded-xl focus:ring-2 focus:ring-brand-500 transition text-base" />
         </div>
@@ -410,7 +397,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div id="sweetnessSection">
           <label class="text-base font-medium text-gray-700">ความหวาน (สำหรับเครื่องดื่ม)</label>
           <div class="mt-2 grid grid-cols-5 gap-2">
             <label class="bg-white/80 rounded-xl px-3 py-2 text-center text-base cursor-pointer hover:bg-gray-200 transition">
@@ -439,6 +426,7 @@
         <div id="deliveryAddressSection" class="hidden">
           <label class="text-base font-medium text-gray-700">ที่อยู่จัดส่ง</label>
           <textarea id="deliveryAddress" rows="3" placeholder="กรุณากรอกที่อยู่สำหรับจัดส่ง" class="mt-2 w-full bg-white/80 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 transition text-base"></textarea>
+          <p id="deliveryStatus" class="text-sm text-gray-500 mt-2"></p>
         </div>
         <div>
           <label class="text-base font-medium text-gray-700">โน้ตถึงร้าน</label>
@@ -446,7 +434,7 @@
         </div>
         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
           <div class="text-base text-gray-500">ยอดรวม: <span id="total" class="font-semibold text-gray-900">฿0.00</span></div>
-          <button id="addToCartBtn" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">เพิ่มลงตะกร้า</button>
+          <button id="addToCartBtn" type="button" class="px-4 py-2 rounded-xl btn-primary text-white text-base font-medium shadow-glow">เพิ่มลงตะกร้า</button>
         </div>
       </form>
     </div>
@@ -520,22 +508,25 @@
     </div>
     <div id="cartBottomSheetList" class="flex-1 overflow-y-auto p-4 divide-y divide-gray-200"></div>
     <div class="p-4 border-t border-gray-200 space-y-3">
-      <div class="flex items-center justify-between text-sm font-medium">
-        <span>รวม</span>
-        <span id="bottomSheetTotal" class="font-bold text-gray-900">฿0.00</span>
-      </div>
-      <div class="flex items-center justify-between text-sm font-medium">
-        <span>ค่าจัดส่ง</span>
-        <span id="bottomSheetShippingFee" class="font-bold text-gray-900">฿0.00</span>
-      </div>
-      <div class="flex items-center justify-between text-sm font-medium">
-        <span>ยอดรวมทั้งหมด</span>
-        <span id="bottomSheetTotalWithShipping" class="font-bold text-gray-900">฿0.00</span>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>ยอดรวมสินค้า</span>
+          <span id="bottomSheetSubTotal" class="font-bold text-gray-900">฿0.00</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>ค่าจัดส่ง</span>
+          <span id="bottomSheetDeliveryFee" class="font-bold text-gray-900">฿0.00</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-medium">
+          <span>รวมทั้งสิ้น</span>
+          <span id="bottomSheetTotal" class="font-bold text-gray-900">฿0.00</span>
+        </div>
       </div>
       <div class="flex gap-3">
         <button id="bottomSheetClearCartBtn" class="flex-1 px-4 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-medium shadow-glow">ล้างตะกร้า</button>
         <button id="bottomSheetPlaceOrderBtn" class="flex-1 px-4 py-3 rounded-full btn-secondary text-white font-medium shadow-glow">สั่งออร์เดอร์</button>
       </div>
+      <p id="bottomSheetDeliveryNote" class="text-xs text-gray-500"></p>
     </div>
   </div>
 
@@ -557,12 +548,13 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-brand-600">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" />
           </svg>
-          <span><a href="https://www.facebook.com/chabannongkhim" target="_blank" rel="noopener noreferrer">Facebook: </a></span>
+          <span><a href="https://www.facebook.com/chabannongkhim" target="_blank" rel="noopener noreferrer">Facebook: ชาบ้านน้องขิม</a></span>
         </div>
       </div>
       <p class="text-sm text-gray-500 mt-4">© 2025 ชาบ้านน้องขิม. สงวนลิขสิทธิ์.</p>
     </div>
   </footer>
+
   <script>
     // ---------- Utilities ----------
     const qs = (s, el = document) => el.querySelector(s);
@@ -579,6 +571,18 @@
       t.classList.remove("hidden");
       setTimeout(() => t.classList.add("hidden"), 3000);
       if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    // Haversine formula to calculate distance in kilometers
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
     }
 
     // ---------- State ----------
@@ -601,12 +605,7 @@
       set isAdmin(v) {
         localStorage.setItem("isAdmin", v);
       },
-      get userLocation() {
-        return JSON.parse(localStorage.getItem("userLocation") || "{}");
-      },
-      set userLocation(v) {
-        localStorage.setItem("userLocation", JSON.stringify(v));
-      }
+      userLocation: null
     };
 
     // Admin credentials
@@ -644,9 +643,9 @@
     // ---------- Theme Toggle ----------
     function toggleTheme() {
       const body = document.body;
-      const isLight = body.classList.contains("light-theme");
+      const isLight = !body.classList.contains("dark-theme");
+      body.classList.toggle("dark-theme", isLight);
       body.classList.toggle("light-theme", !isLight);
-      store.theme = isLight ? "dark" : "light";
       qs("#themeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
       qs("#hamburgerThemeToggleBtn").textContent = isLight ? "โหมดสว่าง" : "โหมดมืด";
       if ("vibrate" in navigator) navigator.vibrate(50);
@@ -745,95 +744,89 @@
       wrap.innerHTML = html;
     }
 
-    // ---------- Location Handling ----------
-    function calculateDistance(lat1, lng1, lat2, lng2) {
-      const R = 6371; // Earth's radius in km
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLng = (lng2 - lng1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLng/2) * Math.sin(dLng/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c; // Distance in km
-    }
-
-    function checkLocation() {
-      if (!navigator.geolocation) {
-        Swal.fire({
-          title: "ข้อผิดพลาด",
-          text: "เบราว์เซอร์ของคุณไม่รองรับการระบุตำแหน่ง",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          allowOutsideClick: false
-        }).then(() => {
-          window.close();
-        });
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          store.userLocation = userLocation;
-          const distance = calculateDistance(
-            SHOP_LOCATION.lat,
-            SHOP_LOCATION.lng,
-            userLocation.lat,
-            userLocation.lng
-          );
-          if (distance > 10) {
-            Swal.fire({
-              title: "นอกพื้นที่จัดส่ง",
-              text: "ขออภัย คุณอยู่นอกพื้นที่จัดส่ง (เกิน 10 กม.)",
-              icon: "error",
-              confirmButtonText: "ตกลง",
-              allowOutsideClick: false
-            }).then(() => {
-              window.close();
-            });
-          } else {
-            updateCartDisplay();
-          }
-        },
-        error => {
-          Swal.fire({
-            title: "ข้อผิดพลาด",
-            text: "ไม่สามารถระบุตำแหน่งได้ กรุณาอนุญาตให้เข้าถึงตำแหน่ง",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-            allowOutsideClick: false
-          }).then(() => {
-            window.close();
-          });
-        }
-      );
-    }
-
     // ---------- Cart ----------
-    function cartTotal() {
+    function cartSubTotal() {
       return store.cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 0), 0);
     }
 
-    function calculateShippingFee() {
-      const total = cartTotal();
-      const distance = store.userLocation.lat ? calculateDistance(
-        SHOP_LOCATION.lat,
-        SHOP_LOCATION.lng,
-        store.userLocation.lat,
-        store.userLocation.lng
-      ) : 0;
+    function calculateDeliveryFee() {
+      const subTotal = cartSubTotal();
       const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      if (!hasDelivery || !store.userLocation) return 0;
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      if (distance > 10) return null; // Delivery not allowed
+      if (subTotal >= 100) return 0; // Free delivery for orders >= 100 THB
+      if (distance <= 3) return 0; // Free delivery for distance <= 3 km
+      return 10; // 10 THB for 3-10 km and orders < 100 THB
+    }
 
-      if (!hasDelivery) return 0;
-      if (total >= 100) {
-        return distance <= 10 ? 0 : null; // null indicates delivery not allowed
+    function canPlaceOrder() {
+      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      if (!hasDelivery) return true;
+      if (!store.userLocation) return false;
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      return distance <= 10;
+    }
+
+    function updateDeliveryStatus() {
+      const subTotal = cartSubTotal();
+      const hasDelivery = store.cart.some(item => item.fulfill.includes("จัดส่ง"));
+      const deliveryFee = calculateDeliveryFee() || 0;
+      const placeOrderBtn = qs("#placeOrderBtn");
+      const bottomSheetPlaceOrderBtn = qs("#bottomSheetPlaceOrderBtn");
+      const deliveryNote = qs("#deliveryNote");
+      const bottomSheetDeliveryNote = qs("#bottomSheetDeliveryNote");
+
+      if (!hasDelivery) {
+        deliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+        bottomSheetDeliveryNote.textContent = "รับเองที่ร้าน: ไม่มีค่าจัดส่ง";
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+        return;
+      }
+
+      if (!store.userLocation) {
+        deliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+        bottomSheetDeliveryNote.textContent = "กรุณาระบุตำแหน่งเพื่อคำนวณค่าจัดส่ง";
+        placeOrderBtn.classList.add("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+        placeOrderBtn.disabled = true;
+        bottomSheetPlaceOrderBtn.disabled = true;
+        return;
+      }
+
+      const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+      if (distance > 10) {
+        deliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+        bottomSheetDeliveryNote.textContent = "ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)";
+        placeOrderBtn.classList.add("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.add("btn-disabled");
+        placeOrderBtn.disabled = true;
+        bottomSheetPlaceOrderBtn.disabled = true;
+        showToast("ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+      } else if (subTotal >= 100) {
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
+      } else if (distance <= 3) {
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: จัดส่งฟรี`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
       } else {
-        if (distance <= 3) return 0;
-        if (distance <= 10) return 10;
-        return null; // null indicates delivery not allowed
+        deliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+        bottomSheetDeliveryNote.textContent = `ระยะทาง ${distance.toFixed(1)} กม.: ค่าจัดส่ง ฿10.00`;
+        placeOrderBtn.classList.remove("btn-disabled");
+        bottomSheetPlaceOrderBtn.classList.remove("btn-disabled");
+        placeOrderBtn.disabled = false;
+        bottomSheetPlaceOrderBtn.disabled = false;
       }
     }
 
@@ -841,34 +834,16 @@
       const list = qs("#cartList");
       const bottomSheet = qs("#cartBottomSheetList");
       const badge = qs("#cartCountBadge");
-      const total = cartTotal();
-      const shippingFee = calculateShippingFee();
-      const totalWithShipping = shippingFee !== null ? total + shippingFee : total;
-
-      qs("#cartGrandTotal").textContent = money(total);
-      qs("#bottomSheetTotal").textContent = money(total);
-      qs("#cartShippingFee").textContent = shippingFee !== null ? money(shippingFee) : "ไม่สามารถจัดส่งได้";
-      qs("#bottomSheetShippingFee").textContent = shippingFee !== null ? money(shippingFee) : "ไม่สามารถจัดส่งได้";
-      qs("#cartTotalWithShipping").textContent = shippingFee !== null ? money(totalWithShipping) : "ไม่สามารถจัดส่งได้";
-      qs("#bottomSheetTotalWithShipping").textContent = shippingFee !== null ? money(totalWithShipping) : "ไม่สามารถจัดส่งได้";
+      const subTotal = cartSubTotal();
+      const deliveryFee = calculateDeliveryFee() || 0;
+      const grandTotal = subTotal + deliveryFee;
+      qs("#cartSubTotal").textContent = money(subTotal);
+      qs("#cartDeliveryFee").textContent = money(deliveryFee);
+      qs("#cartGrandTotal").textContent = money(grandTotal);
+      qs("#bottomSheetSubTotal").textContent = money(subTotal);
+      qs("#bottomSheetDeliveryFee").textContent = money(deliveryFee);
+      qs("#bottomSheetTotal").textContent = money(grandTotal);
       badge.textContent = store.cart.reduce((s, i) => s + (i.qty || 0), 0);
-
-      const placeOrderBtn = qs("#placeOrderBtn");
-      const bottomSheetPlaceOrderBtn = qs("#bottomSheetPlaceOrderBtn");
-      const floatingOrderBtn = qs("#floatingOrderBtn");
-      const openCartBtn = qs("#openCartBtn");
-
-      if (shippingFee === null && store.cart.some(item => item.fulfill.includes("จัดส่ง"))) {
-        placeOrderBtn.disabled = true;
-        bottomSheetPlaceOrderBtn.disabled = true;
-        floatingOrderBtn.disabled = true;
-        openCartBtn.disabled = true;
-      } else {
-        placeOrderBtn.disabled = false;
-        bottomSheetPlaceOrderBtn.disabled = false;
-        floatingOrderBtn.disabled = false;
-        openCartBtn.disabled = false;
-      }
 
       const itemHTML = (item, idx) => `
         <div class="py-4 flex items-start gap-4 hover:bg-gray-50/50 rounded-lg transition">
@@ -888,19 +863,7 @@
       const html = store.cart.map(itemHTML).join("") || '<div class="py-6 text-center text-gray-500">ยังไม่มีสินค้าในตะกร้า</div>';
       list.innerHTML = html;
       bottomSheet.innerHTML = html;
-    }
-
-    function updateCartDisplay() {
-      renderCart();
-      const shippingFee = calculateShippingFee();
-      const total = cartTotal();
-      const totalWithShipping = shippingFee !== null ? total + shippingFee : total;
-      qs("#cartGrandTotal").textContent = money(total);
-      qs("#bottomSheetTotal").textContent = money(total);
-      qs("#cartShippingFee").textContent = shippingFee !== null ? money(shippingFee) : "ไม่สามารถจัดส่งได้";
-      qs("#bottomSheetShippingFee").textContent = shippingFee !== null ? money(shippingFee) : "ไม่สามารถจัดส่งได้";
-      qs("#cartTotalWithShipping").textContent = shippingFee !== null ? money(totalWithShipping) : "ไม่สามารถจัดส่งได้";
-      qs("#bottomSheetTotalWithShipping").textContent = shippingFee !== null ? money(totalWithShipping) : "ไม่สามารถจัดส่งได้";
+      updateDeliveryStatus();
     }
 
     // ---------- Form Interactions ----------
@@ -911,7 +874,7 @@
         qs("#price").value = Number(opt.dataset.price).toFixed(2);
         const isPreorder = opt.dataset.preorder === "true";
         qs("#preorderNote").classList.toggle("hidden", !isPreorder);
-        qs("#orderForm .grid-cols-5").classList.toggle("hidden", isPreorder);
+        qs("#sweetnessSection").classList.toggle("hidden", isPreorder);
       }
       calcTotal();
     }
@@ -939,38 +902,95 @@
         showToast("กรุณากรอกที่อยู่จัดส่ง", "error");
         return;
       }
+      if (fulfill.includes("จัดส่ง") && store.userLocation) {
+        const distance = calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng);
+        if (distance > 10) {
+          showToast("ไม่สามารถเพิ่มลงตะกร้าได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
+          return;
+        }
+      }
       if (menu.requiresPreorder) {
         showToast("เมนูนี้ต้องสั่งล่วงหน้า 1-2 วัน", "info");
       }
 
       const newItem = { id: uid(), menuId: selId, name: menu.name, price, qty, sweet, fulfill, note, address, requiresPreorder: menu.requiresPreorder };
       store.cart = [...store.cart, newItem];
-      updateCartDisplay();
+      renderCart();
       closeOrderModal();
       showToast("เพิ่มลงตะกร้าแล้ว");
     }
 
     function clearCart() {
       store.cart = [];
-      updateCartDisplay();
+      store.userLocation = null;
+      renderCart();
       showToast("ล้างตะกร้าแล้ว");
     }
 
-    // ---------- Place Order ----------
+    // ---------- Telegram Integration ----------
+    function buildOrderText() {
+      const subTotal = cartSubTotal();
+      const deliveryFee = calculateDeliveryFee() || 0;
+      const grandTotal = subTotal + deliveryFee;
+      const items = store.cart.map((item, idx) => {
+        const lines = [
+          `${idx + 1}. ${item.name} (${item.sweet || 'ไม่มีระดับความหวาน'})`,
+          `   ราคา: ${money(item.price)} x ${item.qty} = ${money(item.price * item.qty)}`,
+          `   วิธีรับ: ${item.fulfill}`,
+          item.address ? `   ที่อยู่: ${item.address}` : "",
+          item.note ? `   โน้ต: ${item.note}` : "",
+          item.requiresPreorder ? `   *ต้องสั่งล่วงหน้า 1-2 วัน` : ""
+        ];
+        return lines.filter(l => l).join("\n");
+      }).join("\n\n");
+
+      const distance = store.userLocation ? calculateDistance(STORE_LOCATION.lat, STORE_LOCATION.lng, store.userLocation.lat, store.userLocation.lng).toFixed(1) : "N/A";
+      return [
+        "🧋 ออร์เดอร์ใหม่จากชาบ้านน้องขิม 🧋",
+        "",
+        items,
+        "",
+        `ยอดรวมสินค้า: ${money(subTotal)}`,
+        `ค่าจัดส่ง${store.cart.some(i => i.fulfill.includes("จัดส่ง")) ? ` (ระยะทาง ${distance} กม.)` : ""}: ${money(deliveryFee)}`,
+        `รวมทั้งสิ้น: ${money(grandTotal)}`
+      ].join("\n");
+    }
+
+    async function sendOrderToTelegram(text) {
+      const url = TELEGRAM_PROXY_URL || `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text,
+            parse_mode: "Markdown"
+          })
+        });
+        if (!response.ok) throw new Error("Failed to send order");
+        return true;
+      } catch (e) {
+        showToast("ไม่สามารถส่งออร์เดอร์ไปยัง Telegram ได้", "error");
+        console.error(e);
+        return false;
+      }
+    }
+
     async function placeOrder() {
       if (!store.cart.length) {
         showToast("ตะกร้าว่าง", "error");
         return;
       }
-      const shippingFee = calculateShippingFee();
-      if (shippingFee === null && store.cart.some(item => item.fulfill.includes("จัดส่ง"))) {
-        showToast("ไม่สามารถจัดส่งได้ เนื่องจากอยู่นอกพื้นที่", "error");
+      if (!canPlaceOrder()) {
+        showToast("ไม่สามารถสั่งออร์เดอร์ได้: ที่อยู่นี้อยู่นอกรัศมีการจัดส่ง (เกิน 10 กม.)", "error");
         return;
       }
       const text = buildOrderText();
       const hasPreorder = store.cart.some(item => item.requiresPreorder);
       store.cart = [];
-      updateCartDisplay();
+      store.userLocation = null;
+      renderCart();
       closeCart();
       showToast(hasPreorder ? "สั่งออร์เดอร์สำเร็จ (แซนด์วิชต้องสั่งล่วงหน้า 1-2 วัน)" : "สั่งออร์เดอร์สำเร็จ");
       await sendOrderToTelegram(text);
@@ -1016,6 +1036,7 @@
         name: qs("#menuName").value.trim(),
         price: Number(qs("#menuPrice").value || 0),
         category: qs("#menuCategory").value.trim(),
+        image: "",
         isRecommended: qs("#isRecommended").checked,
         requiresPreorder: qs("#requiresPreorder").checked,
       };
@@ -1046,6 +1067,49 @@
       renderMenuOptions();
       closeMenuModal();
       showToast("ลบเมนูแล้ว");
+    }
+
+    // ---------- JSON Import/Export ----------
+    function importJson() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (!Array.isArray(data)) throw new Error("Invalid JSON format");
+            store.menu = data.map(item => ({
+              ...item,
+              id: item.id || uid(),
+              price: Number(item.price) || 0,
+              image: item.image || ""
+            }));
+            renderMenuGrid();
+            renderMenuOptions();
+            showToast("นำเข้าเมนูสำเร็จ");
+          } catch (err) {
+            showToast("ไม่สามารถนำเข้า JSON ได้", "error");
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function exportJson() {
+      const data = JSON.stringify(store.menu, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "menu.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("ส่งออกเมนูสำเร็จ");
     }
 
     // ---------- Login Logic ----------
@@ -1099,283 +1163,225 @@
       if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    // ---------- Order Modal ----------
-    function openOrderModal(menuId = null) {
-      qs("#orderModal").classList.remove("hidden");
-      qs("#orderForm").reset();
-      qs("#selectedMenu").value = menuId || "";
-      qs("#price").value = "";
-      qs("#qty").value = "1";
-      qs('input[name="sweet"][value="50%"]').checked = true;
-      qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
-      qs("#deliveryAddress").value = "";
-      qs("#note").value = "";
-      handleFulfillChange();
-      updatePriceFromSelect();
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    function closeOrderModal() {
-      qs("#orderModal").classList.add("hidden");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    // ---------- Search and Filter Modal ----------
-    function openSearchFilterModal() {
-      renderCategories();
-      qs("#searchFilterModal").classList.remove("hidden");
-      qs("#searchInput").value = "";
-      qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#categoryChips .filter-chip[data-category='']").classList.add("selected");
-      qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#sortChips .filter-chip[data-sort='default']").classList.add("selected");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    function closeSearchFilterModal() {
-      qs("#searchFilterModal").classList.add("hidden");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-    function applyFilters() {
-      renderMenuGrid();
-      closeSearchFilterModal();
-      showToast("นำตัวกรองไปใช้แล้ว");
-    }
-
-    function clearFilters() {
-      qs("#searchInput").value = "";
-      currentCategory = "";
-      currentSort = "default";
-      qsa("#categoryChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#categoryChips .filter-chip[data-category='']").classList.add("selected");
-      qsa("#sortChips .filter-chip").forEach(chip => chip.classList.remove("selected"));
-      qs("#sortChips .filter-chip[data-sort='default']").classList.add("selected");
-      renderMenuGrid();
-      showToast("ล้างตัวกรองแล้ว");
-    }
-
-    // ---------- Delivery Address Handling ----------
-    function handleFulfillChange() {
-      const fulfill = qs('input[name="fulfill"]:checked')?.value || "รับเองที่ร้าน";
-      const addressSection = qs("#deliveryAddressSection");
-      if (fulfill.includes("จัดส่ง")) {
-        addressSection.classList.remove("hidden");
-      } else {
-        addressSection.classList.add("hidden");
+// ---------- Order Modal (continued) ----------
+      function openOrderModal(menuId = null) {
+        qs("#orderModal").classList.remove("hidden");
+        qs("#orderForm").reset();
+        qs("#selectedMenu").value = menuId || "";
+        qs("#price").value = "";
+        qs("#qty").value = "1";
+        qs('input[name="sweet"][value="50%"]').checked = true;
+        qs('input[name="fulfill"][value="รับเองที่ร้าน"]').checked = true;
+        qs("#note").value = "";
+        qs("#deliveryAddress").value = "";
+        qs("#deliveryStatus").textContent = "";
+        qs("#sweetnessSection").classList.remove("hidden");
+        qs("#preorderNote").classList.add("hidden");
+        qs("#deliveryAddressSection").classList.add("hidden");
+        updatePriceFromSelect();
+        if ("vibrate" in navigator) navigator.vibrate(50);
       }
-      updateCartDisplay();
-    }
 
-    // ---------- Event Listeners ----------
-    function setupEventListeners() {
-      qs("#openSearchModalBtn").onclick = openSearchFilterModal;
-      qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
-      qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
-      qs("#applyFiltersBtn").onclick = applyFilters;
-      qs("#clearFiltersBtn").onclick = clearFilters;
+      function closeOrderModal() {
+        qs("#orderModal").classList.add("hidden");
+        if ("vibrate" in navigator) navigator.vibrate(50);
+      }
 
-      qs("#categoryChips").onclick = e => {
-        const chip = e.target.closest(".filter-chip");
-        if (chip) {
-          qsa("#categoryChips .filter-chip").forEach(c => c.classList.remove("selected"));
-          chip.classList.add("selected");
-          currentCategory = chip.dataset.category;
+      // ---------- Search and Filter Modal ----------
+      function openSearchFilterModal() {
+        qs("#searchFilterModal").classList.remove("hidden");
+        if ("vibrate" in navigator) navigator.vibrate(50);
+      }
+
+      function closeSearchFilterModal() {
+        qs("#searchFilterModal").classList.add("hidden");
+        if ("vibrate" in navigator) navigator.vibrate(50);
+      }
+
+      // ---------- Geolocation ----------
+      function updateUserLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              store.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+              updateDeliveryStatus();
+              renderCart();
+            },
+            err => {
+              console.error("Geolocation error:", err);
+              store.userLocation = null;
+              updateDeliveryStatus();
+              showToast("ไม่สามารถดึงตำแหน่งได้ กรุณากรอกที่อยู่ด้วยตนเอง", "error");
+            }
+          );
+        } else {
+          showToast("เบราว์เซอร์นี้ไม่รองรับ Geolocation", "error");
         }
-      };
+      }
 
-      qs("#sortChips").onclick = e => {
-        const chip = e.target.closest(".filter-chip");
-        if (chip) {
-          qsa("#sortChips .filter-chip").forEach(c => c.classList.remove("selected"));
-          chip.classList.add("selected");
-          currentSort = chip.dataset.sort;
+      // ---------- Cart Quantity and Removal ----------
+      function updateCartItemQuantity(idx, delta) {
+        const cart = store.cart.slice();
+        const item = cart[idx];
+        if (!item) return;
+        item.qty = Math.max(1, (item.qty || 1) + delta);
+        store.cart = cart;
+        renderCart();
+        showToast(`ปรับจำนวน ${item.name} เป็น ${item.qty} แล้ว`);
+      }
+
+      function removeCartItem(idx) {
+        const cart = store.cart.slice();
+        const item = cart[idx];
+        if (!item) return;
+        cart.splice(idx, 1);
+        store.cart = cart;
+        renderCart();
+        showToast(`ลบ ${item.name} ออกจากตะกร้าแล้ว`);
+      }
+
+      // ---------- Event Listeners ----------
+      function setupEventListeners() {
+        // Theme Toggle
+        qs("#themeToggleBtn").onclick = toggleTheme;
+        qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
+
+        // Login
+        qs("#loginBtn").onclick = openLoginModal;
+        qs("#hamburgerLoginBtn").onclick = openLoginModal;
+        qs("#loginForm").onsubmit = handleLogin;
+        qs("#closeLoginModal").onclick = closeLoginModal;
+
+        // Hamburger Menu
+        qs("#openHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.remove("translate-x-full");
+        qs("#closeHamburgerBtn").onclick = () => qs("#hamburgerMenu").classList.add("translate-x-full");
+
+        // Cart
+        qs("#openCartBtn").onclick = openCart;
+        qs("#floatingOrderBtn").onclick = openCart;
+        qs("#closeCartBtn").onclick = closeCart;
+        qs("#clearCartBtn").onclick = clearCart;
+        qs("#bottomSheetClearCartBtn").onclick = clearCart;
+        qs("#placeOrderBtn").onclick = placeOrder;
+        qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
+
+        // Cart Quantity and Removal
+        [qs("#cartList"), qs("#cartBottomSheetList")].forEach(list => {
+          list.onclick = e => {
+            const target = e.target;
+            const idx = target.dataset.idx;
+            if (target.classList.contains("qtyInc")) {
+              updateCartItemQuantity(Number(idx), 1);
+            } else if (target.classList.contains("qtyDec")) {
+              updateCartItemQuantity(Number(idx), -1);
+            } else if (target.classList.contains("rmItem")) {
+              removeCartItem(Number(idx));
+            }
+          };
+        });
+
+        // Menu Grid
+        qs("#menuGrid").onclick = e => {
+          const t = e.target;
+          if (t.classList.contains("quickSelect")) {
+            openOrderModal(t.dataset.id);
+          } else if (t.classList.contains("editMenu")) {
+            openMenuModal(t.dataset.id);
+          }
+        };
+
+        // Order Modal
+        qs("#selectedMenu").onchange = updatePriceFromSelect;
+        qs("#price").oninput = calcTotal;
+        qs("#qty").oninput = calcTotal;
+        qs("#qtyPlus").onclick = () => {
+          qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) + 1);
+          calcTotal();
+        };
+        qs("#qtyMinus").onclick = () => {
+          qs("#qty").value = Math.max(1, Number(qs("#qty").value || 1) - 1);
+          calcTotal();
+        };
+        qs("#addToCartBtn").onclick = addToCart;
+        qs("#closeOrderModal").onclick = closeOrderModal;
+        qsa('input[name="fulfill"]').forEach(r =>
+          r.onchange = () => {
+            qs("#deliveryAddressSection").classList.toggle("hidden", !qs('input[name="fulfill"][value="จัดส่ง"]').checked);
+            updateDeliveryStatus();
+          }
+        );
+
+        // Menu Modal
+        qs("#addMenuBtn").onclick = () => openMenuModal();
+        qs("#menuForm").onsubmit = upsertMenu;
+        qs("#deleteMenuBtn").onclick = deleteMenu;
+        qs("#closeMenuModal").onclick = closeMenuModal;
+
+        // Search and Filter
+        qs("#openSearchModalBtn").onclick = openSearchFilterModal;
+        qs("#openSearchModalBtnMobile").onclick = openSearchFilterModal;
+        qs("#closeSearchFilterModal").onclick = closeSearchFilterModal;
+        qs("#searchInput").oninput = () => renderMenuGrid();
+        qs("#categoryChips").onclick = e => {
+          const t = e.target;
+          if (t.dataset.category !== undefined) {
+            currentCategory = t.dataset.category;
+            qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
+            renderMenuGrid();
+          }
+        };
+        qs("#sortChips").onclick = e => {
+          const t = e.target;
+          if (t.dataset.sort) {
+            currentSort = t.dataset.sort;
+            qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c === t));
+            renderMenuGrid();
+          }
+        };
+        qs("#clearFiltersBtn").onclick = () => {
+          qs("#searchInput").value = "";
+          currentCategory = "";
+          currentSort = "default";
+          qsa("#categoryChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.category === ""));
+          qsa("#sortChips .filter-chip").forEach(c => c.classList.toggle("selected", c.dataset.sort === "default"));
+          renderMenuGrid();
+        };
+        qs("#applyFiltersBtn").onclick = closeSearchFilterModal;
+
+        // JSON Import/Export
+        qs("#importJsonBtn").onclick = importJson;
+        qs("#exportJsonBtn").onclick = exportJson;
+
+        // Delivery Address
+        qs("#deliveryAddress").oninput = () => {
+          updateDeliveryStatus();
+          if (qs("#deliveryAddress").value.trim()) {
+            // Simulate geolocation from address (in real app, use a geocoding API)
+            // For demo, assume user location is set manually or via geolocation
+            updateUserLocation();
+          }
+        };
+      }
+
+      // ---------- Initialization ----------
+      function init() {
+        seedMenu();
+        renderMenuOptions();
+        renderCategories();
+        renderMenuGrid();
+        renderCart();
+        qs("#adminControls").classList.toggle("hidden", !store.isAdmin);
+        qs("#loginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
+        qs("#hamburgerLoginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
+        if (store.isAdmin) {
+          qs("#loginBtn").onclick = handleLogout;
+          qs("#hamburgerLoginBtn").onclick = handleLogout;
         }
-      };
+        setupEventListeners();
+        updateUserLocation();
+      }
 
-      qs("#openCartBtn").onclick = openCart;
-      qs("#closeCartBtn").onclick = closeCart;
-      qs("#floatingOrderBtn").onclick = openCart;
-      qs("#clearCartBtn").onclick = clearCart;
-      qs("#bottomSheetClearCartBtn").onclick = clearCart;
-      qs("#placeOrderBtn").onclick = placeOrder;
-      qs("#bottomSheetPlaceOrderBtn").onclick = placeOrder;
-
-      qs("#openHamburgerBtn").onclick = openHamburgerMenu;
-      qs("#closeHamburgerBtn").onclick = closeHamburgerMenu;
-      qs("#themeToggleBtn").onclick = toggleTheme;
-      qs("#hamburgerThemeToggleBtn").onclick = toggleTheme;
-      qs("#loginBtn").onclick = openLoginModal;
-      qs("#hamburgerLoginBtn").onclick = openLoginModal;
-      qs("#closeLoginModal").onclick = closeLoginModal;
-      qs("#loginForm").onsubmit = handleLogin;
-
-      qs("#addMenuBtn").onclick = () => openMenuModal();
-      qs("#closeMenuModal").onclick = closeMenuModal;
-      qs("#menuForm").onsubmit = upsertMenu;
-      qs("#deleteMenuBtn").onclick = deleteMenu;
-
-      qs("#selectedMenu").onchange = updatePriceFromSelect;
-      qs("#price").oninput = calcTotal;
-      qs("#qty").oninput = calcTotal;
-      qs("#qtyMinus").onclick = () => {
-        const inp = qs("#qty");
-        inp.value = Math.max(1, Number(inp.value) - 1);
-        calcTotal();
-      };
-      qs("#qtyPlus").onclick = () => {
-        const inp = qs("#qty");
-        inp.value = Number(inp.value) + 1;
-        calcTotal();
-      };
-      qs("#addToCartBtn").onclick = addToCart;
-      qs("#closeOrderModal").onclick = closeOrderModal;
-
-      qs("#menuGrid").onclick = e => {
-        const editBtn = e.target.closest(".editMenu");
-        const selectBtn = e.target.closest(".quickSelect");
-        if (editBtn) openMenuModal(editBtn.dataset.id);
-        if (selectBtn) openOrderModal(selectBtn.dataset.id);
-      };
-
-      qs("#cartList").onclick = e => {
-        const dec = e.target.closest(".qtyDec");
-        const inc = e.target.closest(".qtyInc");
-        const rm = e.target.closest(".rmItem");
-        if (dec || inc || rm) {
-          const idx = Number((dec || inc || rm).dataset.idx);
-          let cart = store.cart.slice();
-          if (dec && cart[idx].qty > 1) cart[idx].qty -= 1;
-          if (inc) cart[idx].qty += 1;
-          if (rm) cart.splice(idx, 1);
-          store.cart = cart;
-          updateCartDisplay();
-        }
-      };
-
-      qs("#cartBottomSheetList").onclick = qs("#cartList").onclick;
-      qsa('input[name="fulfill"]').forEach(r => r.onchange = handleFulfillChange);
-    }
-
-    // ---------- Hamburger Menu ----------
-    function openHamburgerMenu() {
-      qs("#hamburgerMenu").classList.remove("translate-x-full");
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }
-
-function closeHamburgerMenu() {
-  qs("#hamburgerMenu").classList.add("translate-x-full");
-  if ("vibrate" in navigator) navigator.vibrate(50);
-}
-
-// ---------- JSON Import/Export ----------
-function importJson() {
-  if (!store.isAdmin) {
-    showToast("ต้องเป็นผู้ดูแลเพื่อนำเข้าเมนู", "error");
-    return;
-  }
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".json";
-  input.onchange = async e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      if (!Array.isArray(data)) throw new Error("รูปแบบ JSON ไม่ถูกต้อง");
-      store.menu = data.map(item => ({
-        id: item.id || uid(),
-        name: item.name || "",
-        price: Number(item.price) || 0,
-        category: item.category || "",
-        isRecommended: !!item.isRecommended,
-        requiresPreorder: !!item.requiresPreorder,
-        image: item.image || ""
-      }));
-      renderMenuGrid();
-      renderMenuOptions();
-      showToast("นำเข้าเมนูสำเร็จ");
-    } catch (err) {
-      showToast("เกิดข้อผิดพลาดในการนำเข้า: " + err.message, "error");
-    }
-  };
-  input.click();
-}
-
-function exportJson() {
-  if (!store.isAdmin) {
-    showToast("ต้องเป็นผู้ดูแลเพื่อส่งออกเมนู", "error");
-    return;
-  }
-  const data = JSON.stringify(store.menu, null, 2);
-  const blob = new Blob([data], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "menu.json";
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast("ส่งออกเมนูสำเร็จ");
-}
-
-// ---------- Telegram Order Sending ----------
-async function sendOrderToTelegram(text) {
-  const url = TELEGRAM_PROXY_URL || `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text,
-        parse_mode: "HTML"
-      })
-    });
-    if (!res.ok) throw new Error("ไม่สามารถส่งคำสั่งซื้อไปยัง Telegram ได้");
-  } catch (err) {
-    showToast("เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ: " + err.message, "error");
-  }
-}
-
-function buildOrderText() {
-  const total = cartTotal();
-  const shippingFee = calculateShippingFee();
-  const totalWithShipping = shippingFee !== null ? total + shippingFee : total;
-  let text = `<b>📋 คำสั่งซื้อใหม่ - ชาบ้านน้องขิม</b>\n\n`;
-  text += store.cart.map((item, i) => {
-    let str = `${i + 1}. ${item.name} (${money(item.price)} x ${item.qty}) = ${money(item.price * item.qty)}\n`;
-    if (item.sweet) str += `   - ความหวาน: ${item.sweet}\n`;
-    str += `   - วิธีรับ: ${item.fulfill}\n`;
-    if (item.note) str += `   - โน้ต: ${item.note}\n`;
-    if (item.address) str += `   - ที่อยู่: ${item.address}\n`;
-    if (item.requiresPreorder) str += `   - *ต้องสั่งล่วงหน้า 1-2 วัน*\n`;
-    return str;
-  }).join("\n");
-  text += `\n<b>รวม: ${money(total)}</b>\n`;
-  text += `ค่าจัดส่ง: ${shippingFee !== null ? money(shippingFee) : "ไม่สามารถจัดส่งได้"}\n`;
-  text += `<b>ยอดรวมทั้งหมด: ${shippingFee !== null ? money(totalWithShipping) : "ไม่สามารถจัดส่งได้"}</b>`;
-  return text;
-}
-
-// ---------- Initialization ----------
-function init() {
-  seedMenu();
-  renderMenuGrid();
-  renderMenuOptions();
-  updateCartDisplay();
-  qs("#adminControls").classList.toggle("hidden", !store.isAdmin);
-  qs("#loginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
-  qs("#hamburgerLoginBtn").textContent = store.isAdmin ? "ออกจากระบบ" : "เข้าสู่ระบบ";
-  qs("#loginBtn").onclick = store.isAdmin ? handleLogout : openLoginModal;
-  qs("#hamburgerLoginBtn").onclick = store.isAdmin ? handleLogout : openLoginModal;
-  setupEventListeners();
-  checkLocation();
-  // Set initial theme
-  if (store.theme === "dark") toggleTheme();
-}
-
-init();
-  </script>
-</body>
+      init();
+    </script>
+  </body>
 </html>
